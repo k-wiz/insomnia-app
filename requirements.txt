@@ -1,0 +1,12 @@
+blinker==1.4
+Flask==0.9
+Flask-DebugToolbar==0.10.0
+Flask-SQLAlchemy==0.16
+Flask-WTF==0.8
+itsdangerous==0.24
+Jinja2==2.6
+psycopg2==2.6.1
+SQLAlchemy==0.7.9
+Werkzeug==0.8.3
+wheel==0.24.0
+WTForms==1.0.2
