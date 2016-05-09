@@ -37,12 +37,12 @@ class Entry(db.Model):
     __tablename__ = "entries"
 
     entry_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    hours_sleep = db.Column(db.Integer, nullable=False)
+    hours_sleep = db.Column(db.Float, nullable=False)
     insomnia = db.Column(db.Boolean, nullable=False)
-    insom_type = db.Column(db.String(65), nullable=False)
-    insom_severity = db.Column(db.Integer, nullable=False)
+    insom_type = db.Column(db.String(65), nullable=True) # Nullable, will filter out NULLs
+    insom_severity = db.Column(db.Integer, nullable=False, default=0) # Non-nullable, default value 0
     alcohol = db.Column(db.Boolean, nullable=False)
     caffeine = db.Column(db.Boolean, nullable=False)
     menstruation = db.Column(db.Boolean, nullable=False)
@@ -67,7 +67,7 @@ class Entry(db.Model):
 def connect_to_db(app):
     """Connect the database to Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///ratings'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///insomnia'
     db.app = app
     db.init_app(app)
 
