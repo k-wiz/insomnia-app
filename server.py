@@ -10,7 +10,7 @@ from model import connect_to_db, db, User, Entry
 
 app = Flask(__name__)
 #WHAT IS THIS?
-app.secret_key = "ABC"
+app.secret_key = "DOESNTMATTER"
 app.jinja_env.undefined = StrictUndefined
 
 ###################################################################
@@ -21,6 +21,7 @@ def index():
     """Display today's entry form."""
 
     return render_template("homepage.html")
+
 
 @app.route('/dashboard')
 def dashboard():
