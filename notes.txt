@@ -1,0 +1,11 @@
+Day 1, May 9th:
+Today I wrote model.py and seed.py in their entirety, and defined basic routes at server.py.  I also created the basic entry form that successfully sends data to the dashboard route. TOMORROW: Use form data to create new db entry. Make sure data formats are correct. Refine form or move on to dashboard?
+
+
+
+
+
+
+
+Sleep-onset insomnia (can't fall asleep), Sleep-maintenance insomnia (Wake once or several times a night and can't get back to sleep), Early-awakening insomnia (Wake up early in the morning and can't get back to sleep)
+
