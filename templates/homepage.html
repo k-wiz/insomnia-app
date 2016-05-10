@@ -1,8 +1,62 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<!-- insert navbar here -->
+<h1>How did you sleep last night?</h1></br>
 
-<p>homepage yay!</p>
+<form action="/dashboard" method="POST">
+
+    Hours Slept: 
+        <input type="number" name="hours_sleep" min="0" max="24"> <br>
+
+    <!-- Do these work for boolean data type model.py expects? -->
+    Insomnia? 
+        <input type="radio" name="insomnia" value="True">Yes
+        <input type="radio" name="insomnia" value="False">No <br>
+
+   <!--  Should this have a None option? What will it have if question is skipped? -->
+    Type of insomnia: 
+        <select>
+            <option value="None"></option>
+            <option value="sleep-onset">Couldn't fall asleep</option>
+            <option value="sleep-maintenance">Couldn't stay asleep</option>
+            <option value="early-awakening">Woke up too early</option>
+        </select><br>
+
+    <!-- Can this be a sliding scale? -->
+    Severity of Insomnia:
+        <input type="number" name="insom_severity" min="0" max="10"><br><br>
+
+    <h4>Yesterday, did you...</h4>
+    Consume alcohol? 
+        <input type="radio" name="alcohol" value="True">Yes
+        <input type="radio" name="alcohol" value="False">No <br>
+
+    Consume caffeine? 
+        <input type="radio" name="caffeine" value="True">Yes
+        <input type="radio" name="caffeine" value="False">No <br>
+
+    Menstruate?
+        <input type="radio" name="menstruation" value="True">Yes
+        <input type="radio" name="menstruation" value="False">No <br>
+
+    <!-- Can this be a sliding scale? -->
+    What time did you go to bed? 
+        <input type="time" name="bedtime"><br>
+
+    <!-- Can this be a sliding scale? -->
+    How stressful was your day?
+        <input type="number" name="insom_severity" min="0" max="10"><br>
+
+    <!-- Can this be a sliding scale? -->
+    How physically active were you?
+        <input type="number" name="insom_severity" min="0" max="10"><br>
+
+    <input type="submit" name="submit" value="Submit"></input>
+
+
+
+</form>
 
 
 {% endblock %}
