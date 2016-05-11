@@ -9,7 +9,13 @@ Converted all form inputs to correct data type, allowing new entries to be added
 
 
 
-Sleep-onset insomnia (can't fall asleep), Sleep-maintenance insomnia (Wake once or several times a night and can't get back to sleep), Early-awakening insomnia (Wake up early in the morning and can't get back to sleep)
+MASTER PLAN:
+
+1. Plan out insights page. What do I want?
+2. Play around with chart.js
+3. Do research into data analysis techniques. Once the MVP of insights page is complete:
+4. Add JS to form page. 
+5. If time, incorporate data from Fitbit API!!!
 
 
 

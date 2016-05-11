@@ -32,16 +32,14 @@ def load_entries():
     #Empty table before seeding data. 
     Entry.query.delete()
 
-    for row in open("seed_data/user_entries.csv"):
+    for row in open("seed_data/user_entries_2.csv"):
         
         row = row.rstrip()
-        user_id, date, hours_sleep, insomnia, insom_type, insom_severity, alcohol, caffeine, menstruation, bedtime, stress_level, activity_level = row.split(",")
+        user_id, date, minutes_asleep, insomnia, insom_type, insom_severity, alcohol, caffeine, menstruation, bedtime, stress_level, activity_level = row.split(",")
         date = datetime.strptime(date, '%m/%d/%Y')
         bedtime = datetime.strptime(bedtime, '%H:%M:%S')
-        print user_id, date, hours_sleep, insomnia, insom_type, insom_severity, alcohol, caffeine, menstruation, bedtime, stress_level, activity_level
-
         user_id = int(user_id)
-        hours_sleep = float(hours_sleep)
+        minutes_asleep = int(minutes_asleep)
         stress_level = int(stress_level)
         activity_level = int(activity_level)
 
@@ -53,7 +51,7 @@ def load_entries():
         #Instantiates entries.
         entry = Entry(user_id=user_id,
                         date=date,
-                        hours_sleep=hours_sleep,
+                        minutes_asleep=minutes_asleep,
                         insomnia=insomnia,
                         insom_type=insom_type,
                         insom_severity=insom_severity,

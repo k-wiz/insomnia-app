@@ -39,7 +39,7 @@ class Entry(db.Model):
     entry_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
     date = db.Column(db.Date, nullable=False)
-    hours_sleep = db.Column(db.Float, nullable=False)
+    minutes_asleep = db.Column(db.Integer, nullable=False)
     insomnia = db.Column(db.Boolean, nullable=False)
     insom_type = db.Column(db.String(65), nullable=True) # Nullable, will filter out NULLs
     insom_severity = db.Column(db.Integer, nullable=False, default=0) # Non-nullable, default value 0
@@ -78,12 +78,22 @@ if __name__ == "__main__":
     print "Connected to DB."
 
 
+#########################################################
+
+# Notes: 
+# Fields to possibly add -- (this will take ~ 1 day to get data from Fitbit API, 
+#     modify my model, and re-create db.)
+
+# 1. minutes_asleep = minutes_asleep
+# 2. activty_level = some calculation for overall activity from Activity API data
+# 3. bedtime = sleep_start_time
+
+# OTHER POSSIBLES: 
+# 1. efficiency
+# 2. awake_count
+# 3. awake_duration
+# 4. time_in_bed
 
 
 
 
-
-# 1. Create data model: User, Entry classes
-# 2. foreign key on Entry. (User.entries, Entry.User)
-# 3. test queries -- can I get the data I want with my data structure?
-# 4. Research & test data analysis. Can I get the insights I want?

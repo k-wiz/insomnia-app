@@ -25,14 +25,14 @@ def index():
 def dashboard():
     """Display user's dashboard."""
 
-    #entry_id auto assigned
 
-    #user_id hardcoded now; get id from session once login setup
-    user_id = 1
+    #Uses form data to create new records in Entry table. 
+
+    user_id = 1 #user_id hardcoded now; get id from session once login setup
 
     date = datetime.now()
 
-    hours_sleep = float(request.form.get("hours_sleep"))
+    minutes_asleep = int((float(request.form.get("hours_sleep"))) * 60)
 
     insomnia = request.form.get("insomnia")
     if insomnia == 'True':
@@ -71,7 +71,7 @@ def dashboard():
 
     new_entry = Entry(user_id=user_id,
                         date=date,
-                        hours_sleep=hours_sleep,
+                        minutes_asleep=minutes_asleep,
                         insomnia=insomnia,
                         insom_type=insom_type,
                         insom_severity=insom_severity,
@@ -85,8 +85,20 @@ def dashboard():
     db.session.add(new_entry)
     db.session.commit()
 
+    #Makes db queries to return insights on average hours asleep, median 
+    #hours asleep, average insomnia, median insomnia level, 
+    #(average activity level, average stress level).
+    avg_sleep = 
+    median_sleep = 
+    avg_insom_severity = 
+    median_insom_severity = 
 
-    return render_template("dashboard.html")
+
+    return render_template("dashboard.html", 
+                                avg_sleep=avg_sleep,
+                                median_sleep=median_sleep,
+                                avg_insom_severity=avg_insom_severity,
+                                median_insom_severity=median_insom_severity)
 
 
 ###################################################################
