@@ -16,8 +16,7 @@
 
    <!--  Should this have a None option? What will it have if question is skipped? -->
     Type of insomnia: 
-        <select>
-            <option value="None"></option>
+        <select name="insom_type">
             <option value="sleep-onset">Couldn't fall asleep</option>
             <option value="sleep-maintenance">Couldn't stay asleep</option>
             <option value="early-awakening">Woke up too early</option>
@@ -42,15 +41,15 @@
 
     <!-- Can this be a sliding scale? -->
     What time did you go to bed? 
-        <input type="time" name="bedtime"><br>
+        <input type="time" name="bedtime" value="time"><br>
 
     <!-- Can this be a sliding scale? -->
     How stressful was your day?
-        <input type="number" name="insom_severity" min="0" max="10"><br>
+        <input type="number" name="stress_level" min="0" max="10"><br>
 
     <!-- Can this be a sliding scale? -->
     How physically active were you?
-        <input type="number" name="insom_severity" min="0" max="10"><br>
+        <input type="number" name="activity_level" min="0" max="10"><br>
 
     <input type="submit" name="submit" value="Submit"></input>
 
