@@ -5,10 +5,10 @@
 <p>dashboard yay!</p>
 
 <div>
-    <p>Average sleep per night: {{ avg_sleep }} </p>
-    <p>Median sleep per night: {{ median_sleep }}</p>
-    <p>Average insomnia severity: {{ avg_insom_severity }}</p>
-    <p>Median insomnia severity: {{ median_insom_severity }}</p>
+    <p>Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
+    <p>Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
+    <p>Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
+    <p>Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
 
 </div>
 
