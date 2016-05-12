@@ -4,6 +4,11 @@ Today I wrote my data model at model.py, seeded the db with sample data from see
 Day 2, May 10th: 
 Converted all form inputs to correct data type, allowing new entries to be added to database. (2 hours) 
 
+Day 3, May 11th:
+Spent all day creating function to calculate user's averqage hours of sleep per night, 
+median hours of sleep per night, average level of insomnia, and median level of insomnia. Passed through to template, correctly formatted. Median functions took me so much longer
+than expected!
+
 
 
 
@@ -11,11 +16,12 @@ Converted all form inputs to correct data type, allowing new entries to be added
 
 MASTER PLAN:
 
-1. Plan out insights page. What do I want?
-2. Play around with chart.js
-3. Do research into data analysis techniques. Once the MVP of insights page is complete:
-4. Add JS to form page. 
-5. If time, incorporate data from Fitbit API!!!
+1. Play around with chart.js. Is this sufficient, or do I want D3? Then:
+    -Is it feasible to view data by month AND
+    -when month is selected and viewed, averages and medians are recalculated?
+2. Do research into data analysis techniques. Once the MVP of insights page is complete:
+3. Add JS to form page. make it all pretty. 
+4. If time, incorporate data from Fitbit API!!!
 
 
 

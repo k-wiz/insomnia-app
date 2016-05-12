@@ -56,6 +56,18 @@ def calculate_median_insom_severity(user_id):
     return median_insom_severity
 
 
+def retrieve_insom_severity(user_id, start_date, end_date):
+    """Returns a list of insom_severity data points & corresponding date for 
+    user with user_id, from start_date to end_date, inclusive."""
+ 
+    data_points = db.session.query(Entry.insom_severity).filter/
+        (Entry.user_id == user_id, Entry.date >= start_date, 
+        Entry.date <= end_date).all()
+
+
+
+
+
 
 
 

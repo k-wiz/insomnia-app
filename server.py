@@ -63,7 +63,6 @@ def dashboard():
     
     bedtime = request.form.get("bedtime")
     bedtime = datetime.strptime(bedtime, '%H:%M')
-
     stress_level = int(request.form.get("stress_level"))
     activity_level = int(request.form.get("activity_level"))
 
