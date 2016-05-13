@@ -9,18 +9,29 @@
     <p>Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
     <p>Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
     <p>Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
+    <p> {{ insom_type_data }} </p>
+    <div>
+        <h2>Insights</h2>
+        <ul>
+            <li>Your most frequent type of insomnia is: </p>
+
+        </ul>
+    </div>
+    <p id="dates" display="hidden">{{ insom_severity_data }}</p>
+    <p id="data_points" display="hidden">{{ insom_severity_formatted_dates }}</p>
 
 </div>
 
-<canvas id="myChart" width="100" height="100"></canvas>
+<canvas id="myChart" width="100" height="30"></canvas>
 
 <script>
 var ctx = document.getElementById("myChart");
+var labels = document.getElementById("dates").innerText;
+var data_points = document.getElementById("data_points").innerText;
 
 
-var labels = ["12/1", "12/2", "12/3", "12/4", "12/5", "12/6", "12/7"]
-var data_points = [5, 9, 0, 8, 9, 10, 3]
-
+var labels = ['4/1', '4/2', '4/3', '4/4', '4/5', '4/6', '4/7', '4/8', '4/9', '4/10', '4/11', '4/12', '4/13', '4/14', '4/15', '4/16', '4/17', '4/18', '4/19', '4/20', '4/21', '4/22', '4/23', '4/24', '4/25', '4/26', '4/27', '4/28', '4/29', '4/30', '5/1']
+var data_points = [2, 7, 4, 8, 0, 7, 7, 10, 0, 2, 8, 5, 5, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 6, 0, 6, 0, 0, 0, 0, 0]
 var data = {
     labels: labels,
     datasets: [

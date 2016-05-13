@@ -60,9 +60,22 @@ def retrieve_insom_severity(user_id, start_date, end_date):
     """Returns a list of insom_severity data points & corresponding date for 
     user with user_id, from start_date to end_date, inclusive."""
  
-    data_points = db.session.query(Entry.insom_severity).filter/
+    data_points = db.session.query(Entry.insom_severity, Entry.date).filter\
         (Entry.user_id == user_id, Entry.date >= start_date, 
         Entry.date <= end_date).all()
+
+    return data_points
+
+
+def insom_type_frequency(user_id):
+    """Returns count of insomnia_type occurrences."""
+
+    insom_type_frequency = db.session.query(db.func.count(Entry.insom_type), \
+                            Entry.insom_type).filter(Entry.user_id == user_id).\
+                            group_by(Entry.insom_type).all()
+
+    return insom_type_frequency
+
 
 
 
