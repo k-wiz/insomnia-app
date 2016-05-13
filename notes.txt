@@ -5,9 +5,21 @@ Day 2, May 10th:
 Converted all form inputs to correct data type, allowing new entries to be added to database. (2 hours) 
 
 Day 3, May 11th:
-Spent all day creating function to calculate user's averqage hours of sleep per night, 
-median hours of sleep per night, average level of insomnia, and median level of insomnia. Passed through to template, correctly formatted. Median functions took me so much longer
-than expected!
+(5-6 hours)
+1. Modified data model to hold minutes instead of hours. 
+2. Created functions to calculate user's averqage hours of sleep per night, 
+median hours of sleep per night, average level of insomnia, and median level of insomnia. Passed through to template, correctly formatted. Median functions took me so much longer than expected!
+3. Refactored code; created helper.py file. 
+
+Day 4, May 12th:
+(5-6 hours)
+1. Thought through insights -- what will be visually represented vs text. Researched data analysis techniques and chart.js.
+2. Created chart showing insomnia severity data. 
+3. Created helper functions to query db and return insomnia severity data. 
+
+
+
+
 
 
 

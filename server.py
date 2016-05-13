@@ -1,14 +1,13 @@
 """Insomnia App"""
 
-from flask import Flask, render_template, redirect, request, flash, session
+from flask import Flask, render_template, redirect, request, flash, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import connect_to_db, db, User, Entry
 from datetime import datetime, time, date
 from sqlalchemy import func
 from helper import median, calculate_avg_sleep, calculate_avg_insom_severity,\
- calculate_median_sleep, calculate_median_insom_severity, \
- retrieve_insom_severity, insom_type_frequency
+ calculate_median_sleep, calculate_median_insom_severity, insom_type_frequency
 
 app = Flask(__name__)
 app.secret_key = "DOESNTMATTER"
@@ -101,18 +100,18 @@ def dashboard():
     # 2 lists -- a list of datetime objects, and a list of insom_severity
     # data points. (Need to make start_date & end_date into variables, but 
     # how will that data be passed in?)
-    insom_severity_by_date = retrieve_insom_severity('1', datetime(2016, 4, 1),\
-                                                          datetime(2016, 5, 1))
-    insom_severity_data = []
+    # insom_severity_by_date = retrieve_insom_severity('1', datetime(2016, 4, 1),\
+    #                                                       datetime(2016, 5, 1))
+    # insom_severity_data = []
     
-    insom_severity_dates = []
-    for item in insom_severity_by_date:
-        insom_severity_data.append(item[0])
-        insom_severity_dates.append(item[1])
+    # insom_severity_dates = []
+    # for item in insom_severity_by_date:
+    #     insom_severity_data.append(item[0])
+    #     insom_severity_dates.append(item[1])
 
-    insom_severity_formatted_dates = []
-    for item in insom_severity_dates:
-        insom_severity_formatted_dates.append("%s/%s" % (item.month, item.day))
+    # insom_severity_formatted_dates = []
+    # for item in insom_severity_dates:
+    #     insom_severity_formatted_dates.append("%s/%s" % (item.month, item.day))
 
     # Calculate frequency of insomnia type for user with user_id.
 
@@ -126,20 +125,34 @@ def dashboard():
         # json & ajax. No need to duplicate effort.)
 
 
-
-
-
-
     # Pass data to template
     return render_template("dashboard.html", 
                                 avg_sleep=avg_sleep,
                                 median_sleep=median_sleep,
                                 avg_insom_severity=avg_insom_severity,
                                 median_insom_severity=median_insom_severity,
-                                insom_severity_data=insom_severity_data, 
-                                insom_severity_formatted_dates=insom_severity_formatted_dates,
                                 insom_type_data=insom_type_data)
 
+
+@app.route('/user-data.json')
+def retrieve_insom_severity():
+    """Returns a list of insom_severity data points & corresponding date for 
+    user with user_id, from start_date to end_date, inclusive."""
+ 
+    user_id = 1
+    start_date = datetime(2016, 4, 1)
+    end_date = datetime(2016,5,1)
+
+    data_points = db.session.query(Entry.insom_severity, Entry.date).filter\
+        (Entry.user_id == user_id, Entry.date >= start_date, 
+        Entry.date <= end_date).all()
+
+    d = {}
+    for item in data_points:
+        date = "%s/%s" % (item[1].month, item[1].day)
+        d[date] = item[0]
+
+    return jsonify(d)
 
 ###################################################################
 
