@@ -42,27 +42,10 @@ function chartData(results) {
     for (var item in results) {
         data_points.push(results[item]);
         labels.push(item);
-    };   
-    return data_points, labels;
-}
-// I need to take the data from '/user-data.json' and pass it to chartData, which should create a new chart using data_points returned from chartData
 
-// NEED TO get result of above function into a variable called data_points! 
-
-
-var data_points;
-$.get("/user-data.json", chartData);
-console.log(data_points);
-
-
-var ctx = document.getElementById("myChart");
-
-var labels = ['4/1', '4/2', '4/3', '4/4', '4/5', '4/6', '4/7', '4/8', '4/9', '4/10', '4/11', '4/12', '4/13', '4/14', '4/15', '4/16', '4/17', '4/18', '4/19', '4/20', '4/21', '4/22', '4/23', '4/24', '4/25', '4/26', '4/27', '4/28', '4/29', '4/30', '5/1']
-// var data_points = [2, 7, 4, 8, 0, 7, 7, 10, 0, 2, 8, 5, 5, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 6, 0, 6, 0, 0, 0, 0, 0];
-
-var data_points_2 = [1, 2, 3, 4, 0, 1, 1, 5, 0, 2, 7, 3, 3, 0, 1, 7, 0, 3, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 3, 0, 0];
-
-var data = {
+    var ctx = document.getElementById("myChart");
+    }; 
+    var data = {
     labels: labels,
     datasets: [
         {
@@ -75,22 +58,8 @@ var data = {
         },
         {
             label: "This Month",
-            // lineTension: 0.1,
             backgroundColor: "rgba(75,192,192,0.4)",
             borderColor: "rgba(75,192,192,1)",
-            // borderCapStyle: 'butt',
-            // borderDash: [],
-            // borderDashOffset: 0.0,
-            // borderJoinStyle: 'miter',
-            // pointBorderColor: "rgba(75,192,192,1)",
-            // pointBackgroundColor: "#fff",
-            // pointBorderWidth: 1,
-            // pointHoverRadius: 5,
-            // pointHoverBackgroundColor: "rgba(75,192,192,1)",
-            // pointHoverBorderColor: "rgba(220,220,220,1)",
-            // pointHoverBorderWidth: 2,
-            // pointRadius: 1,
-            // pointHitRadius: 10,
             data: data_points_2,
             fillColor : "rgba(219,186,52,0.4)",
             strokeColor : "rgba(220,220,220,1)",
@@ -98,10 +67,8 @@ var data = {
             pointStrokeColor : "#fff",
         },
     ]
-}
-
-
-var createChart = new Chart(ctx, {
+}  
+    new Chart(ctx, {
     type: 'line',
     data: data,
     options: {
@@ -109,7 +76,60 @@ var createChart = new Chart(ctx, {
             display: false
         }]
     }
-})
+});
+    // return data_points, labels;
+}
+// I need to take the data from '/user-data.json' and pass it to chartData, which should create a new chart using data_points returned from chartData
+
+// NEED TO get result of above function into a variable called data_points! 
+
+
+// var data_points;
+$.get("/user-data.json", chartData);
+// console.log(data_points);
+
+
+var ctx = document.getElementById("myChart");
+
+// var labels = ['4/1', '4/2', '4/3', '4/4', '4/5', '4/6', '4/7', '4/8', '4/9', '4/10', '4/11', '4/12', '4/13', '4/14', '4/15', '4/16', '4/17', '4/18', '4/19', '4/20', '4/21', '4/22', '4/23', '4/24', '4/25', '4/26', '4/27', '4/28', '4/29', '4/30', '5/1']
+// var data_points = [2, 7, 4, 8, 0, 7, 7, 10, 0, 2, 8, 5, 5, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 6, 0, 6, 0, 0, 0, 0, 0];
+
+var data_points_2 = [1, 2, 3, 4, 0, 1, 1, 5, 0, 2, 7, 3, 3, 0, 1, 7, 0, 3, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 3, 0, 0];
+
+// var data = {
+//     labels: labels,
+//     datasets: [
+//         {
+//             label: "Last Month",
+//             fillColor : "rgba(99,123,133,0.4)",
+//             strokeColor : "rgba(220,220,220,1)",
+//             pointColor : "rgba(220,220,220,1)",
+//             pointStrokeColor : "#fff",
+//             data: data_points,
+//         },
+//         {
+//             label: "This Month",
+//             backgroundColor: "rgba(75,192,192,0.4)",
+//             borderColor: "rgba(75,192,192,1)",
+//             data: data_points_2,
+//             fillColor : "rgba(219,186,52,0.4)",
+//             strokeColor : "rgba(220,220,220,1)",
+//             pointColor : "rgba(220,220,220,1)",
+//             pointStrokeColor : "#fff",
+//         },
+//     ]
+// }
+
+
+// new Chart(ctx, {
+//     type: 'line',
+//     data: data,
+//     options: {
+//         xAxes: [{
+//             display: false
+//         }]
+//     }
+// });
 
 //////////////////////////////////////////////////////
 // BAR CHART
