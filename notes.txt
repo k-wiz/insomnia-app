@@ -18,6 +18,10 @@ Day 4, May 12th:
 3. Created helper functions to query db and return insomnia severity data. 
 
 
+    <script src=
+        "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.2/Chart.min.js">
+    </script>
+
 
 
 

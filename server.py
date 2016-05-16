@@ -95,18 +95,13 @@ def dashboard():
     # Calculate median insomnia severity
     median_insom_severity = calculate_median_insom_severity(user_id)
 
-    # Calculate frequency of insomnia type for user with user_id.
-
-    insom_type_data = sorted(insom_type_frequency('1'))
-
 
     # Pass data to template
-    return render_template("dashboard.html", 
+    return render_template("dashboard2.html", 
                                 avg_sleep=avg_sleep,
                                 median_sleep=median_sleep,
                                 avg_insom_severity=avg_insom_severity,
-                                median_insom_severity=median_insom_severity,
-                                insom_type_data=insom_type_data)
+                                median_insom_severity=median_insom_severity)
 
 
 @app.route('/user-data.json')
@@ -128,6 +123,101 @@ def retrieve_insom_severity():
         d[date] = item[0]
 
     return jsonify(d)
+
+
+# @app.route('/insom-type-data.json')
+# def retrieve_insom_type():
+#     """Returns """
+
+#     user_id = 1
+#     start_date = datetime(2016, 4, 1)
+#     end_date = datetime(2016, 5, 1)
+
+#     insom_type = insom_type_frequency(user_id, start_date, end_date)
+
+#     data_list_of_dicts = {
+#         'melons': [
+#             {
+#                 "value": 300,
+#                 "color": "#F7464A",
+#                 "highlight": "#FF5A5E",
+#                 "label": "Christmas Melon"
+#             },
+#             {
+#                 "value": 50,
+#                 "color": "#46BFBD",
+#                 "highlight": "#5AD3D1",
+#                 "label": "Crenshaw"
+#             },
+#             {
+#                 "value": 100,
+#                 "color": "#FDB45C",
+#                 "highlight": "#FFC870",
+#                 "label": "Yellow Watermelon"
+#             }
+#         ]
+#     }
+#     return jsonify(data_list_of_dicts)
+
+@app.route('/insom-types.json')
+def melon_types_data():
+    """Return data about Melon Sales."""
+
+    # These variables are hardcoded now, but can change once I add a login 
+    # and a button that allows users to select dates. 
+
+    user_id = 1
+    start_date = datetime(2016, 4, 1)
+    end_date = datetime(2016, 5, 1)
+
+    insom_type = insom_type_frequency(user_id, start_date, end_date)
+
+
+    x = insom_type[0][0]
+    x_label = insom_type[0][1]
+    y = insom_type[1][0]
+    y_label = insom_type[1][1]
+    z = insom_type[2][0]
+    z_label = insom_type[2][1]
+    a = insom_type[3][0]
+    a_label = insom_type[3][1]
+
+    data_list_of_dicts = {
+        'insom_type': [
+            {
+                "value": x,
+                "color": "#F7464A",
+                "highlight": "#FF5A5E",
+                "label": x_label
+            },
+            {
+                "value": y,
+                "color": "#46BFBD",
+                "highlight": "#5AD3D1",
+                "label": y_label
+            },
+            {
+                "value": z,
+                "color": "#D3D3D3",
+                "highlight": "#A9A9A9",
+                "label": "none"
+            },
+            {
+                "value": a,
+                "color": "#FDB45C",
+                "highlight": "#FFC870",
+                "label": a_label
+            }
+        ]
+    }
+    return jsonify(data_list_of_dicts)
+  
+
+
+
+
+
+
 
 ###################################################################
 

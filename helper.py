@@ -57,11 +57,13 @@ def calculate_median_insom_severity(user_id):
 
 
 
-def insom_type_frequency(user_id):
-    """Returns count of insomnia_type occurrences."""
+def insom_type_frequency(user_id, start_date, end_date):
+    """Returns count of insomnia_type occurrences between start date and 
+    end date, inclusive."""
 
     insom_type_frequency = db.session.query(db.func.count(Entry.insom_type), \
-                            Entry.insom_type).filter(Entry.user_id == user_id).\
+                            Entry.insom_type).filter(Entry.user_id == user_id,\
+                            Entry.date >= start_date, Entry.date <= end_date).\
                             group_by(Entry.insom_type).all()
 
     return insom_type_frequency

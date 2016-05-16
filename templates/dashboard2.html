@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div>
+
+    <p>Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
+    <p>Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
+    <p>Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
+    <p>Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
+
+    <div>
+        <h2>Insights</h2>
+        <ul>
+
+        </ul>
+    </div>
+
+
+</div>
+
+<script src="https://code.jquery.com/jquery.js"></script>
+<script src="static/dashboard.js"></script>
+
+
+<canvas id="myChart" width="100" height="30"></canvas>
+<canvas id="insomTypeChart" width="100" height="30"></canvas>
+<canvas id="insomSeverChart" width="100" height="30"></canvas>
+<canvas id="insomTypePieChart" width="600" height="400"></canvas>
+
+<!-- Donut chart element -->
+<div class="melon-chart">
+<canvas id="donutChart"></canvas>
+<div id="donutLegend" class="chart-legend"></div>
+</div>
+
+
+<script>
+//////////////////////////////////////////////////////
+
+   var options = {
+      responsive: true
+    };
+
+    // Make Donut Chart of percent of different types of Melons
+    var ctx_donut = $("#donutChart").get(0).getContext("2d");
+
+    $.get("/insom-types.json", function (data) {
+      var myDonutChart = new Chart(ctx_donut).Doughnut(data.insom_type, options);
+      $('#donutLegend').html(myDonutChart.generateLegend());
+    });
+
+
+
+
+
+
+
+
+</script>
+
+
+
+{% endblock %}
