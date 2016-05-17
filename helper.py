@@ -1,5 +1,6 @@
 from sqlalchemy import func
 from model import connect_to_db, db, User, Entry
+import numpy as np
 
 ##################################################
 
@@ -67,6 +68,38 @@ def insom_type_frequency(user_id, start_date, end_date):
                             group_by(Entry.insom_type).all()
 
     return insom_type_frequency
+
+
+def calculate_similarity(list1, list2):
+    """Returns the percentage co-occurrence between two lists of values. Used
+    determine possible causal relationships between behavioral factors and 
+    insomnia."""
+
+    a = np.array(list1)
+    b = np.array(list2)
+    similarity = np.mean(a == b)
+    return similarity
+
+
+def insom_and_alcohol(user_id):
+
+    query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
+    (Entry.user_id == user_id).order_by('date').all()
+
+    insom_list = []
+    alcohol_list = []
+
+    for item in query_list:
+        insom_list.append(item[0])
+        alcohol_list.append(item[1])
+
+    insom_and_alcohol = calculate_similarity(insom_list, alcohol_list)
+
+    return insom_and_alcohol
+
+
+
+
 
 
 

@@ -6,8 +6,8 @@ from jinja2 import StrictUndefined
 from model import connect_to_db, db, User, Entry
 from datetime import datetime, time, date
 from sqlalchemy import func
-from helper import median, calculate_avg_sleep, calculate_avg_insom_severity,\
- calculate_median_sleep, calculate_median_insom_severity, insom_type_frequency
+from helper import *
+import numpy as np
 
 app = Flask(__name__)
 app.secret_key = "DOESNTMATTER"
@@ -27,10 +27,9 @@ def index():
 def dashboard():
     """Display user's dashboard."""
 
-
-    # Uses form data to create new records in Entry table. 
-
-    user_id = 1 #user_id hardcoded now; get id from session once login setup
+    # Passes form data to create new record in Entry table. 
+    # user_id HARCODED NOW, GET ID FROM SESSION ONCE LOGIN COMPLETE
+    user_id = 1 
     date = datetime.now()
     minutes_asleep = int((float(request.form.get("hours_sleep"))) * 60)
 
@@ -82,6 +81,8 @@ def dashboard():
     db.session.add(new_entry)
     db.session.commit()
 
+##########################################################################
+# Data analysis
 
     # Calculate average sleep per night
     avg_sleep = calculate_avg_sleep(user_id)
@@ -95,13 +96,20 @@ def dashboard():
     # Calculate median insomnia severity
     median_insom_severity = calculate_median_insom_severity(user_id)
 
+    #Calculate co-occurrence between insomnia and alcohol consumption
+    insom_and_alcohol_co_occurrence = insom_and_alcohol(user_id)
 
-    # Pass data to template
+    #Calculate co-occurrence between insomnia and caffeine consumption
+
+    #Calculate co-occurrence between insomnia and menstruation
+
+    # Pass calculated data to template
     return render_template("dashboard2.html", 
                                 avg_sleep=avg_sleep,
                                 median_sleep=median_sleep,
                                 avg_insom_severity=avg_insom_severity,
-                                median_insom_severity=median_insom_severity)
+                                median_insom_severity=median_insom_severity,
+                                insom_and_alcohol_co_occurrence=insom_and_alcohol_co_occurrence)
 
 
 @app.route('/user-data.json')
@@ -125,63 +133,31 @@ def retrieve_insom_severity():
     return jsonify(d)
 
 
-# @app.route('/insom-type-data.json')
-# def retrieve_insom_type():
-#     """Returns """
-
-#     user_id = 1
-#     start_date = datetime(2016, 4, 1)
-#     end_date = datetime(2016, 5, 1)
-
-#     insom_type = insom_type_frequency(user_id, start_date, end_date)
-
-#     data_list_of_dicts = {
-#         'melons': [
-#             {
-#                 "value": 300,
-#                 "color": "#F7464A",
-#                 "highlight": "#FF5A5E",
-#                 "label": "Christmas Melon"
-#             },
-#             {
-#                 "value": 50,
-#                 "color": "#46BFBD",
-#                 "highlight": "#5AD3D1",
-#                 "label": "Crenshaw"
-#             },
-#             {
-#                 "value": 100,
-#                 "color": "#FDB45C",
-#                 "highlight": "#FFC870",
-#                 "label": "Yellow Watermelon"
-#             }
-#         ]
-#     }
-#     return jsonify(data_list_of_dicts)
 
 @app.route('/insom-types.json')
 def melon_types_data():
     """Return data about Melon Sales."""
 
-    # These variables are hardcoded now, but can change once I add a login 
-    # and a button that allows users to select dates. 
-
+    # VARIABLES HARDCODED NOW, BUT I CAN CHANGE ONCE I SETTLE ON USER EXPERIENCE. 
     user_id = 1
     start_date = datetime(2016, 4, 1)
-    end_date = datetime(2016, 5, 1)
+    end_date = datetime(2016, 4, 30)
 
+    #I CAN RETURN THIS IN ORDER BY RE_WRITING insom_frequency_types, SWAPPING
+    #count AND type, AND APPLYING SORTED. THEN I CAN CREATE BETTER LABELS. 
     insom_type = insom_type_frequency(user_id, start_date, end_date)
 
 
     x = insom_type[0][0]
-    x_label = insom_type[0][1]
+    x_label = insom_type[0][1] + " insomnia"
     y = insom_type[1][0]
-    y_label = insom_type[1][1]
+    y_label = insom_type[1][1] + " insomnia"
     z = insom_type[2][0]
-    z_label = insom_type[2][1]
+    z_label = insom_type[2][1] + " insomnia"
     a = insom_type[3][0]
-    a_label = insom_type[3][1]
+    a_label = insom_type[3][1] + " insomnia"
 
+    #UPDATE COLORS & LABELS
     data_list_of_dicts = {
         'insom_type': [
             {
@@ -200,7 +176,7 @@ def melon_types_data():
                 "value": z,
                 "color": "#D3D3D3",
                 "highlight": "#A9A9A9",
-                "label": "none"
+                "label": "no insomnia"
             },
             {
                 "value": a,
@@ -214,7 +190,73 @@ def melon_types_data():
   
 
 
+@app.route('/melon-times.json')
+def melon_times_data():
+    """Return time series data of Melon Sales."""
 
+    user_id = 1
+    start_date = datetime(2016, 4, 1)
+    end_date = datetime(2016,4,30)
+
+    data_points = sorted(db.session.query(Entry.date, Entry.insom_severity).filter\
+        (Entry.user_id == user_id, Entry.date >= start_date, 
+        Entry.date <= end_date).all())
+
+
+    dates = []
+    insom_severity_scores = []
+    
+    for item in data_points:
+        # date = item[0].weekday()
+        # if date == 0:
+        #     date = 'Mon'
+        # elif date == 1:
+        #     date = 'Tue'
+        # elif date == 2:
+        #     date = 'Wed'
+        # elif date == 3:
+        #     date = 'Thu'
+        # elif date == 4:
+        #     date = 'Fri'
+        # elif date == 5:
+        #     date = 'Sat'
+        # else:
+        #     date = 'Sun'
+
+        date = "%s/%s" % (item[0].month, item[0].day)
+        dates.append(date)
+
+        insom_severity_score = item[1]
+        insom_severity_scores.append(insom_severity_score)
+
+
+
+    data_dict = {
+        "labels": dates,
+        "datasets": [
+            {
+                "label": "April",
+                "fillColor": "rgba(220,220,220,0.2)",
+                "strokeColor": "rgba(220,220,220,1)",
+                "pointColor": "rgba(220,220,220,1)",
+                "pointStrokeColor": "#fff",
+                "pointHighlightFill": "#fff",
+                "pointHighlightStroke": "rgba(220,220,220,1)",
+                "data": insom_severity_scores
+            },
+            # {
+            #     "label": "Cantaloupe",
+            #     "fillColor": "rgba(151,187,205,0.2)",
+            #     "strokeColor": "rgba(151,187,205,1)",
+            #     "pointColor": "rgba(151,187,205,1)",
+            #     "pointStrokeColor": "#fff",
+            #     "pointHighlightFill": "#fff",
+            #     "pointHighlightStroke": "rgba(151,187,205,1)",
+            #     "data": [28, 48, 40, 19, 86, 27, 90]
+            # }
+        ]
+    }
+    return jsonify(data_dict)
 
 
 
