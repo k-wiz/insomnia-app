@@ -3,6 +3,7 @@ from model import connect_to_db, db, User, Entry
 import numpy as np
 
 ##################################################
+# Database queries, data-formatting, and logic for server.py.
 
 def median(lst):
     """Calculates the median value in a list of numbers."""
@@ -15,6 +16,7 @@ def median(lst):
             return float(sum(lst[(len(lst)/2)-1:(len(lst)/2)+1]))/2.0
 
 
+
 def calculate_avg_sleep(user_id):
     """Calculates user's all-time average hours of sleep per night."""
 
@@ -23,12 +25,14 @@ def calculate_avg_sleep(user_id):
     return avg_sleep
 
 
+
 def calculate_avg_insom_severity(user_id):
     """Calculates user's all-time average insomnia severity level."""
 
     avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter(Entry.user_id == user_id)
     avg_insom_severity = avg_insom_severity[0][0]
     return avg_insom_severity
+
 
 
 def calculate_median_sleep(user_id):
@@ -42,6 +46,7 @@ def calculate_median_sleep(user_id):
 
     median_sleep = median(minutes_asleep_lst) / 60
     return median_sleep
+
 
 
 def calculate_median_insom_severity(user_id):
@@ -70,6 +75,7 @@ def insom_type_frequency(user_id, start_date, end_date):
     return insom_type_frequency
 
 
+
 def calculate_similarity(list1, list2):
     """Returns the percentage co-occurrence between two lists of values. Used
     determine possible causal relationships between behavioral factors and 
@@ -81,7 +87,10 @@ def calculate_similarity(list1, list2):
     return similarity
 
 
+
 def insom_and_alcohol(user_id):
+    """Returns the percentage co-occurrence between insomnia and alcohol
+    consumption."""
 
     query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
     (Entry.user_id == user_id).order_by('date').all()
@@ -96,15 +105,6 @@ def insom_and_alcohol(user_id):
     insom_and_alcohol = calculate_similarity(insom_list, alcohol_list)
 
     return insom_and_alcohol
-
-
-
-
-
-
-
-
-
 
 
 
