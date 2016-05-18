@@ -156,13 +156,22 @@ def melon_types_data():
 
     # VARIABLES HARDCODED NOW, BUT I CAN CHANGE ONCE I SETTLE ON USER EXPERIENCE. 
     user_id = 1
-    start_date = datetime(2016, 4, 1)
-    end_date = datetime(2016, 4, 30)
+    start = request.args.get("start_date", "2016-02-01")#query db for first entry
+    print "START", start
+    end = request.args.get("end_date", "2016-03-01")
+    start_date = datetime.strptime(start, '%Y-%m-%d')
+    end_date = datetime.strptime(end, '%Y-%m-%d')
+    print start_date
+    print end_date
+
+    # start_date = datetime(2016, 4, 1)
+    # end_date = datetime(2016, 4, 30)
     
     #Calculate total days in time range
     total_days = end_date - start_date
     total_days = total_days.days + 1
 
+    #Calculate frequency of each insomnia type
     insom_type = insom_type_frequency(user_id, start_date, end_date)
     insom_type = sorted(insom_type)
     x_percentage = float(insom_type[0][1]) / total_days * 100
@@ -182,8 +191,8 @@ def melon_types_data():
         'insom_type': [
             {
                 "value": x, 
-                "color": "#D3D3D3",
-                "highlight": "#FF5A5E",
+                "color": "#A9A9A9",
+                "highlight": "#808080",
                 "label": x_label
             },
             {
@@ -195,7 +204,7 @@ def melon_types_data():
             {
                 "value": z,
                 "color": "#F7464A",
-                "highlight": "#A9A9A9",
+                "highlight": "#FF5A5E",
                 "label": z_label
             },
             {

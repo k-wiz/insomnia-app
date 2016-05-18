@@ -30,6 +30,18 @@ Python side and then pass over via AJAX correctly formatted. Pie chart and line
 chart working! 
 2. Drilled down into insights and what type of insights I want. Wrote co-occurrence function, co-occurrence btw alcohol and insomnia function. Yay, productive! 
 
+Day 7, May 17th:
+(4-5 hours)
+1. Played around with pandas.  Figured out correlations between all columns. 
+Need to figure out how to programmatically incorporate those insights.
+2. Added 'most frequent type of insomnia'. Added 2nd donut chart. 
+3. Clarified vision for my graphs. 
+
+Day 8, May 18th:
+1. Figure out how to programmatically incorporate insights!
+2. Move on to chart re-config. 
+3. Next features: fitbit data or tracking button? 
+
 
 
 

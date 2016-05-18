@@ -24,6 +24,11 @@
 <div class="melon-chart">
     <canvas id="donutChart"></canvas>
     <div id="donutLegend" class="chart-legend"></div>
+    <form id = "date-range" action = '/insom-types.json'>
+        Start date: <input type="date" name="start_date">
+        End date: <input type="date" name="end_date">
+        <input type="submit">
+    </form>
 </div>
 
 <!-- Second donut chart element -->
@@ -56,13 +61,71 @@
       $('#donutLegend').html(myDonutChart.generateLegend());
     });
 
-    // Creates donut chart of frequency of occurrences of different types of insomnia
-    var ctx_donut2 = $("#donutChart2").get(0).getContext("2d");
+    // Reload chart based on user-selected date range. 
+    // var formValues = $("#date-range").serialize();
 
-    $.get("/insom-types.json", function (data) {
-      var myDonutChart2 = new Chart(ctx_donut2).Doughnut(data.insom_type, options);
-      $('#donut2Legend').html(myDonutChart2.generateLegend());
-    });
+    // $.get("/insom-types.json", formValues, function (data) {
+    //   var myDonutChart = new Chart(ctx_donut).Doughnut(data.insom_type, options);
+    //   $('#donutLegend').html(myDonutChart.generateLegend());
+    // });
+
+// ///////////////////////////////////////////////////////
+
+// function showDeliveryTimes(results) {
+//     console.dir(results); // yay debugging!
+//     alert("This will cost $" + results.cost);
+//     alert("This will arrive in " + results.days + " day(s)");
+// }
+
+// function getDeliveryInfo(evt) {
+//     evt.preventDefault();
+
+//     var formInputs = {
+//         "city": $("#city-field").val(),
+//         "address": $("#adr-field").val()
+//     };
+
+//     $.get("/delivery-info.json",
+//         formInputs,
+//         showDeliveryTimes);
+// }
+
+// $("#delivery-form").on("submit", getDeliveryInfo);
+
+///////////////////////////////////////////////////////////////////
+
+function updatePieChart(results) {
+    var myDonutChart = new Chart(ctx_donut).Doughnut(results.insom_type, options);
+      $('#donutLegend').html(myDonutChart.generateLegend());
+
+}
+
+function getDateRange(evt) {
+    evt.preventDefault();
+
+    var formInputs = {
+        "start_date": $("#start_date").val(),
+        "end_date": $("#end_date").val() 
+    };
+
+    $.get('/insom-types.json',
+        formInputs,
+        updatePieChart);
+    
+};
+
+$("#date-range").on("submit", getDateRange);
+
+    
+
+
+    // // Creates donut chart of frequency of occurrences of different types of insomnia
+    // var ctx_donut2 = $("#donutChart2").get(0).getContext("2d");
+
+    // $.get("/insom-types.json", function (data) {
+    //   var myDonutChart2 = new Chart(ctx_donut2).Doughnut(data.insom_type, options);
+    //   $('#donut2Legend').html(myDonutChart2.generateLegend());
+    // });
 
 
     // Creates line chart of insomnia severity over time
