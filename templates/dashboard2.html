@@ -1,28 +1,41 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <h2>Sleep Insights</h2>
 
-<!-- Non-visual insight elements -->
-<div>
+<!-- Data insights -->
+<section class="data-insights">
     <p>Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
     <p>Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
     <p>Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
     <p>Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
-    <p>Insomnia and alcohol co-occurrence: {{ insom_and_alcohol_co_occurrence }}</p>
+</section>
 
+<section class="data-insights">
+    <p>Your most frequent type of insomnia is {{ most_frequent_type_insomnia }} insomnia.</p>
+</section>
+
+<section class="data-insights"> 
+    <p>Insomnia happens more frequently when you also X.</p>
+</section>
+
+
+
+<!-- First donut chart element -->
+<div class="melon-chart">
+    <canvas id="donutChart"></canvas>
+    <div id="donutLegend" class="chart-legend"></div>
 </div>
 
-<!-- Donut chart element -->
+<!-- Second donut chart element -->
 <div class="melon-chart">
-<canvas id="donutChart"></canvas>
-<div id="donutLegend" class="chart-legend"></div>
+    <canvas id="donutChart2"></canvas>
+    <div id="donut2Legend" class="chart-legend"></div>
 </div>
 
 <!-- Line graph element -->
 <div class="melon-chart">
-<canvas id="lineChart" width="100" height="30"></canvas>
-<div id="lineLegend" class="chart-legend"></div>
+    <canvas id="lineChart" width="100" height="30"></canvas>
+    <div id="lineLegend" class="chart-legend"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery.js"></script>
@@ -43,11 +56,19 @@
       $('#donutLegend').html(myDonutChart.generateLegend());
     });
 
+    // Creates donut chart of frequency of occurrences of different types of insomnia
+    var ctx_donut2 = $("#donutChart2").get(0).getContext("2d");
+
+    $.get("/insom-types.json", function (data) {
+      var myDonutChart2 = new Chart(ctx_donut2).Doughnut(data.insom_type, options);
+      $('#donut2Legend').html(myDonutChart2.generateLegend());
+    });
+
 
     // Creates line chart of insomnia severity over time
     var ctx_line = $("#lineChart").get(0).getContext("2d");
 
-    $.get("/melon-times.json", function (data) {
+    $.get("/insom-severity.json", function (data) {
       var myLineChart = new Chart(ctx_line).Line(data, options);
       $("#lineLegend").html(myLineChart.generateLegend());
     });

@@ -23,6 +23,9 @@ def index():
     return render_template("homepage.html")
 
 
+##########################################################################
+
+
 @app.route('/dashboard', methods=["POST"])
 def dashboard():
     """Display user's dashboard."""
@@ -82,7 +85,11 @@ def dashboard():
     db.session.commit()
 
 ##########################################################################
-# Data analysis
+    # Data insights
+    
+    #HARDCODED FOR NOW.
+    start_date = datetime(2016, 4, 1)
+    end_date = datetime(2016,5,1)
 
     # Calculate average sleep per night
     avg_sleep = calculate_avg_sleep(user_id)
@@ -99,17 +106,23 @@ def dashboard():
     #Calculate co-occurrence between insomnia and alcohol consumption
     insom_and_alcohol_co_occurrence = insom_and_alcohol(user_id)
 
-    #Calculate co-occurrence between insomnia and caffeine consumption
+    #Calculate all-time most frequently occurring type of insomnia
+    most_frequent_type_insomnia = most_frequent_type(user_id, start_date, end_date)
+    most_frequent_type_insomnia = most_frequent_type_insomnia[1]
 
-    #Calculate co-occurrence between insomnia and menstruation
-
+##########################################################################
     # Pass calculated data to template
+    
     return render_template("dashboard2.html", 
                                 avg_sleep=avg_sleep,
                                 median_sleep=median_sleep,
                                 avg_insom_severity=avg_insom_severity,
                                 median_insom_severity=median_insom_severity,
-                                insom_and_alcohol_co_occurrence=insom_and_alcohol_co_occurrence)
+                                insom_and_alcohol_co_occurrence=insom_and_alcohol_co_occurrence,
+                                most_frequent_type_insomnia=most_frequent_type_insomnia)
+
+
+##########################################################################
 
 
 @app.route('/user-data.json')
@@ -133,7 +146,10 @@ def retrieve_insom_severity():
     return jsonify(d)
 
 
+##########################################################################
 
+#Queries db for insomnia type data; inserts data into dictionary used to
+#create insomnia type donut chart.
 @app.route('/insom-types.json')
 def melon_types_data():
     """Return data about Melon Sales."""
@@ -142,27 +158,31 @@ def melon_types_data():
     user_id = 1
     start_date = datetime(2016, 4, 1)
     end_date = datetime(2016, 4, 30)
+    
+    #Calculate total days in time range
+    total_days = end_date - start_date
+    total_days = total_days.days + 1
 
-    #I CAN RETURN THIS IN ORDER BY RE_WRITING insom_frequency_types, SWAPPING
-    #count AND type, AND APPLYING SORTED. THEN I CAN CREATE BETTER LABELS. 
     insom_type = insom_type_frequency(user_id, start_date, end_date)
+    insom_type = sorted(insom_type)
+    x_percentage = float(insom_type[0][1]) / total_days * 100
 
+    x = '{0:.0f}'.format(float(insom_type[0][1]) / total_days * 100)
+    x_label = "No insomnia"
+    y = '{0:.0f}'.format(float(insom_type[1][1]) / total_days * 100)
+    y_label = "Early-awakening insomnia"
+    z = '{0:.0f}'.format(float(insom_type[2][1]) / total_days * 100)
+    z_label = "Sleep-maintenance insomnia"
+    a = '{0:.0f}'.format(float(insom_type[3][1]) / total_days * 100)
+    a_label = "Sleep-onset insomnia"
 
-    x = insom_type[0][0]
-    x_label = insom_type[0][1] + " insomnia"
-    y = insom_type[1][0]
-    y_label = insom_type[1][1] + " insomnia"
-    z = insom_type[2][0]
-    z_label = insom_type[2][1] + " insomnia"
-    a = insom_type[3][0]
-    a_label = insom_type[3][1] + " insomnia"
 
     #UPDATE COLORS & LABELS
     data_list_of_dicts = {
         'insom_type': [
             {
-                "value": x,
-                "color": "#F7464A",
+                "value": x, 
+                "color": "#D3D3D3",
                 "highlight": "#FF5A5E",
                 "label": x_label
             },
@@ -174,9 +194,9 @@ def melon_types_data():
             },
             {
                 "value": z,
-                "color": "#D3D3D3",
+                "color": "#F7464A",
                 "highlight": "#A9A9A9",
-                "label": "no insomnia"
+                "label": z_label
             },
             {
                 "value": a,
@@ -189,8 +209,9 @@ def melon_types_data():
     return jsonify(data_list_of_dicts)
   
 
-#NEED TO REPLACE MELON-TIMES WITH CORRECT ROUTE!
-@app.route('/melon-times.json')
+#Queries db for insomnia severity data; inserts data into dictionary used to
+#create insomnia severity line graph. 
+@app.route('/insom-severity.json')
 def melon_times_data():
     """Return time series data of Melon Sales."""
 

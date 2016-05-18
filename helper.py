@@ -62,27 +62,43 @@ def calculate_median_insom_severity(user_id):
     return median_insom_severity
 
 
-
+# REMOVING START DATE, END DATE FOR ALL TIME MEASURE.
 def insom_type_frequency(user_id, start_date, end_date):
     """Returns count of insomnia_type occurrences between start date and 
     end date, inclusive."""
 
-    insom_type_frequency = db.session.query(db.func.count(Entry.insom_type), \
-                            Entry.insom_type).filter(Entry.user_id == user_id,\
+    insom_type_frequency = db.session.query(Entry.insom_type, db.func.count\
+                            (Entry.insom_type)).filter(Entry.user_id == user_id,\
                             Entry.date >= start_date, Entry.date <= end_date).\
                             group_by(Entry.insom_type).all()
 
     return insom_type_frequency
 
 
+def most_frequent_type(user_id, start_date, end_date):
+    """Returns the all-time most frequently occurring type of insomnia for user
+    with user_id between start_date and end_date, inclusive."""
+
+    insom_type = sorted(insom_type_frequency(user_id, start_date, end_date))
+
+    max_number = 0
+    for item in insom_type:
+        if item[0] != '':
+            if int(item[1]) > max_number:
+                max_number = item[1]
+                name = item[0]
+    return max_number, name
+
+
 
 def calculate_similarity(list1, list2):
-    """Returns the percentage co-occurrence between two lists of values. Used
-    determine possible causal relationships between behavioral factors and 
+    """Returns the percentage co-occurrence between two lists of values. Used to
+    determine possible associations between behavioral factors and 
     insomnia."""
 
     a = np.array(list1)
     b = np.array(list2)
+    #Calculates number of pairs that match / total number of pairs.
     similarity = np.mean(a == b)
     return similarity
 
@@ -105,6 +121,10 @@ def insom_and_alcohol(user_id):
     insom_and_alcohol = calculate_similarity(insom_list, alcohol_list)
 
     return insom_and_alcohol
+
+
+
+
 
 
 
