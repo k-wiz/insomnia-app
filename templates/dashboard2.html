@@ -4,10 +4,10 @@
 
 <!-- Data insights -->
 <section class="data-insights">
-    <p>Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
-    <p>Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
-    <p>Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
-    <p>Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
+    <p id="avg_sleep">Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
+    <p id="median_sleep">Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
+    <p id="avg_insomnia">Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
+    <p id="median_insomnia">Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
 </section>
 
 <section class="data-insights">
@@ -97,6 +97,8 @@
 function updatePieChart(results) {
     var myDonutChart = new Chart(ctx_donut).Doughnut(results.insom_type, options);
       $('#donutLegend').html(myDonutChart.generateLegend());
+      var kelli = "kelli";
+      $('#avg_sleep').replaceWith("Average sleep per night: ", kelli);
 
 }
 
@@ -104,8 +106,9 @@ function getDateRange(evt) {
     evt.preventDefault();
 
     var formInputs = {
-        "start_date": $("#start_date").val(),
-        "end_date": $("#end_date").val() 
+        "start_date": $("#date-range input[name=start_date]").val(),
+        // "start_date": $("#start_date").val(),
+        "end_date": $("#date-range input[name=end_date]").val() 
     };
 
     $.get('/insom-types.json',

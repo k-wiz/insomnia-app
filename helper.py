@@ -1,4 +1,4 @@
-from sqlalchemy import func
+from sqlalchemy import func, desc
 from model import connect_to_db, db, User, Entry
 import numpy as np
 
@@ -62,7 +62,7 @@ def calculate_median_insom_severity(user_id):
     return median_insom_severity
 
 
-# REMOVING START DATE, END DATE FOR ALL TIME MEASURE.
+# HOW DO I ADD IN DEFAULTS FOR DATES??
 def insom_type_frequency(user_id, start_date, end_date):
     """Returns count of insomnia_type occurrences between start date and 
     end date, inclusive."""
@@ -73,6 +73,8 @@ def insom_type_frequency(user_id, start_date, end_date):
                             group_by(Entry.insom_type).all()
 
     return insom_type_frequency
+
+    
 
 
 def most_frequent_type(user_id, start_date, end_date):
@@ -122,8 +124,23 @@ def insom_and_alcohol(user_id):
 
     return insom_and_alcohol
 
+def first_entry(user_id):
+    """Returns date of user's first entry as a datetime object."""
 
+    first_entry = db.session.query(Entry.date).filter(Entry.user_id == user_id).\
+    order_by('date').first()
 
+    return first_entry[0]
+
+def last_entry(user_id):
+    """Returns date of user's last entry as a datetime object."""
+
+    last_entry = db.session.query(Entry.date).filter(Entry.user_id == user_id).\
+    order_by(desc('date')).first()
+
+    return last_entry[0]
+
+    
 
 
 

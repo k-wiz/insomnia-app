@@ -68,6 +68,9 @@ def dashboard():
     stress_level = int(request.form.get("stress_level"))
     activity_level = int(request.form.get("activity_level"))
 
+    #NEED TO CHECK IF DATE IS ALREADY IN DB. IF SO, UPDATE VALUES, DONT CREATE
+    #NEW ENTRY!!!!
+
     new_entry = Entry(user_id=user_id,
                         date=date,
                         minutes_asleep=minutes_asleep,
@@ -153,37 +156,54 @@ def retrieve_insom_severity():
 @app.route('/insom-types.json')
 def melon_types_data():
     """Return data about Melon Sales."""
-
-    # VARIABLES HARDCODED NOW, BUT I CAN CHANGE ONCE I SETTLE ON USER EXPERIENCE. 
+ 
     user_id = 1
-    start = request.args.get("start_date", "2016-02-01")#query db for first entry
-    print "START", start
-    end = request.args.get("end_date", "2016-03-01")
+    default_start_date = datetime.strftime(first_entry(user_id), '%Y-%m-%d')
+
+    start = request.args.get("start_date", default_start_date)
+    print "start", start
     start_date = datetime.strptime(start, '%Y-%m-%d')
+    print "Start date", start_date
+
+    default_end_date = datetime.strftime(last_entry(user_id), '%Y-%m-%d')
+    end = request.args.get("end_date", default_end_date)
+    print end
     end_date = datetime.strptime(end, '%Y-%m-%d')
-    print start_date
     print end_date
 
-    # start_date = datetime(2016, 4, 1)
-    # end_date = datetime(2016, 4, 30)
+    
     
     #Calculate total days in time range
     total_days = end_date - start_date
     total_days = total_days.days + 1
+    print total_days
 
     #Calculate frequency of each insomnia type
     insom_type = insom_type_frequency(user_id, start_date, end_date)
     insom_type = sorted(insom_type)
-    x_percentage = float(insom_type[0][1]) / total_days * 100
+    # print insom_type
+    # x_percentage = float(insom_type[0][1]) / total_days * 100
+    # print x_percentage
+    # y_percentage = float(insom_type[1][1]) / total_days * 100
+    # print y_percentage
+    # z_percentage = float(insom_type[3][1]) / total_days * 100
+    # print z_percentage
+    # a_percentage = float(insom_type[3][1]) / total_days * 100
+    # print a_percentage
 
     x = '{0:.0f}'.format(float(insom_type[0][1]) / total_days * 100)
+    print x
     x_label = "No insomnia"
     y = '{0:.0f}'.format(float(insom_type[1][1]) / total_days * 100)
+    print y
     y_label = "Early-awakening insomnia"
     z = '{0:.0f}'.format(float(insom_type[2][1]) / total_days * 100)
+    print z
     z_label = "Sleep-maintenance insomnia"
     a = '{0:.0f}'.format(float(insom_type[3][1]) / total_days * 100)
     a_label = "Sleep-onset insomnia"
+    print a
+
 
 
     #UPDATE COLORS & LABELS
