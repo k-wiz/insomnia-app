@@ -38,9 +38,29 @@ Need to figure out how to programmatically incorporate those insights.
 3. Clarified vision for my graphs. 
 
 Day 8, May 18th:
-1. Figure out how to programmatically incorporate insights!
-2. Move on to chart re-config. 
-3. Next features: fitbit data or tracking button? 
+(4 hours)
+1. Damn you javascript! Spent all day trying to add field for user to select date
+ranges for insights. Succeeded only in updating pie chart.
+
+Day 9, May 19th: 
+
+
+
+
+
+
+
+REFACTORING: 
+1. Write a helper func for if insomnia == True, etc. 
+2. Write a helper func for if not in the db, add. else, update. 
+
+1. Finish JS function to update insights page against date range. (1 hr) 
+2. Fix DB! Cant have multiple entries for one day. (1.5 hours)
+3. Figure out how to programmatically incorporate insights! Plot insights on
+scatterplot, explore data. (MVP, yaaay!)
+THIS WEEKEND: Refactor, add tests! 
+4. Next features: fitbit data
+5. Others: login & 2nd user, better graphs, better insights, tracking button? 
 
 
 

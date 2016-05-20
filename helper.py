@@ -4,6 +4,8 @@ import numpy as np
 
 ##################################################
 # Database queries, data-formatting, and logic for server.py.
+# IF TIME, REFACTOR TO FORMAT RESULTS OF FUNCTIONS HERE INSTEAD OF IN HTML 
+# & SERVER FILE. 
 
 def median(lst):
     """Calculates the median value in a list of numbers."""
@@ -17,28 +19,33 @@ def median(lst):
 
 
 
-def calculate_avg_sleep(user_id):
+def calculate_avg_sleep(user_id, start_date, end_date):
     """Calculates user's all-time average hours of sleep per night."""
 
-    avg_sleep = db.session.query(func.avg(Entry.minutes_asleep)).filter(Entry.user_id == user_id)
+    avg_sleep = db.session.query(func.avg(Entry.minutes_asleep)).filter(Entry.user_id\
+     == user_id, Entry.date >= start_date, Entry.date <= end_date)
     avg_sleep = int(avg_sleep[0][0])/60.0
     return avg_sleep
 
 
 
-def calculate_avg_insom_severity(user_id):
+def calculate_avg_insom_severity(user_id, start_date, end_date):
     """Calculates user's all-time average insomnia severity level."""
 
-    avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter(Entry.user_id == user_id)
+    avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter\
+                        (Entry.user_id == user_id, Entry.date >= start_date, \
+                            Entry.date <= end_date)
     avg_insom_severity = avg_insom_severity[0][0]
     return avg_insom_severity
 
 
 
-def calculate_median_sleep(user_id):
+def calculate_median_sleep(user_id, start_date, end_date):
     """Calculates user's all-time median hours of sleep per night."""
 
-    minutes_asleep_tups = db.session.query(Entry.minutes_asleep).filter(Entry.user_id == user_id).order_by('minutes_asleep').all()
+    minutes_asleep_tups = db.session.query(Entry.minutes_asleep).filter\
+                            (Entry.user_id == user_id, Entry.date >= start_date,\
+                            Entry.date <= end_date).order_by('minutes_asleep').all()
     
     minutes_asleep_lst = []
     for item in minutes_asleep_tups:
@@ -49,10 +56,12 @@ def calculate_median_sleep(user_id):
 
 
 
-def calculate_median_insom_severity(user_id):
+def calculate_median_insom_severity(user_id, start_date, end_date):
     """Calculates user's all-time median insomnia severity level."""
     
-    insom_severity_tups = db.session.query(Entry.insom_severity).filter(Entry.user_id == user_id).order_by('insom_severity').all()
+    insom_severity_tups = db.session.query(Entry.insom_severity).filter\
+                            (Entry.user_id == user_id, Entry.date >= start_date,\
+                            Entry.date <= end_date).order_by('insom_severity').all()
 
     insom_severity_lst = []
     for item in insom_severity_tups:
@@ -124,6 +133,7 @@ def insom_and_alcohol(user_id):
 
     return insom_and_alcohol
 
+
 def first_entry(user_id):
     """Returns date of user's first entry as a datetime object."""
 
@@ -131,6 +141,7 @@ def first_entry(user_id):
     order_by('date').first()
 
     return first_entry[0]
+
 
 def last_entry(user_id):
     """Returns date of user's last entry as a datetime object."""

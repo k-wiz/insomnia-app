@@ -61,44 +61,16 @@
       $('#donutLegend').html(myDonutChart.generateLegend());
     });
 
-    // Reload chart based on user-selected date range. 
-    // var formValues = $("#date-range").serialize();
 
-    // $.get("/insom-types.json", formValues, function (data) {
-    //   var myDonutChart = new Chart(ctx_donut).Doughnut(data.insom_type, options);
-    //   $('#donutLegend').html(myDonutChart.generateLegend());
-    // });
 
-// ///////////////////////////////////////////////////////
-
-// function showDeliveryTimes(results) {
-//     console.dir(results); // yay debugging!
-//     alert("This will cost $" + results.cost);
-//     alert("This will arrive in " + results.days + " day(s)");
-// }
-
-// function getDeliveryInfo(evt) {
-//     evt.preventDefault();
-
-//     var formInputs = {
-//         "city": $("#city-field").val(),
-//         "address": $("#adr-field").val()
-//     };
-
-//     $.get("/delivery-info.json",
-//         formInputs,
-//         showDeliveryTimes);
-// }
-
-// $("#delivery-form").on("submit", getDeliveryInfo);
-
-///////////////////////////////////////////////////////////////////
-
+// Reload chart based on user-selected date range. 
 function updatePieChart(results) {
     var myDonutChart = new Chart(ctx_donut).Doughnut(results.insom_type, options);
       $('#donutLegend').html(myDonutChart.generateLegend());
-      var kelli = "kelli";
-      $('#avg_sleep').replaceWith("Average sleep per night: ", kelli);
+      $('#avg_sleep').html("Average sleep per night: " + results.avg_sleep + " hours");
+      $('#median_sleep').html("Median sleep per night: " + results.median_sleep + " hours");
+      $('#avg_insomnia').html("Average insomnia severity: " + results.avg_insomnia + " / 10");
+      $('#median_insomnia').html("Median insomnia severity: " + results.median_insomnia + " / 10");
 
 }
 
@@ -107,7 +79,6 @@ function getDateRange(evt) {
 
     var formInputs = {
         "start_date": $("#date-range input[name=start_date]").val(),
-        // "start_date": $("#start_date").val(),
         "end_date": $("#date-range input[name=end_date]").val() 
     };
 

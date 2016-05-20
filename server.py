@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import connect_to_db, db, User, Entry
 from datetime import datetime, time, date
-from sqlalchemy import func
+from sqlalchemy import func, update
 from helper import *
 import numpy as np
 
@@ -31,80 +31,91 @@ def dashboard():
     """Display user's dashboard."""
 
     # Passes form data to create new record in Entry table. 
-    # user_id HARCODED NOW, GET ID FROM SESSION ONCE LOGIN COMPLETE
     user_id = 1 
-    date = datetime.now()
+    date = datetime(2016, 5, 20)
     minutes_asleep = int((float(request.form.get("hours_sleep"))) * 60)
-
     insomnia = request.form.get("insomnia")
     if insomnia == 'True':
         insomnia = True
     else:
         insomnia = False
-
     insom_type = request.form.get("insom_type")
     insom_severity = int(request.form.get("insom_severity"))
-
     alcohol = request.form.get("alcohol")
     if alcohol == 'True':
         alcohol = True
     else:
         alcohol = False
-
     caffeine = request.form.get("caffeine")
     if caffeine == 'True':
         caffeine = True
     else:
         caffeine = False
-
     menstruation = request.form.get("menstruation")
     if menstruation == 'True':
         menstruation = True
     else:
         menstruation = False
-    
     bedtime = request.form.get("bedtime")
     bedtime = datetime.strptime(bedtime, '%H:%M')
     stress_level = int(request.form.get("stress_level"))
     activity_level = int(request.form.get("activity_level"))
 
-    #NEED TO CHECK IF DATE IS ALREADY IN DB. IF SO, UPDATE VALUES, DONT CREATE
-    #NEW ENTRY!!!!
 
-    new_entry = Entry(user_id=user_id,
-                        date=date,
-                        minutes_asleep=minutes_asleep,
-                        insomnia=insomnia,
-                        insom_type=insom_type,
-                        insom_severity=insom_severity,
-                        alcohol=alcohol,
-                        caffeine=caffeine,
-                        menstruation=menstruation,
-                        bedtime=bedtime,
-                        stress_level=stress_level,
-                        activity_level=activity_level)
+    #If record for user=user_id on date=date does not exist, create it. Else,
+    #update the existing record. 
+    if not db.session.query(Entry.user_id).filter(Entry.user_id == user_id, \
+                                                Entry.date == date).first():
+        new_entry = Entry(user_id=user_id,
+                            date=date,
+                            minutes_asleep=minutes_asleep,
+                            insomnia=insomnia,
+                            insom_type=insom_type,
+                            insom_severity=insom_severity,
+                            alcohol=alcohol,
+                            caffeine=caffeine,
+                            menstruation=menstruation,
+                            bedtime=bedtime,
+                            stress_level=stress_level,
+                            activity_level=activity_level)
 
-    db.session.add(new_entry)
-    db.session.commit()
+        db.session.add(new_entry)
+        db.session.commit()
+    else:
+        entry_id = db.session.query(Entry.entry_id).filter(Entry.user_id == user_id, \
+                                                            Entry.date == date).first()
+        entry = Entry.query.get(entry_id)
+
+        entry.minutes_asleep = minutes_asleep,
+        entry.insomnia = insomnia,
+        entry.insom_type = insom_type,
+        entry.insom_severity = insom_severity,
+        entry.alcohol = alcohol,
+        entry.caffeine = caffeine,
+        entry.menstruation = menstruation,
+        entry.bedtime = bedtime,
+        entry.stress_level = stress_level,
+        entry.activity_level = activity_level
+        
+        db.session.commit()
 
 ##########################################################################
     # Data insights
     
-    #HARDCODED FOR NOW.
-    start_date = datetime(2016, 4, 1)
-    end_date = datetime(2016,5,1)
+    start_date = first_entry(user_id)
+    end_date = last_entry(user_id)
 
     # Calculate average sleep per night
-    avg_sleep = calculate_avg_sleep(user_id)
+    avg_sleep = calculate_avg_sleep(user_id, start_date, end_date)
 
     # Calculate average insomnia severity
-    avg_insom_severity = calculate_avg_insom_severity(user_id)
+    avg_insom_severity = calculate_avg_insom_severity(user_id, start_date, end_date)
 
     # Calculate median sleep per night
-    median_sleep = calculate_median_sleep(user_id)
+    median_sleep = calculate_median_sleep(user_id, start_date, end_date)
 
     # Calculate median insomnia severity
-    median_insom_severity = calculate_median_insom_severity(user_id)
+    median_insom_severity = calculate_median_insom_severity(user_id, start_date, end_date)
 
     #Calculate co-occurrence between insomnia and alcohol consumption
     insom_and_alcohol_co_occurrence = insom_and_alcohol(user_id)
@@ -158,8 +169,8 @@ def melon_types_data():
     """Return data about Melon Sales."""
  
     user_id = 1
-    default_start_date = datetime.strftime(first_entry(user_id), '%Y-%m-%d')
 
+    default_start_date = datetime.strftime(first_entry(user_id), '%Y-%m-%d')
     start = request.args.get("start_date", default_start_date)
     print "start", start
     start_date = datetime.strptime(start, '%Y-%m-%d')
@@ -204,7 +215,15 @@ def melon_types_data():
     a_label = "Sleep-onset insomnia"
     print a
 
-
+    avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
+    print avg_sleep
+    median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
+    print median_sleep
+    # avg_insomnia = calculate_avg_insom_severity(user_id, start_date, end_date)
+    avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
+    print avg_insomnia
+    median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
+                                        (user_id, start_date, end_date))
 
     #UPDATE COLORS & LABELS
     data_list_of_dicts = {
@@ -233,7 +252,11 @@ def melon_types_data():
                 "highlight": "#FFC870",
                 "label": a_label
             }
-        ]
+        ],
+        'avg_sleep': avg_sleep,
+        'median_sleep': median_sleep,
+        'avg_insomnia': avg_insomnia,
+        'median_insomnia': median_insomnia
     }
     return jsonify(data_list_of_dicts)
   
