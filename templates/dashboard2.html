@@ -20,12 +20,10 @@
 
 
 
-<!-- First donut chart element -->
+<!-- Donut chart element -->
 <div class="sleep-chart">
     <canvas id="donutChart"></canvas>
-<!-- Add empty div tag for canvas -->
     <div id="canvas"></div>
-
     <div id="donutLegend" class="chart-legend"></div>
     <form id = "date-range" action = '/insom-types.json'>
         Start date: <input type="date" name="start_date">
@@ -34,11 +32,6 @@
     </form>
 </div>
 
-<!-- Second donut chart element -->
-<!-- <div class="sleep-chart">
-    <canvas id="donutChart2"></canvas>
-    <div id="donut2Legend" class="chart-legend"></div>
-</div> -->
 
 <!-- Line graph element -->
 <div class="sleep-chart">
@@ -46,32 +39,19 @@
     <div id="lineLegend" class="chart-legend"></div>
 </div>
 
+
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="static/dashboard.js"></script>
-
-<!-- Creates graphs using chart.js -->
 <script>
     
-    // Create canvas tag to add to empty div.
+    // Create canvas element to add to empty div.
     var canvas_tag = '<canvas id="donutChart">'
 
     var options = {
       responsive: true
     };
 
-    // Creates donut chart of frequency of occurrences of different types of insomnia
-
-    // First, create a function that draws chart with default view.
-    // function draw_chart() {
-    //     $("#donutChart").remove()
-    //     $("#canvas").append(canvas_tag)
-    //     var ctx_donut = $("#donutChart").get(0).getContext("2d");
-    //     $.get("/insom-types.json", function (data) {
-    //         var myDonutChart = new Chart(ctx_donut).Doughnut(data.insom_type, options);
-    //         $('#donutLegend').html(myDonutChart.generateLegend());
-    //     });
-    // }
-
+    // Create chart of frequency of occurrences of different types of insomnia.
     function draw_chart() {
 
         $("#donutChart").remove()
@@ -87,63 +67,42 @@
 
     draw_chart();
 
-    // var ctx_donut = $("#donutChart").get(0).getContext("2d");
 
-    // $.get("/insom-types.json", function (data) {
-    //   var myDonutChart = new Chart(ctx_donut).Doughnut(data.insom_type, options);
-    //   $('#donutLegend').html(myDonutChart.generateLegend());
-    // });
+    // Reload chart based on user-selected date range. 
+    function updatePieChart(results) {
+        $("#donutChart").remove()
+        $("#canvas").append(canvas_tag)
+        var ctx_donut = $("#donutChart").get(0).getContext("2d");
+        var myDonutChart = new Chart(ctx_donut).Doughnut(results.insom_type, options);
+        $('#donutLegend').html(myDonutChart.generateLegend());
 
+        $('#avg_sleep').html("Average sleep per night: " + results.avg_sleep + " hours");
+        $('#median_sleep').html("Median sleep per night: " + results.median_sleep + " hours");
+        $('#avg_insomnia').html("Average insomnia severity: " + results.avg_insomnia + " / 10");
+        $('#median_insomnia').html("Median insomnia severity: " + results.median_insomnia + " / 10");
 
+    }
 
-// Reload chart based on user-selected date range. 
-function updatePieChart(results) {
+    function getDateRange(evt) {
+        evt.preventDefault();
 
-    $("#donutChart").remove()
-    $("#canvas").append(canvas_tag)
+        var formInputs = {
+            "start_date": $("#date-range input[name=start_date]").val(),
+            "end_date": $("#date-range input[name=end_date]").val() 
+        };
 
-    var ctx_donut = $("#donutChart").get(0).getContext("2d");
-    var myDonutChart = new Chart(ctx_donut).Doughnut(results.insom_type, options);
-
-      $('#donutLegend').html(myDonutChart.generateLegend());
-      $('#avg_sleep').html("Average sleep per night: " + results.avg_sleep + " hours");
-      $('#median_sleep').html("Median sleep per night: " + results.median_sleep + " hours");
-      $('#avg_insomnia').html("Average insomnia severity: " + results.avg_insomnia + " / 10");
-      $('#median_insomnia').html("Median insomnia severity: " + results.median_insomnia + " / 10");
-
-}
-
-
-
-function getDateRange(evt) {
-    evt.preventDefault();
-
-    var formInputs = {
-        "start_date": $("#date-range input[name=start_date]").val(),
-        "end_date": $("#date-range input[name=end_date]").val() 
+        $.get('/insom-types.json',
+            formInputs,
+            updatePieChart);
+        
     };
 
-    $.get('/insom-types.json',
-        formInputs,
-        updatePieChart);
-    
-};
-
-$("#date-range").on("submit", getDateRange);
+    $("#date-range").on("submit", getDateRange);
 
     
 
-
-    // // Creates donut chart of frequency of occurrences of different types of insomnia
-    // var ctx_donut2 = $("#donutChart2").get(0).getContext("2d");
-
-    // $.get("/insom-types.json", function (data) {
-    //   var myDonutChart2 = new Chart(ctx_donut2).Doughnut(data.insom_type, options);
-    //   $('#donut2Legend').html(myDonutChart2.generateLegend());
-    // });
-
-
-    // Creates line chart of insomnia severity over time
+    // Create line chart of insomnia severity over time.
+    // NOTE: HASNT BEEN UPDATED TO FIX BUG WHEN DATE RANGE SELECTED.
     var ctx_line = $("#lineChart").get(0).getContext("2d");
 
     $.get("/insom-severity.json", function (data) {

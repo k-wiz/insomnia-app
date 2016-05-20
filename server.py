@@ -30,198 +30,90 @@ def index():
 def dashboard():
     """Display user's dashboard."""
 
-    # Passes form data to create new record in Entry table. 
+    # Retrieve form data.  
     user_id = 1 
-    date = datetime(2016, 5, 20)
+    date = datetime.now()
+    date = date.replace(hour=0, minute=0, second=0, microsecond=0)
     minutes_asleep = int((float(request.form.get("hours_sleep"))) * 60)
-    insomnia = request.form.get("insomnia")
-    if insomnia == 'True':
-        insomnia = True
-    else:
-        insomnia = False
+    insomnia = convert_to_boolean(request.form.get("insomnia"))
     insom_type = request.form.get("insom_type")
     insom_severity = int(request.form.get("insom_severity"))
-    alcohol = request.form.get("alcohol")
-    if alcohol == 'True':
-        alcohol = True
-    else:
-        alcohol = False
-    caffeine = request.form.get("caffeine")
-    if caffeine == 'True':
-        caffeine = True
-    else:
-        caffeine = False
-    menstruation = request.form.get("menstruation")
-    if menstruation == 'True':
-        menstruation = True
-    else:
-        menstruation = False
-    bedtime = request.form.get("bedtime")
-    bedtime = datetime.strptime(bedtime, '%H:%M')
+    alcohol = convert_to_boolean(request.form.get("alcohol"))
+    caffeine = convert_to_boolean(request.form.get("caffeine"))
+    menstruation = convert_to_boolean(request.form.get("menstruation"))
+    bedtime = datetime.strptime((request.form.get("bedtime")), '%H:%M')
     stress_level = int(request.form.get("stress_level"))
     activity_level = int(request.form.get("activity_level"))
 
 
-    #If record for user=user_id on date=date does not exist, create it. Else,
-    #update the existing record. 
-    if not db.session.query(Entry.user_id).filter(Entry.user_id == user_id, \
-                                                Entry.date == date).first():
-        new_entry = Entry(user_id=user_id,
-                            date=date,
-                            minutes_asleep=minutes_asleep,
-                            insomnia=insomnia,
-                            insom_type=insom_type,
-                            insom_severity=insom_severity,
-                            alcohol=alcohol,
-                            caffeine=caffeine,
-                            menstruation=menstruation,
-                            bedtime=bedtime,
-                            stress_level=stress_level,
-                            activity_level=activity_level)
+    # Create new record in db if no existing record with user_id and date;
+    # otherwise, update current record. 
+    create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
+                            insom_severity, alcohol, caffeine, menstruation,
+                            bedtime, stress_level, activity_level)
 
-        db.session.add(new_entry)
-        db.session.commit()
-    else:
-        entry_id = db.session.query(Entry.entry_id).filter(Entry.user_id == user_id, \
-                                                            Entry.date == date).first()
-        entry = Entry.query.get(entry_id)
 
-        entry.minutes_asleep = minutes_asleep,
-        entry.insomnia = insomnia,
-        entry.insom_type = insom_type,
-        entry.insom_severity = insom_severity,
-        entry.alcohol = alcohol,
-        entry.caffeine = caffeine,
-        entry.menstruation = menstruation,
-        entry.bedtime = bedtime,
-        entry.stress_level = stress_level,
-        entry.activity_level = activity_level
-        
-        db.session.commit()
-
-##########################################################################
-    # Data insights
-    
+    # Calculate sleep insights for user with user_id. 
     start_date = first_entry(user_id)
     end_date = last_entry(user_id)
-
-    # Calculate average sleep per night
     avg_sleep = calculate_avg_sleep(user_id, start_date, end_date)
-
-    # Calculate average insomnia severity
     avg_insom_severity = calculate_avg_insom_severity(user_id, start_date, end_date)
-
-    # Calculate median sleep per night
     median_sleep = calculate_median_sleep(user_id, start_date, end_date)
-
-    # Calculate median insomnia severity
     median_insom_severity = calculate_median_insom_severity(user_id, start_date, end_date)
+    most_frequent_type_insomnia = (most_frequent_type(user_id, start_date, end_date))[1]
 
-    #Calculate co-occurrence between insomnia and alcohol consumption
-    insom_and_alcohol_co_occurrence = insom_and_alcohol(user_id)
 
-    #Calculate all-time most frequently occurring type of insomnia
-    most_frequent_type_insomnia = most_frequent_type(user_id, start_date, end_date)
-    most_frequent_type_insomnia = most_frequent_type_insomnia[1]
-
-##########################################################################
     # Pass calculated data to template
-    
     return render_template("dashboard2.html", 
                                 avg_sleep=avg_sleep,
                                 median_sleep=median_sleep,
                                 avg_insom_severity=avg_insom_severity,
                                 median_insom_severity=median_insom_severity,
-                                insom_and_alcohol_co_occurrence=insom_and_alcohol_co_occurrence,
                                 most_frequent_type_insomnia=most_frequent_type_insomnia)
 
 
 ##########################################################################
 
 
-@app.route('/user-data.json')
-def retrieve_insom_severity():
-    """Returns a list of insom_severity data points & corresponding date for 
-    user with user_id, from start_date to end_date, inclusive."""
- 
-    user_id = 1
-    start_date = datetime(2016, 4, 1)
-    end_date = datetime(2016,5,1)
-
-    data_points = db.session.query(Entry.insom_severity, Entry.date).filter\
-        (Entry.user_id == user_id, Entry.date >= start_date, 
-        Entry.date <= end_date).all()
-
-    d = {}
-    for item in data_points:
-        date = "%s/%s" % (item[1].month, item[1].day)
-        d[date] = item[0]
-
-    return jsonify(d)
-
-
-##########################################################################
-
-#Queries db for insomnia type data; inserts data into dictionary used to
-#create insomnia type donut chart.
 @app.route('/insom-types.json')
-def melon_types_data():
-    """Return data about Melon Sales."""
+def insom_type_data():
+    """Returns a jsonified dictionary of values needed to update the pie chart, 
+    averages, and medians. First value is data needed to load chart.
+    Last 4 values are data needed to display averages & medians."""
  
     user_id = 1
 
+    # Default dashboard view shows all-time data, from user's first entry 
+    # (default start date) to user's last entry (default_end_date). 
     default_start_date = datetime.strftime(first_entry(user_id), '%Y-%m-%d')
     start = request.args.get("start_date", default_start_date)
-    print "start", start
     start_date = datetime.strptime(start, '%Y-%m-%d')
-    print "Start date", start_date
-
     default_end_date = datetime.strftime(last_entry(user_id), '%Y-%m-%d')
     end = request.args.get("end_date", default_end_date)
-    print end
     end_date = datetime.strptime(end, '%Y-%m-%d')
-    print end_date
-
-    
     
     #Calculate total days in time range
     total_days = end_date - start_date
     total_days = total_days.days + 1
-    print total_days
 
-    #Calculate frequency of each insomnia type
+    #Calculate frequency of each insomnia type as a percentage
     insom_type = insom_type_frequency(user_id, start_date, end_date)
     insom_type = sorted(insom_type)
-    # print insom_type
-    # x_percentage = float(insom_type[0][1]) / total_days * 100
-    # print x_percentage
-    # y_percentage = float(insom_type[1][1]) / total_days * 100
-    # print y_percentage
-    # z_percentage = float(insom_type[3][1]) / total_days * 100
-    # print z_percentage
-    # a_percentage = float(insom_type[3][1]) / total_days * 100
-    # print a_percentage
 
     x = '{0:.0f}'.format(float(insom_type[0][1]) / total_days * 100)
-    print x
     x_label = "No insomnia"
     y = '{0:.0f}'.format(float(insom_type[1][1]) / total_days * 100)
-    print y
     y_label = "Early-awakening insomnia"
     z = '{0:.0f}'.format(float(insom_type[2][1]) / total_days * 100)
-    print z
     z_label = "Sleep-maintenance insomnia"
     a = '{0:.0f}'.format(float(insom_type[3][1]) / total_days * 100)
     a_label = "Sleep-onset insomnia"
-    print a
 
+
+    #Calculate averages and medians from start_date to end_date.
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
-    print avg_sleep
     median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
-    print median_sleep
-    # avg_insomnia = calculate_avg_insom_severity(user_id, start_date, end_date)
     avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
-    print avg_insomnia
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
 
@@ -261,41 +153,27 @@ def melon_types_data():
     return jsonify(data_list_of_dicts)
   
 
-#Queries db for insomnia severity data; inserts data into dictionary used to
-#create insomnia severity line graph. 
+############################################################################
+
+
 @app.route('/insom-severity.json')
 def melon_times_data():
-    """Return time series data of Melon Sales."""
+    """Returns a jsonified dictionary of values needed to create and update
+    the insom_severity line graph."""
 
     user_id = 1
     start_date = datetime(2016, 4, 1)
     end_date = datetime(2016,4,30)
 
+    #Create a list of dates and a list of corresponding insom_severity_scores.
     data_points = sorted(db.session.query(Entry.date, Entry.insom_severity).filter\
         (Entry.user_id == user_id, Entry.date >= start_date, 
         Entry.date <= end_date).all())
-
 
     dates = []
     insom_severity_scores = []
     
     for item in data_points:
-        # date = item[0].weekday()
-        # if date == 0:
-        #     date = 'Mon'
-        # elif date == 1:
-        #     date = 'Tue'
-        # elif date == 2:
-        #     date = 'Wed'
-        # elif date == 3:
-        #     date = 'Thu'
-        # elif date == 4:
-        #     date = 'Fri'
-        # elif date == 5:
-        #     date = 'Sat'
-        # else:
-        #     date = 'Sun'
-
         date = "%s/%s" % (item[0].month, item[0].day)
         dates.append(date)
 
@@ -303,6 +181,7 @@ def melon_times_data():
         insom_severity_scores.append(insom_severity_score)
 
 
+    #Pass lists of dates & insom_severity_scores to dictionary.
 
     data_dict = {
         "labels": dates,
@@ -332,9 +211,8 @@ def melon_times_data():
     return jsonify(data_dict)
 
 
-
-
 ###################################################################
+
 
 if __name__ == "__main__":
 

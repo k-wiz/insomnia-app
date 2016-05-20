@@ -7,6 +7,17 @@ import numpy as np
 # IF TIME, REFACTOR TO FORMAT RESULTS OF FUNCTIONS HERE INSTEAD OF IN HTML 
 # & SERVER FILE. 
 
+
+def convert_to_boolean(value):
+    if value == 'True':
+        value = True
+    else:
+        value = False
+
+    return value
+
+
+
 def median(lst):
     """Calculates the median value in a list of numbers."""
 
@@ -71,10 +82,10 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
     return median_insom_severity
 
 
-# HOW DO I ADD IN DEFAULTS FOR DATES??
+
 def insom_type_frequency(user_id, start_date, end_date):
-    """Returns count of insomnia_type occurrences between start date and 
-    end date, inclusive."""
+    """Returns a list of tuples. Each tuple includes insomnia_type, count of 
+    insomnia_type occurrences between start date and end date, inclusive."""
 
     insom_type_frequency = db.session.query(Entry.insom_type, db.func.count\
                             (Entry.insom_type)).filter(Entry.user_id == user_id,\
@@ -85,10 +96,10 @@ def insom_type_frequency(user_id, start_date, end_date):
 
     
 
-
 def most_frequent_type(user_id, start_date, end_date):
-    """Returns the all-time most frequently occurring type of insomnia for user
-    with user_id between start_date and end_date, inclusive."""
+    """Returns a tuple that includes most frequently occurring insomnia_type,
+    number of insomnia_type occurrences for user with user_id between 
+    start_date and end_date, inclusive."""
 
     insom_type = sorted(insom_type_frequency(user_id, start_date, end_date))
 
@@ -109,7 +120,6 @@ def calculate_similarity(list1, list2):
 
     a = np.array(list1)
     b = np.array(list2)
-    #Calculates number of pairs that match / total number of pairs.
     similarity = np.mean(a == b)
     return similarity
 
@@ -134,6 +144,7 @@ def insom_and_alcohol(user_id):
     return insom_and_alcohol
 
 
+
 def first_entry(user_id):
     """Returns date of user's first entry as a datetime object."""
 
@@ -141,6 +152,7 @@ def first_entry(user_id):
     order_by('date').first()
 
     return first_entry[0]
+
 
 
 def last_entry(user_id):
@@ -151,8 +163,61 @@ def last_entry(user_id):
 
     return last_entry[0]
 
-    
 
+
+def create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
+                            insom_severity, alcohol, caffeine, menstruation,
+                            bedtime, stress_level, activity_level):
+    """If no existing record with user_id=user_id and date=date, 
+    creates it. If existing record, updates the values."""
+
+    if not db.session.query(Entry.user_id).filter(Entry.user_id == user_id, \
+                                                Entry.date == date).first():
+        new_entry = Entry(user_id=user_id,
+                            date=date,
+                            minutes_asleep=minutes_asleep,
+                            insomnia=insomnia,
+                            insom_type=insom_type,
+                            insom_severity=insom_severity,
+                            alcohol=alcohol,
+                            caffeine=caffeine,
+                            menstruation=menstruation,
+                            bedtime=bedtime,
+                            stress_level=stress_level,
+                            activity_level=activity_level)
+
+        db.session.add(new_entry)
+        db.session.commit()
+
+    else:
+        entry_id = db.session.query(Entry.entry_id).filter(Entry.user_id == user_id, \
+                                                            Entry.date == date).first()
+        entry = Entry.query.get(entry_id)
+
+        entry.minutes_asleep = minutes_asleep,
+        entry.insomnia = insomnia,
+        entry.insom_type = insom_type,
+        entry.insom_severity = insom_severity,
+        entry.alcohol = alcohol,
+        entry.caffeine = caffeine,
+        entry.menstruation = menstruation,
+        entry.bedtime = bedtime,
+        entry.stress_level = stress_level,
+        entry.activity_level = activity_level
+        
+        db.session.commit()
+
+
+
+
+
+
+
+
+# df = psql.read_sql(('select "Timestamp","Value" from "MyTable" '
+#                      'where "Timestamp" BETWEEN %(dstart)s AND %(dfinish)s'),
+#                    db,params={"dstart":datetime(2014,6,24,16,0),"dfinish":datetime(2014,6,24,17,0)},
+#                    index_col=['Timestamp'])
 
 
 
