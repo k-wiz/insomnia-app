@@ -43,21 +43,18 @@ Day 8, May 18th:
 ranges for insights. Succeeded only in updating pie chart.
 
 Day 9, May 19th: 
+(2.5 hours)
+1. Finished JS function to update insights page against date range. (1.5 hr) 
+2. Fixed DB! Cant have multiple entries for one day. (1 hour)
 
-
-
-
-
-
+Day 10, May 20th:
 
 REFACTORING: 
 1. Write a helper func for if insomnia == True, etc. 
 2. Write a helper func for if not in the db, add. else, update. 
 
-1. Finish JS function to update insights page against date range. (1 hr) 
-2. Fix DB! Cant have multiple entries for one day. (1.5 hours)
-3. Figure out how to programmatically incorporate insights! Plot insights on
-scatterplot, explore data. (MVP, yaaay!)
+
+3. Figure out how to programmatically incorporate insights! Plot insights on scatterplot, explore data. (MVP, yaaay!)
 THIS WEEKEND: Refactor, add tests! 
 4. Next features: fitbit data
 5. Others: login & 2nd user, better graphs, better insights, tracking button? 
