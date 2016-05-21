@@ -48,16 +48,17 @@ Day 9, May 19th:
 2. Fixed DB! Cant have multiple entries for one day. (1 hour)
 
 Day 10, May 20th:
+1. REALLY fixed DB. Had to manipulalte datetime object to get right format for conditional.
+2. Refactored server.py file. Cleaned up helper.py and dashboard.html.
+3. Fixed bug in Donut Chart. 
+4. Played aroung with Pandas, did more research into statistical analysis. 
 
-REFACTORING: 
-1. Write a helper func for if insomnia == True, etc. 
-2. Write a helper func for if not in the db, add. else, update. 
 
 
 3. Figure out how to programmatically incorporate insights! Plot insights on scatterplot, explore data. (MVP, yaaay!)
 THIS WEEKEND: Add tests! 
 4. Next features: fitbit data
-5. Others: login & 2nd user, fix pie chart -- % and bug, better graphs, better insights, tracking button? 
+5. Others: login & 2nd user, fix pie chart -- %, better graphs, better insights, tracking button? 
 
 
 
