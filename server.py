@@ -34,7 +34,7 @@ def dashboard():
     user_id = 1 
     date = datetime.now()
     date = date.replace(hour=0, minute=0, second=0, microsecond=0)
-    minutes_asleep = int((float(request.form.get("hours_sleep"))) * 60)
+    minutes_asleep = int(request.form.get("hours_sleep")) * 60
     insomnia = convert_to_boolean(request.form.get("insomnia"))
     insom_type = request.form.get("insom_type")
     insom_severity = int(request.form.get("insom_severity"))
@@ -96,6 +96,8 @@ def insom_type_data():
     total_days = end_date - start_date
     total_days = total_days.days + 1
 
+    #NOTE: NEED TO ADD CONDITIONAL TO CHECK IF LIST IS LESS THAN
+    #LENGTH OF 4. 
     #Calculate frequency of each insomnia type as a percentage
     insom_type = insom_type_frequency(user_id, start_date, end_date)
     insom_type = sorted(insom_type)
@@ -157,7 +159,7 @@ def insom_type_data():
 
 
 @app.route('/insom-severity.json')
-def melon_times_data():
+def insom_severity_data():
     """Returns a jsonified dictionary of values needed to create and update
     the insom_severity line graph."""
 

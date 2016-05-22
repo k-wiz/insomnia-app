@@ -30,6 +30,18 @@ def median(lst):
 
 
 
+def calculate_similarity(list1, list2):
+    """Returns the percentage co-occurrence between two lists of values. Used to
+    determine possible associations between behavioral factors and 
+    insomnia."""
+
+    a = np.array(list1)
+    b = np.array(list2)
+    similarity = np.mean(a == b)
+    return similarity
+
+
+
 def calculate_avg_sleep(user_id, start_date, end_date):
     """Calculates user's all-time average hours of sleep per night."""
 
@@ -113,35 +125,23 @@ def most_frequent_type(user_id, start_date, end_date):
 
 
 
-def calculate_similarity(list1, list2):
-    """Returns the percentage co-occurrence between two lists of values. Used to
-    determine possible associations between behavioral factors and 
-    insomnia."""
+# def insom_and_alcohol(user_id):
+#     """Returns the percentage co-occurrence between insomnia and alcohol
+#     consumption."""
 
-    a = np.array(list1)
-    b = np.array(list2)
-    similarity = np.mean(a == b)
-    return similarity
+#     query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
+#     (Entry.user_id == user_id).order_by('date').all()
 
+#     insom_list = []
+#     alcohol_list = []
 
+#     for item in query_list:
+#         insom_list.append(item[0])
+#         alcohol_list.append(item[1])
 
-def insom_and_alcohol(user_id):
-    """Returns the percentage co-occurrence between insomnia and alcohol
-    consumption."""
+#     insom_and_alcohol = calculate_similarity(insom_list, alcohol_list)
 
-    query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
-    (Entry.user_id == user_id).order_by('date').all()
-
-    insom_list = []
-    alcohol_list = []
-
-    for item in query_list:
-        insom_list.append(item[0])
-        alcohol_list.append(item[1])
-
-    insom_and_alcohol = calculate_similarity(insom_list, alcohol_list)
-
-    return insom_and_alcohol
+#     return insom_and_alcohol
 
 
 
@@ -206,20 +206,6 @@ def create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
         entry.activity_level = activity_level
         
         db.session.commit()
-
-
-
-
-
-
-
-
-# df = psql.read_sql(('select "Timestamp","Value" from "MyTable" '
-#                      'where "Timestamp" BETWEEN %(dstart)s AND %(dfinish)s'),
-#                    db,params={"dstart":datetime(2014,6,24,16,0),"dfinish":datetime(2014,6,24,17,0)},
-#                    index_col=['Timestamp'])
-
-
 
 
 

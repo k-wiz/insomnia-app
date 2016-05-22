@@ -2,6 +2,7 @@
 """Models and database functions for Insomnia App."""
 
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 db = SQLAlchemy()
 
@@ -64,12 +65,81 @@ class Entry(db.Model):
 # Helper functions
 
 
-def connect_to_db(app):
+# def connect_to_db(app):
+#     """Connect the database to Flask app."""
+
+#     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///insomnia'
+#     db.app = app
+#     db.init_app(app)
+
+
+def connect_to_db(app, db_name='postgresql:///insomnia'):
     """Connect the database to Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///insomnia'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_name
     db.app = app
     db.init_app(app)
+
+def example_data():
+    """Sample data for test database."""
+
+    user1 = User(user_id=1, age=30, zipcode='94110', gender='F', first_name='Kelli', password='peanut', 
+                email='kelli@gmail.com')
+
+    e1 = Entry(user_id=1, 
+                date=datetime(2016,5,1), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='early-awakening',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    e2 = Entry(user_id=1, 
+                date=datetime(2016,5,2), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='sleep-maintenance',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    e3 = Entry(user_id=1, 
+                date=datetime(2016,5,3), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='sleep-onset',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    e4 = Entry(user_id=1, 
+                date=datetime(2016,5,4), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    db.session.add_all([user1, e1, e2, e3, e4])
+    db.session.commit()
 
 if __name__ == "__main__":
 
