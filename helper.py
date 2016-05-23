@@ -190,7 +190,7 @@ def create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
         db.session.commit()
 
     else:
-        entry_id = db.session.query(Entry.entry_id).filter(Entry.user_id == user_id, \
+        entry_id = db.session.query(Entry.entry_id).filter(Entry.user_id == user_id,
                                                             Entry.date == date).first()
         entry = Entry.query.get(entry_id)
 

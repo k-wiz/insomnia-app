@@ -167,6 +167,7 @@ def insom_severity_data():
     start_date = datetime(2016, 4, 1)
     end_date = datetime(2016,4,30)
 
+    #REFACTOR: move data formatting to helper.py! THEN TEST! 
     #Create a list of dates and a list of corresponding insom_severity_scores.
     data_points = sorted(db.session.query(Entry.date, Entry.insom_severity).filter\
         (Entry.user_id == user_id, Entry.date >= start_date, 

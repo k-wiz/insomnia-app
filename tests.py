@@ -1,7 +1,7 @@
 import server
+from server import app
 import unittest
 from unittest import TestCase
-from server import app
 from helper import *
 from datetime import datetime, date
 from model import connect_to_db, db, User, Entry, example_data
@@ -12,10 +12,12 @@ class MyAppUnitTestCase(unittest.TestCase):
 
     def test_convert_to_boolean(self):
         self.assertEqual(convert_to_boolean('False'), False)
+        self.assertEqual(convert_to_boolean('True'), True)
 
     def test_median(self):
         self.assertEqual(median([1,1,2,5,6,6,9]), 5)
         self.assertEqual(median([1,1,2,6,6,9]), 4)
+        self.assertEqual(median([]), None)
 
 
     def test_calculate_similarity(self):
@@ -144,8 +146,10 @@ class FlaskTests(TestCase):
     def test_last_entry(self):
         self.assertEqual(last_entry('1'), date(2016, 5, 4))
 
+    #NOT A GREAT TEST -- TEST IF CORRECT THING ADDED TO DB INSTEAD.
+    def test_create_or_update_record(self):
+        """Test if creating a record works."""
 
-    def create_or_update_record(self):
         self.assertEqual(create_or_update_record(user_id=1, 
                 date=datetime(2016,5,5), 
                 minutes_asleep=420, 
@@ -159,20 +163,63 @@ class FlaskTests(TestCase):
                 stress_level=3,
                 activity_level=4), None)
 
-        #How do I test lines 193-208? 
-        self.assertEqual(create_or_update_record(user_id=1, 
-                date=datetime(2016,5,1), 
-                minutes_asleep=420, 
-                insomnia=True,
-                insom_type='early-awakening',
-                insom_severity=1,
-                alcohol=False,
-                caffeine=True,
-                menstruation=False,
-                bedtime='23:00',
-                stress_level=3,
-                activity_level=4), None)
 
+    def test_create_or_update_record(self):
+        """Test if updating a record works."""
+
+        user_id = 1
+        date = datetime(2016,5,1)
+
+        create_or_update_record(user_id=user_id, 
+            date=date, 
+            minutes_asleep=200, 
+            insomnia=False,
+            insom_type='early-awakening',
+            insom_severity=7,
+            alcohol=True,
+            caffeine=False,
+            menstruation=True,
+            bedtime='23:30',
+            stress_level=7,
+            activity_level=2)
+
+        entry = db.session.query(Entry.insom_severity).filter(Entry.user_id == user_id,
+                                                            Entry.date == date).first()
+
+        self.assertEqual(entry.insom_severity, 7)
+        
+
+    #WONT WORK. HOW DO I CORRECTLY REPRESENT OBJECT IF NOT IN A STRING?
+    def test_entry__repr__(self):
+
+        new_entry = Entry(user_id=1, 
+            date=datetime(2016,5,1), 
+            minutes_asleep=200, 
+            insomnia=False,
+            insom_type='early-awakening',
+            insom_severity=7,
+            alcohol=True,
+            caffeine=False,
+            menstruation=True,
+            bedtime='23:30',
+            stress_level=7,
+            activity_level=2)
+
+        self.assertEqual(new_entry.insom_severity, 7)
+
+
+    #WONT WORK. HOW DO I CORRECTLY REPRESENT OBJECT IF NOT IN A STRING? 
+    def test_user__repr__(self):
+
+        new_user = User(user_id=1,
+                age=30,
+                gender='female',
+                zipcode='94110',
+                first_name='Kelli',
+                email='kwisuri@gmail.com',
+                password='booger')
+
+        self.assertEqual(new_user.age, 30)
 
 
 
