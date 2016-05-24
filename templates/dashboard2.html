@@ -128,6 +128,7 @@
 
     // Update donut chart based on user-selected date range. 
     function updatePieChart(results) {
+
         $("#donutChart").remove()
         $("#canvas").append(canvas_tag)
         var ctx_donut = $("#donutChart").get(0).getContext("2d");
@@ -141,6 +142,35 @@
 
     }
 
+    function updateBarChart(results) {
+        $("#barChart").remove()
+        $("#barCanvas").append(bar_canvas_tag)
+
+        var ctx_bar = $("#barChart").get(0).getContext("2d");
+        var myBarChart = new Chart(ctx_bar).Bar(results, options);
+    }
+
+    function updateCharts(results) {
+        updatePieChart(results); 
+    }
+
+    // updatePieChart(results.pie)
+
+    // function drawBarChart() {
+
+    //     $("#barChart").remove()
+    //     $("#barCanvas").append(bar_canvas_tag)
+
+    //     var ctx_bar = $("#barChart").get(0).getContext("2d");
+
+    //     $.get("/hours-sleep.json", function (data) {
+    //         var myBarChart = new Chart(ctx_bar).Bar(data, options);
+    //     });
+
+    // }
+
+
+
     function getDateRange(evt) {
         evt.preventDefault();
 
@@ -151,7 +181,7 @@
 
         $.get('/insom-types.json',
             formInputs,
-            updatePieChart); 
+            updateCharts); 
         
     };
 
