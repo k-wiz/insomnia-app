@@ -37,8 +37,8 @@ def index():
     sleep_log = authd_client.sleep()
 
     #payload 
-    r = requests.get("https://api.fitbit.com/1/user/-/sleep/date/2016-04-20.json")
-    print "RRRRRRRR", r
+    # r = requests.get("https://api.fitbit.com/1/user/-/sleep/date/2016-04-20.json")
+    # print "RRRRRRRR", r
 
 
     #If fitbit: 
@@ -113,6 +113,7 @@ def insom_type_data():
  
     user_id = 1
 
+    #REFACTOR!!! MOVE TO HELPER FUNCTION.
     # Default dashboard view shows all-time data, from user's first entry 
     # (default start date) to user's last entry (default_end_date). 
     default_start_date = datetime.strftime(first_entry(user_id), '%Y-%m-%d')
@@ -148,6 +149,10 @@ def insom_type_data():
     avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
+
+
+    # kelli = hours_sleep_data(user_id, start_date, end_date)
+    # print kelli
 
     #UPDATE COLORS & LABELS
     data_list_of_dicts = {
@@ -242,6 +247,47 @@ def insom_severity_data():
         ]
     }
     return jsonify(data_dict)
+
+
+###################################################################
+
+@app.route("/hours-sleep.json")
+def hours_sleep_json():
+    """Returns a jsonified dictionary of values needed to create and update
+    the hours_sleep bar chart."""
+
+    user_id = 1
+
+    #REFACTOR!!! MOVE TO HELPER FUNCTION.
+    #If no dates selected, use date of user's first entry as default_start_date
+    #and date of last_entry as user's default_end-date. If dates specified, 
+    #use selected dates. 
+    # default_start_date = datetime.strftime(two_weeks_before_last_entry(user_id), '%Y-%m-%d')
+    # start = request.args.get("start_date", default_start_date)
+    # start_date = datetime.strptime(start, '%Y-%m-%d')
+    start_date = datetime(2016, 5, 20) # HARDCODED, replace with function! 
+
+    default_end_date = datetime.strftime(last_entry(user_id), '%Y-%m-%d')
+    end = request.args.get("end_date", default_end_date)
+    end_date = datetime.strptime(end, '%Y-%m-%d')
+
+    dates = hours_sleep_data(user_id, start_date, end_date)[0]
+    data_points = hours_sleep_data(user_id, start_date, end_date)[1]
+
+    data_dict = {
+        "labels" : dates,
+        "datasets" : [
+            {
+                "fillColor" : "#48A497",
+                "strokeColor" : "#48A4D1",
+                "data" : data_points
+            }]
+
+    }
+
+    return jsonify(data_dict)
+
+
 
 
 ###################################################################

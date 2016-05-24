@@ -1,6 +1,7 @@
 from sqlalchemy import func, desc
 from model import connect_to_db, db, User, Entry
 import numpy as np
+from datetime import datetime, date, timedelta
 
 ##################################################
 # Database queries, data-formatting, and logic for server.py.
@@ -145,6 +146,29 @@ def most_frequent_type(user_id, start_date, end_date):
 
 
 
+def hours_sleep_data(user_id, start_date, end_date):
+    """Returns a list of 2 lists: the first is a list of dates as strings,
+    the second is a list of hours_sleep data points as integers."""
+
+    data_points = sorted(db.session.query(Entry.date, Entry.minutes_asleep).filter
+        (Entry.user_id == user_id, Entry.date>= start_date, Entry.date <= 
+        end_date).all())
+
+
+    dates = []
+    hours_sleep_list = []
+
+    for item in data_points:
+        date = "%s/%s" % (item[0].month, item[0].day)
+        dates.append(date)
+
+        hours_sleep = item[1]  / 60
+        hours_sleep_list.append(hours_sleep)
+
+    return dates, hours_sleep_list
+
+
+
 def first_entry(user_id):
     """Returns date of user's first entry as a datetime object."""
 
@@ -162,6 +186,15 @@ def last_entry(user_id):
     order_by(desc('date')).first()
 
     return last_entry[0]
+
+
+
+def two_weeks_before_last_entry(user_id):
+    """Returns date of entry two weeks before user's last entry as a datetime object."""
+
+    two_weeks_date = last_entry(user_id) - timedelta(days=14)
+
+    return two_weeks_date
 
 
 

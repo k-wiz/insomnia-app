@@ -2,7 +2,7 @@
 {% block content %}
 <h2>Sleep Insights</h2>
 
-<!-- Data insights -->
+<!-- Insights: average, median sleep; average, median insomnia -->
 <section class="data-insights">
     <p id="avg_sleep">Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
     <p id="median_sleep">Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
@@ -10,13 +10,18 @@
     <p id="median_insomnia">Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
 </section>
 
+<!-- Insight: most common type of insomnia -->
 <section class="data-insights">
     <p>Your most frequent type of insomnia is {{ most_frequent_type_insomnia }} insomnia.</p>
 </section>
 
+<!-- Insight: factors that co-occur with insomnia -->
 <section class="data-insights"> 
     <p>Insomnia happens more frequently when you also X.</p>
 </section>
+
+<br>
+<br>
 
 
 
@@ -32,6 +37,9 @@
     </form>
 </div>
 
+<br>
+<br>
+
 
 <!-- Bar chart element -->
 <div class="sleep-chart">
@@ -39,27 +47,36 @@
     <div id="barCanvas"></div>
 </div>
 
+<br>
+<br>
+
 
 <!-- Line graph element -->
 <div class="sleep-chart">
-    <canvas id="lineChart" width="100" height="30"></canvas>
+    <canvas id="lineChart"></canvas>
+    <div id="lineCanvas"></div>
     <div id="lineLegend" class="chart-legend"></div>
 </div>
 
 
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="static/dashboard.js"></script>
+
 <script>
     
-    // Create canvas element to add to empty div.
+    // Create canvas elements to add to empty div.
     var canvas_tag = '<canvas id="donutChart">'
+    var bar_canvas_tag = '<canvas id="barChart">'
+    var line_canvas_tag = '<canvas id="lineChart">'
 
     var options = {
       responsive: true
     };
 
-    // Create chart of frequency of occurrences of different types of insomnia.
-    function draw_chart() {
+    
+
+    // Create donut chart.
+    function drawDonutChart() {
 
         $("#donutChart").remove()
         $("#canvas").append(canvas_tag)
@@ -70,12 +87,46 @@
           var myDonutChart = new Chart(ctx_donut).Doughnut(data.insom_type, options);
           $('#donutLegend').html(myDonutChart.generateLegend());
         });
+
     }
 
-    draw_chart();
+
+    // Create bar chart. 
+    function drawBarChart() {
+
+        $("#barChart").remove()
+        $("#barCanvas").append(bar_canvas_tag)
+
+        var ctx_bar = $("#barChart").get(0).getContext("2d");
+
+        $.get("/hours-sleep.json", function (data) {
+            var myBarChart = new Chart(ctx_bar).Bar(data, options);
+        });
+
+    }
+
+    // Create line chart. 
+    function drawLineChart() {
+
+        $("#lineChart").remove()
+        $("#lineCanvas").append(line_canvas_tag)
+
+        var ctx_line = $("#lineChart").get(0).getContext("2d");
+
+        $.get("/insom-severity.json", function (data) {
+            var myLineChart = new Chart(ctx_line).Line(data, options);
+            $("#lineLegend").html(myLineChart.generateLegend());
+        });
+
+    }
 
 
-    // Reload chart based on user-selected date range. 
+    drawDonutChart();
+    drawBarChart();
+    drawLineChart();
+
+
+    // Update donut chart based on user-selected date range. 
     function updatePieChart(results) {
         $("#donutChart").remove()
         $("#canvas").append(canvas_tag)
@@ -100,22 +151,18 @@
 
         $.get('/insom-types.json',
             formInputs,
-            updatePieChart);
+            updatePieChart); 
         
     };
 
     $("#date-range").on("submit", getDateRange);
 
     
-
-    // Create line chart of insomnia severity over time.
-    // NOTE: HASNT BEEN UPDATED TO FIX BUG WHEN DATE RANGE SELECTED.
-    var ctx_line = $("#lineChart").get(0).getContext("2d");
-
-    $.get("/insom-severity.json", function (data) {
-      var myLineChart = new Chart(ctx_line).Line(data, options);
-      $("#lineLegend").html(myLineChart.generateLegend());
-    });
+// 1. Make updateBarChart
+// 2. Make updateLineChart
+// 3. Make updateAvgMedian
+// 3. Make updateCharts, that calls individ update functons.
+// 4. On line 157, replace updatePieChart with updateCharts
 
 
 
