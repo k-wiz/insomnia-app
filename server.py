@@ -8,6 +8,9 @@ from datetime import datetime, time, date
 from sqlalchemy import func, update
 from helper import *
 import numpy as np
+import requests
+import fitbit
+import os
 
 app = Flask(__name__)
 app.secret_key = "DOESNTMATTER"
@@ -15,12 +18,39 @@ app.jinja_env.undefined = StrictUndefined
 
 ###################################################################
 
-
+# consumer_key = os.environ['client_id']
+# consumer_secret = os.environ['client_secret']
+# access_token = os.environ['access_token']
+# refresh_token = os.environ['refresh_token']
 @app.route('/')
 def index():
     """Display today's entry form."""
 
-    return render_template("homepage.html")
+    consumer_key = os.environ['client_id']
+    consumer_secret = os.environ['client_secret']
+    access_token = os.environ['access_token']
+    refresh_token = os.environ['refresh_token']
+
+    authd_client = fitbit.Fitbit(consumer_key, consumer_secret,
+                             access_token=access_token, refresh_token=refresh_token)
+    
+    sleep_log = authd_client.sleep()
+
+    #payload 
+    r = requests.get("https://api.fitbit.com/1/user/-/sleep/date/2016-04-20.json")
+    print "RRRRRRRR", r
+
+
+    #If fitbit: 
+    hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
+
+
+    #Alert user?
+
+
+    return render_template("homepage.html", 
+                                hours_sleep = hours_sleep)
+
 
 
 ##########################################################################

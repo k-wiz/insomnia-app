@@ -7,9 +7,8 @@
 <form action="/dashboard" method="POST">
 
     Hours Slept: 
-        <input type="number" name="hours_sleep" min="0" max="24"> <br>
+        <input type="number" name="hours_sleep" min="0" max="24" value={{hours_sleep}}> <br>
 
-    <!-- Do these work for boolean data type model.py expects? -->
     Insomnia? 
         <input type="radio" name="insomnia" value="True">Yes
         <input type="radio" name="insomnia" value="False">No <br>
