@@ -96,81 +96,58 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
 
 
 
-def frequency_no_insomnia(user_id, start_date, end_date):
-    """Returns a list of tuples. Each tuple includes insomnia_type, count of 
-    insomnia_type occurrences between start date and end date, inclusive."""
+def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
 
-    no_insomnia = db.session.query(Entry.insom_type, db.func.count\
+    frequency_type = db.session.query(Entry.insom_type, db.func.count\
                             (Entry.insom_type)).filter(Entry.user_id == user_id,\
-                            Entry.date >= start_date, Entry.date <= end_date, Entry.insom_type == '').\
+                            Entry.date >= start_date, Entry.date <= end_date, \
+                            Entry.insom_type == insom_type).\
                             group_by(Entry.insom_type).all()
 
-    print no_insomnia
-
-    if len(no_insomnia) != 0:
-        return no_insomnia[0][1]
-    else:
-        return 0
-
-
-def frequency_early_insomnia(user_id, start_date, end_date):
-    """Returns count of occurrences of early-onset insomnia from start_date to end_date."""
-
-    early_insomnia = db.session.query(Entry.insom_type, db.func.count\
-                            (Entry.insom_type)).filter(Entry.user_id == user_id,\
-                            Entry.date >= start_date, Entry.date <= end_date, Entry.insom_type == 'early-awakening').\
-                            group_by(Entry.insom_type).all()
-
-    print early_insomnia
-
-    if len(early_insomnia) != 0:
-        return early_insomnia[0][1]
+    if len(frequency_type) != 0:
+        return frequency_type[0][1]
     else:
         return 0
 
 
 
-def frequency_maintenance_insomnia(user_id, start_date, end_date):
-    """Returns count of occurrences of sleep-maintenance insomnia from start_date to end_date."""
-    maintenance_insomnia = db.session.query(Entry.insom_type, db.func.count\
-                            (Entry.insom_type)).filter(Entry.user_id == user_id,\
-                            Entry.date >= start_date, Entry.date <= end_date, Entry.insom_type == 'sleep-maintenance').\
-                            group_by(Entry.insom_type).all()
+def insom_severity_data(user_id, start_date, end_date):
+    """Returns a tuple of lists, one list of dates as strings, and one list of 
+    insomnia severity scores."""
 
-    if len(maintenance_insomnia) != 0:
-        return maintenance_insomnia[0][1]
-    else:
-        return 0
+    data_points = sorted(db.session.query(Entry.date, Entry.insom_severity).filter\
+        (Entry.user_id == user_id, Entry.date >= start_date, 
+        Entry.date <= end_date).all())
 
+    dates = []
+    insom_severity_scores = []
+    
+    for item in data_points:
+        date = "%s/%s" % (item[0].month, item[0].day)
+        dates.append(date)
 
-def frequency_onset_insomnia(user_id, start_date, end_date):
+        insom_severity_score = item[1]
+        insom_severity_scores.append(insom_severity_score)
 
-    onset_insomnia = db.session.query(Entry.insom_type, db.func.count\
-                            (Entry.insom_type)).filter(Entry.user_id == user_id,\
-                            Entry.date >= start_date, Entry.date <= end_date, Entry.insom_type == 'sleep-onset').\
-                            group_by(Entry.insom_type).all()
-    print onset_insomnia
-    if len(onset_insomnia) != 0:
-        return onset_insomnia[0][1]
-    else:
-        return 0
+    return dates, insom_severity_scores
 
 
 
-def most_frequent_type(user_id, start_date, end_date):
-    """Returns a tuple that includes most frequently occurring insomnia_type,
-    number of insomnia_type occurrences for user with user_id between 
-    start_date and end_date, inclusive."""
+#NEEDS TO BE FIXED. 
+# def most_frequent_type(user_id, start_date, end_date):
+#     """Returns a tuple that includes most frequently occurring insomnia_type,
+#     number of insomnia_type occurrences for user with user_id between 
+#     start_date and end_date, inclusive."""
 
-    insom_type = sorted(insom_type_frequency(user_id, start_date, end_date))
+#     insom_type = sorted(insom_type_frequency(user_id, start_date, end_date))
 
-    max_number = 0
-    for item in insom_type:
-        if item[0] != '':
-            if int(item[1]) > max_number:
-                max_number = item[1]
-                name = item[0]
-    return max_number, name
+#     max_number = 0
+#     for item in insom_type:
+#         if item[0] != '':
+#             if int(item[1]) > max_number:
+#                 max_number = item[1]
+#                 name = item[0]
+#     return max_number, name
 
 
 
@@ -288,12 +265,6 @@ def create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
         
         db.session.commit()
 
-
-
-# insom_type_list = db.session.query(Entry.insom_type, db.func.count\
-#                             (Entry.insom_type)).filter(Entry.user_id == 1,\
-#                             Entry.date >= datetime(2016,5,20), Entry.date <= datetime(2016,5,23), Entry.insom_type == '').\
-#                             group_by(Entry.insom_type).all()
 
 
 ###################################################################

@@ -2,14 +2,6 @@
 {% block content %}
 <h2>Sleep Insights</h2>
 
-<!-- Insights: average, median sleep; average, median insomnia -->
-<!-- <section class="data-insights">
-    <p id="avg_sleep">Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
-    <p id="median_sleep">Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
-    <p id="avg_insomnia">Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
-    <p id="median_insomnia">Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
-</section> -->
-
 
 <!-- Insights: average, median sleep; average, median insomnia -->
 <section class="data-insights">
@@ -25,11 +17,11 @@
     <p>Your most frequent type of insomnia is ____ insomnia.</p>
 </section>
 
+
 <!-- Insight: factors that co-occur with insomnia -->
 <section class="data-insights"> 
-    <p>Insomnia happens more frequently when you also X.</p>
+    <p>Insomnia happens more frequently when you also ______.</p>
 </section><br><br>
-
 
 
 <!-- Donut chart element -->
@@ -64,21 +56,6 @@
 <script src="static/dashboard.js"></script>
 
 <script>
-
-    // Add textual data insights. 
-    function addDataInsights() {
-        $.get("/insom-types.json", function (data) {
-            var avgSleep = data.avg_median.avg_sleep;
-            $("#avg_sleep").append(avgSleep);
-            var medianSleep = data.avg_median.median_sleep;
-            $("#median_sleep").append(medianSleep)
-            var avgInsomnia = data.avg_median.avg_insomnia;
-            $("#avg_insomnia").append(avgInsomnia);
-            var medianInsomnia = data.avg_median.median_sleep;
-            $("#median_insomnia").append(medianInsomnia);
-
-        })
-    }
 
     
     // Create canvas elements to add to empty div.
@@ -135,14 +112,32 @@
     }
 
 
+    // Add textual data insights. 
+    function addDataInsights() {
+        $.get("/insom-types.json", function (data) {
+            var avgSleep = data.avg_median.avg_sleep;
+            $("#avg_sleep").append(avgSleep);
+            var medianSleep = data.avg_median.median_sleep;
+            $("#median_sleep").append(medianSleep)
+            var avgInsomnia = data.avg_median.avg_insomnia;
+            $("#avg_insomnia").append(avgInsomnia);
+            var medianInsomnia = data.avg_median.median_sleep;
+            $("#median_insomnia").append(medianInsomnia);
+
+        })
+    }
+
+
     drawDonutChart();
     drawBarChart();
     drawLineChart();
     addDataInsights();
 
 
-    // Update donut chart based on user-selected date range.
-    //NOTE: FIXED RESULTS VARIABLES HERE, BUT NOT ELSEWHERE.  
+    
+// HOW TO COMBINE UPDATE & CREATE FUNCTIONS
+
+    // Update donut chart based on user-selected date range. 
     function updatePieChart(results) {
 
         $("#donutChart").remove()
