@@ -92,6 +92,8 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
         insom_severity_lst.append(item[0])
 
     median_insom_severity = median(insom_severity_lst)
+    print insom_severity_lst
+    print median_insom_severity
     return median_insom_severity
 
 
@@ -133,27 +135,9 @@ def insom_severity_data(user_id, start_date, end_date):
 
 
 
-#NEEDS TO BE FIXED. 
-# def most_frequent_type(user_id, start_date, end_date):
-#     """Returns a tuple that includes most frequently occurring insomnia_type,
-#     number of insomnia_type occurrences for user with user_id between 
-#     start_date and end_date, inclusive."""
-
-#     insom_type = sorted(insom_type_frequency(user_id, start_date, end_date))
-
-#     max_number = 0
-#     for item in insom_type:
-#         if item[0] != '':
-#             if int(item[1]) > max_number:
-#                 max_number = item[1]
-#                 name = item[0]
-#     return max_number, name
-
-
-
-# def insom_and_alcohol(user_id):
-#     """Returns the percentage co-occurrence between insomnia and alcohol
-#     consumption."""
+# def insom_factors(user_id):
+#     """Returns the percentage co-occurrence between insomnia(T/F) and 
+#     behavioral factors(T/F)."""
 
 #     query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
 #     (Entry.user_id == user_id).order_by('date').all()

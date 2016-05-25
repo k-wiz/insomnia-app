@@ -2,6 +2,10 @@
 {% block content %}
 <h2>Sleep Insights</h2>
 
+<form id = "date-range" action = '/insom-types.json'>
+    Start date: <input type="date" name="start_date">
+    <input type="submit">
+</form>
 
 <!-- Insights: average, median sleep; average, median insomnia -->
 <section class="data-insights">
@@ -14,7 +18,7 @@
 
 <!-- Insight: most common type of insomnia -->
 <section class="data-insights">
-    <p>Your most frequent type of insomnia is ____ insomnia.</p>
+    <p>Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
 </section>
 
 
@@ -29,11 +33,6 @@
     <canvas id="donutChart"></canvas>
     <div id="canvas"></div>
     <div id="donutLegend" class="chart-legend"></div>
-    <form id = "date-range" action = '/insom-types.json'>
-        Start date: <input type="date" name="start_date">
-        End date: <input type="date" name="end_date">
-        <input type="submit">
-    </form>
 </div><br><br>
 
 
@@ -81,6 +80,7 @@
     }
 
 
+
     // Create bar chart. 
     function drawBarChart(results) {
 
@@ -90,6 +90,7 @@
         var ctx_bar = $("#barChart").get(0).getContext("2d");
         var myBarChart = new Chart(ctx_bar).Bar(results.bar_chart, options);
     }
+
 
 
     // Create line chart. 
@@ -104,8 +105,15 @@
     }
 
 
+
     // Add textual data insights. 
     function addDataInsights(results) {
+
+            $("#avg_sleep").empty()
+            $("#median_sleep").empty()
+            $("#avg_insomnia").empty()
+            $("#median_insomnia").empty()
+            $("#most_frequent_type").empty()
 
             var avgSleep = results.avg_median.avg_sleep;
             $("#avg_sleep").append(avgSleep);
@@ -113,9 +121,12 @@
             $("#median_sleep").append(medianSleep)
             var avgInsomnia = results.avg_median.avg_insomnia;
             $("#avg_insomnia").append(avgInsomnia);
-            var medianInsomnia = results.avg_median.median_sleep;
+            var medianInsomnia = results.avg_median.median_insomnia;
             $("#median_insomnia").append(medianInsomnia);
+            var mostFrequentType = results.donut_chart.most_frequent_type;
+            $("#most_frequent_type").append(mostFrequentType);
     }
+
 
 
     // Create all charts & insights.  
@@ -127,8 +138,24 @@
     }
     
 
+    // WAY TO CONDENSE THESE 2 FUNCTIONS? 
     // Get user-submitted dates, pass to createCharts. 
     function getDateRange(evt) {
+
+        evt.preventDefault();
+
+        var formInputs = {
+            "start_date": $("#date-range input[name=start_date]").val() 
+        };
+
+        $.get('/insom-types.json',
+            formInputs,
+            createCharts);   
+    };
+
+
+
+    function getDefaultDateRange(evt) {
         // evt.preventDefault();
 
         var formInputs = {
@@ -138,12 +165,13 @@
 
         $.get('/insom-types.json',
             formInputs,
-            createCharts);   
-        
+            createCharts);     
     };
 
 
-    $( document ).ready(getDateRange);
+    //On page load, create charts with default start_date. 
+    $( document ).ready(getDefaultDateRange);
+    //On submit, create charts with user-selected start_date. 
     $("#date-range").on("submit", getDateRange);
 
     

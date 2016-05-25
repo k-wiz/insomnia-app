@@ -22,6 +22,7 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Display today's entry form."""
 
+    #ADD LOGIC -- WHAT IF NO FITBIT?
     consumer_key = os.environ['client_id']
     consumer_secret = os.environ['client_secret']
     access_token = os.environ['access_token']
@@ -104,6 +105,7 @@ def insom_type_data():
     user_id = 1
 
     #Set dates
+    #PLAY AROUND WITH APPROPROATE DATE RANGE -- 4 weeks? 
     default_start_date = datetime.strftime(two_weeks_before_last_entry(user_id), '%Y-%m-%d')
     start = request.args.get("start_date", default_start_date)
     if start == "":
@@ -112,15 +114,20 @@ def insom_type_data():
     end_date = start_date + timedelta(14)
 
 
-    # start_date = datetime(2016,5,20)
-    # end_date = datetime(2016,5,25)
-
-
     #Create values & labels for donutChart. 
     a = frequency_insomnia_type(user_id, start_date, end_date, '')
     b = frequency_insomnia_type(user_id, start_date, end_date, 'early-awakening')
-    c = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-maintenace')
-    d =frequency_insomnia_type(user_id, start_date, end_date, 'sleep-onset')
+    c = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-maintenance')
+    d = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-onset')
+
+    type_dict = {
+        "early-awakening": b,
+        "sleep-maintenance": c,
+        "sleep-onset": d
+    }
+
+    most_frequent_type = max(type_dict)
+    print most_frequent_type
 
     donut_dict = {
         'insom_type': [
@@ -147,8 +154,9 @@ def insom_type_data():
                 "color": "#FDB45C",
                 "highlight": "#FFC870",
                 "label": "Sleep-onset insomnia"
-            }
-        ]
+            }], 
+
+        'most_frequent_type': most_frequent_type
     }
 
 
@@ -203,9 +211,11 @@ def insom_type_data():
     #Calculate averages and medians from start_date to end_date.
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
     median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
+    print median_sleep
     avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
+    print median_insomnia
     
     avg_median_dict = {
         'avg_sleep': avg_sleep,
@@ -223,8 +233,8 @@ def insom_type_data():
         "line_chart": line_dict,
         "donut_chart": donut_dict,
         "avg_median": avg_median_dict
-    }
-    
+    } 
+
 
 
     return jsonify(data_list_of_dicts)
