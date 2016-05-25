@@ -4,7 +4,7 @@ from flask import Flask, render_template, redirect, request, flash, session, jso
 from flask_debugtoolbar import DebugToolbarExtension
 from jinja2 import StrictUndefined
 from model import connect_to_db, db, User, Entry
-from datetime import datetime, time, date
+from datetime import datetime, time, date, timedelta
 from sqlalchemy import func, update
 from helper import *
 import numpy as np
@@ -18,10 +18,6 @@ app.jinja_env.undefined = StrictUndefined
 
 ###################################################################
 
-# consumer_key = os.environ['client_id']
-# consumer_secret = os.environ['client_secret']
-# access_token = os.environ['access_token']
-# refresh_token = os.environ['refresh_token']
 @app.route('/')
 def index():
     """Display today's entry form."""
@@ -36,13 +32,10 @@ def index():
     
     sleep_log = authd_client.sleep()
 
-    #payload 
-    # r = requests.get("https://api.fitbit.com/1/user/-/sleep/date/2016-04-20.json")
-    # print "RRRRRRRR", r
 
 
-    #If fitbit: 
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
+    
 
 
     #Alert user?
@@ -90,7 +83,7 @@ def dashboard():
     avg_insom_severity = calculate_avg_insom_severity(user_id, start_date, end_date)
     median_sleep = calculate_median_sleep(user_id, start_date, end_date)
     median_insom_severity = calculate_median_insom_severity(user_id, start_date, end_date)
-    most_frequent_type_insomnia = (most_frequent_type(user_id, start_date, end_date))[1]
+    # most_frequent_type_insomnia = (most_frequent_type(user_id, start_date, end_date))[1]
 
 
     # Pass calculated data to template
@@ -98,8 +91,7 @@ def dashboard():
                                 avg_sleep=avg_sleep,
                                 median_sleep=median_sleep,
                                 avg_insom_severity=avg_insom_severity,
-                                median_insom_severity=median_insom_severity,
-                                most_frequent_type_insomnia=most_frequent_type_insomnia)
+                                median_insom_severity=median_insom_severity)
 
 
 ##########################################################################
@@ -107,103 +99,80 @@ def dashboard():
 
 @app.route('/insom-types.json')
 def insom_type_data():
-    """Returns a jsonified dictionary of values needed to update the pie chart, 
-    averages, and medians. First value is data needed to load chart.
-    Last 4 values are data needed to display averages & medians."""
+    """Returns a jsonified dictionary of values needed to create charts."""
  
     user_id = 1
 
     #REFACTOR!!! MOVE TO HELPER FUNCTION.
-    # Default dashboard view shows all-time data, from user's first entry 
-    # (default start date) to user's last entry (default_end_date). 
-    default_start_date = datetime.strftime(first_entry(user_id), '%Y-%m-%d')
+    default_start_date = datetime.strftime(two_weeks_before_last_entry(user_id), '%Y-%m-%d')
     start = request.args.get("start_date", default_start_date)
     start_date = datetime.strptime(start, '%Y-%m-%d')
-    default_end_date = datetime.strftime(last_entry(user_id), '%Y-%m-%d')
-    end = request.args.get("end_date", default_end_date)
-    end_date = datetime.strptime(end, '%Y-%m-%d')
-    
-    #Calculate total days in time range
+    end_date = start_date + timedelta(14)
+
     total_days = end_date - start_date
     total_days = total_days.days + 1
 
-    #NOTE: NEED TO ADD CONDITIONAL TO CHECK IF LIST IS LESS THAN
-    #LENGTH OF 4. 
-    #Calculate frequency of each insomnia type as a percentage
-    insom_type = insom_type_frequency(user_id, start_date, end_date)
-    insom_type = sorted(insom_type)
 
-    x = '{0:.0f}'.format(float(insom_type[0][1]) / total_days * 100)
-    x_label = "No insomnia"
-    y = '{0:.0f}'.format(float(insom_type[1][1]) / total_days * 100)
-    y_label = "Early-awakening insomnia"
-    z = '{0:.0f}'.format(float(insom_type[2][1]) / total_days * 100)
-    z_label = "Sleep-maintenance insomnia"
-    a = '{0:.0f}'.format(float(insom_type[3][1]) / total_days * 100)
-    a_label = "Sleep-onset insomnia"
+    
+    #Create values & labels for donutChart. 
+    a = frequency_no_insomnia(user_id, start_date, end_date)
+    b = frequency_early_insomnia(user_id, start_date, end_date)
+    c = frequency_maintenance_insomnia(user_id, start_date, end_date)
+    d = frequency_onset_insomnia(user_id, start_date, end_date)
 
 
-    #Calculate averages and medians from start_date to end_date.
-    avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
-    median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
-    avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
-    median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
-                                        (user_id, start_date, end_date))
-
-
-    # kelli = hours_sleep_data(user_id, start_date, end_date)
-    # print kelli
-
-    #UPDATE COLORS & LABELS
-    data_list_of_dicts = {
+    donut_dict = {
         'insom_type': [
             {
-                "value": x, 
+                "value": a, 
                 "color": "#A9A9A9",
                 "highlight": "#808080",
-                "label": x_label
+                "label": "No insomnia yay!"
             },
             {
-                "value": y,
+                "value": b,
                 "color": "#46BFBD",
                 "highlight": "#5AD3D1",
-                "label": y_label
+                "label": "Early-awakening insomnia"
             },
             {
-                "value": z,
+                "value": c,
                 "color": "#F7464A",
                 "highlight": "#FF5A5E",
-                "label": z_label
+                "label": "Sleep-maintenace insomnia"
             },
             {
-                "value": a,
+                "value": d,
                 "color": "#FDB45C",
                 "highlight": "#FFC870",
-                "label": a_label
+                "label": "Sleep-onset insomnia"
             }
-        ],
-        'avg_sleep': avg_sleep,
-        'median_sleep': median_sleep,
-        'avg_insomnia': avg_insomnia,
-        'median_insomnia': median_insomnia
+        ]
+        # 'avg_sleep': avg_sleep,
+        # 'median_sleep': median_sleep,
+        # 'avg_insomnia': avg_insomnia,
+        # 'median_insomnia': median_insomnia
     }
-    return jsonify(data_list_of_dicts)
-  
-
-############################################################################
 
 
-@app.route('/insom-severity.json')
-def insom_severity_data():
-    """Returns a jsonified dictionary of values needed to create and update
-    the insom_severity line graph."""
 
-    user_id = 1
-    start_date = datetime(2016, 4, 1)
-    end_date = datetime(2016,4,30)
+    #Create values and labels for barChart. 
+    dates = hours_sleep_data(user_id, start_date, end_date)[0]
+    data_points = hours_sleep_data(user_id, start_date, end_date)[1]
 
-    #REFACTOR: move data formatting to helper.py! THEN TEST! 
-    #Create a list of dates and a list of corresponding insom_severity_scores.
+    bar_dict = {
+        "labels" : dates,
+        "datasets" : [
+            {
+                "fillColor" : "#48A497",
+                "strokeColor" : "#48A4D1",
+                "data" : data_points
+            }]
+
+    }
+
+
+    #Create values and labels for lineChart. 
     data_points = sorted(db.session.query(Entry.date, Entry.insom_severity).filter\
         (Entry.user_id == user_id, Entry.date >= start_date, 
         Entry.date <= end_date).all())
@@ -218,10 +187,7 @@ def insom_severity_data():
         insom_severity_score = item[1]
         insom_severity_scores.append(insom_severity_score)
 
-
-    #Pass lists of dates & insom_severity_scores to dictionary.
-
-    data_dict = {
+    line_dict = {
         "labels": dates,
         "datasets": [
             {
@@ -246,17 +212,57 @@ def insom_severity_data():
             # }
         ]
     }
-    return jsonify(data_dict)
 
 
-###################################################################
+    #Calculate averages and medians from start_date to end_date.
+    avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
+    median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
+    avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
+    median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
+                                        (user_id, start_date, end_date))
+    avg_median_dict = {
+        'avg_sleep': avg_sleep,
+        'median_sleep': median_sleep,
+        'avg_insomnia': avg_insomnia,
+        'median_insomnia': median_insomnia
+    }
 
-@app.route("/hours-sleep.json")
-def hours_sleep_json():
-    """Returns a jsonified dictionary of values needed to create and update
-    the hours_sleep bar chart."""
 
-    user_id = 1
+    #Jsonify values and labels for each chart.
+    data_list_of_dicts = {
+
+        "bar_chart": bar_dict,
+        "line_chart": line_dict,
+        "donut_chart": donut_dict,
+        "avg_median": avg_median_dict
+    }
+    
+    
+    return jsonify(data_list_of_dicts)
+  
+
+
+
+# @app.route('/insom-severity.json')
+# def insom_severity_data():
+#     """Returns a jsonified dictionary of values needed to create and update
+#     the insom_severity line graph."""
+
+    # user_id = 1
+    # start_date = datetime(2016, 4, 1)
+    # end_date = datetime(2016,4,30)
+
+    #REFACTOR: move data formatting to helper.py! THEN TEST! 
+    #Create a list of dates and a list of corresponding insom_severity_scores.
+    
+
+
+# @app.route("/hours-sleep.json")
+# def hours_sleep_json():
+#     """Returns a jsonified dictionary of values needed to create and update
+#     the hours_sleep bar chart."""
+
+#     user_id = 1
 
     #REFACTOR!!! MOVE TO HELPER FUNCTION.
     #If no dates selected, use date of user's first entry as default_start_date
@@ -265,27 +271,15 @@ def hours_sleep_json():
     # default_start_date = datetime.strftime(two_weeks_before_last_entry(user_id), '%Y-%m-%d')
     # start = request.args.get("start_date", default_start_date)
     # start_date = datetime.strptime(start, '%Y-%m-%d')
-    start_date = datetime(2016, 5, 20) # HARDCODED, replace with function! 
 
-    default_end_date = datetime.strftime(last_entry(user_id), '%Y-%m-%d')
-    end = request.args.get("end_date", default_end_date)
-    end_date = datetime.strptime(end, '%Y-%m-%d')
+    # start_date = datetime(2016, 5, 20) # HARDCODED, replace with function! 
 
-    dates = hours_sleep_data(user_id, start_date, end_date)[0]
-    data_points = hours_sleep_data(user_id, start_date, end_date)[1]
+    # default_end_date = datetime.strftime(last_entry(user_id), '%Y-%m-%d')
+    # end = request.args.get("end_date", default_end_date)
+    # end_date = datetime.strptime(end, '%Y-%m-%d')
 
-    data_dict = {
-        "labels" : dates,
-        "datasets" : [
-            {
-                "fillColor" : "#48A497",
-                "strokeColor" : "#48A4D1",
-                "data" : data_points
-            }]
 
-    }
 
-    return jsonify(data_dict)
 
 
 

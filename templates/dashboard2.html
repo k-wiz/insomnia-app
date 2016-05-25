@@ -3,25 +3,32 @@
 <h2>Sleep Insights</h2>
 
 <!-- Insights: average, median sleep; average, median insomnia -->
-<section class="data-insights">
+<!-- <section class="data-insights">
     <p id="avg_sleep">Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
     <p id="median_sleep">Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
     <p id="avg_insomnia">Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
     <p id="median_insomnia">Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
+</section> -->
+
+
+<!-- Insights: average, median sleep; average, median insomnia -->
+<section class="data-insights">
+    <p>Average sleep per night: <span id="avg_sleep"></span> hours</p>
+    <p>Median sleep per night: <span id="median_sleep"></span> hours</p>
+    <p>Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
+    <p>Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
 </section>
+
 
 <!-- Insight: most common type of insomnia -->
 <section class="data-insights">
-    <p>Your most frequent type of insomnia is {{ most_frequent_type_insomnia }} insomnia.</p>
+    <p>Your most frequent type of insomnia is ____ insomnia.</p>
 </section>
 
 <!-- Insight: factors that co-occur with insomnia -->
 <section class="data-insights"> 
     <p>Insomnia happens more frequently when you also X.</p>
-</section>
-
-<br>
-<br>
+</section><br><br>
 
 
 
@@ -35,20 +42,14 @@
         End date: <input type="date" name="end_date">
         <input type="submit">
     </form>
-</div>
-
-<br>
-<br>
+</div><br><br>
 
 
 <!-- Bar chart element -->
 <div class="sleep-chart">
     <canvas id="barChart"></canvas>
     <div id="barCanvas"></div>
-</div>
-
-<br>
-<br>
+</div><br><br>
 
 
 <!-- Line graph element -->
@@ -63,6 +64,22 @@
 <script src="static/dashboard.js"></script>
 
 <script>
+
+    // Add textual data insights. 
+    function addDataInsights() {
+        $.get("/insom-types.json", function (data) {
+            var avgSleep = data.avg_median.avg_sleep;
+            $("#avg_sleep").append(avgSleep);
+            var medianSleep = data.avg_median.median_sleep;
+            $("#median_sleep").append(medianSleep)
+            var avgInsomnia = data.avg_median.avg_insomnia;
+            $("#avg_insomnia").append(avgInsomnia);
+            var medianInsomnia = data.avg_median.median_sleep;
+            $("#median_insomnia").append(medianInsomnia);
+
+        })
+    }
+
     
     // Create canvas elements to add to empty div.
     var canvas_tag = '<canvas id="donutChart">'
@@ -72,7 +89,6 @@
     var options = {
       responsive: true
     };
-
     
 
     // Create donut chart.
@@ -84,10 +100,9 @@
         var ctx_donut = $("#donutChart").get(0).getContext("2d");
 
         $.get("/insom-types.json", function (data) {
-          var myDonutChart = new Chart(ctx_donut).Doughnut(data.insom_type, options);
+          var myDonutChart = new Chart(ctx_donut).Doughnut(data.donut_chart.insom_type, options);
           $('#donutLegend').html(myDonutChart.generateLegend());
         });
-
     }
 
 
@@ -99,11 +114,11 @@
 
         var ctx_bar = $("#barChart").get(0).getContext("2d");
 
-        $.get("/hours-sleep.json", function (data) {
-            var myBarChart = new Chart(ctx_bar).Bar(data, options);
+        $.get("/insom-types.json", function (data) {
+            var myBarChart = new Chart(ctx_bar).Bar(data.bar_chart, options);
         });
-
     }
+
 
     // Create line chart. 
     function drawLineChart() {
@@ -113,34 +128,38 @@
 
         var ctx_line = $("#lineChart").get(0).getContext("2d");
 
-        $.get("/insom-severity.json", function (data) {
-            var myLineChart = new Chart(ctx_line).Line(data, options);
+        $.get("/insom-types.json", function (data) {
+            var myLineChart = new Chart(ctx_line).Line(data.line_chart, options);
             $("#lineLegend").html(myLineChart.generateLegend());
         });
-
     }
 
 
     drawDonutChart();
     drawBarChart();
     drawLineChart();
+    addDataInsights();
 
 
-    // Update donut chart based on user-selected date range. 
+    // Update donut chart based on user-selected date range.
+    //NOTE: FIXED RESULTS VARIABLES HERE, BUT NOT ELSEWHERE.  
     function updatePieChart(results) {
 
         $("#donutChart").remove()
         $("#canvas").append(canvas_tag)
         var ctx_donut = $("#donutChart").get(0).getContext("2d");
-        var myDonutChart = new Chart(ctx_donut).Doughnut(results.insom_type, options);
+
+        var myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_dict.insom_type, options);
+
         $('#donutLegend').html(myDonutChart.generateLegend());
 
-        $('#avg_sleep').html("Average sleep per night: " + results.avg_sleep + " hours");
-        $('#median_sleep').html("Median sleep per night: " + results.median_sleep + " hours");
-        $('#avg_insomnia').html("Average insomnia severity: " + results.avg_insomnia + " / 10");
-        $('#median_insomnia').html("Median insomnia severity: " + results.median_insomnia + " / 10");
+        $('#avg_sleep').html("Average sleep per night: " + results.avg_median.avg_sleep + " hours");
+        $('#median_sleep').html("Median sleep per night: " + results.avg_median.median_sleep + " hours");
+        $('#avg_insomnia').html("Average insomnia severity: " + results.avg_median.avg_insomnia + " / 10");
+        $('#median_insomnia').html("Median insomnia severity: " + results.avg_median.median_insomnia + " / 10");
 
     }
+
 
     function updateBarChart(results) {
         $("#barChart").remove()
@@ -188,11 +207,6 @@
     $("#date-range").on("submit", getDateRange);
 
     
-// 1. Make updateBarChart
-// 2. Make updateLineChart
-// 3. Make updateAvgMedian
-// 3. Make updateCharts, that calls individ update functons.
-// 4. On line 157, replace updatePieChart with updateCharts
 
 
 
