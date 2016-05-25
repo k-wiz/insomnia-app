@@ -103,18 +103,19 @@ def insom_type_data():
  
     user_id = 1
 
-    #REFACTOR!!! MOVE TO HELPER FUNCTION.
     #Set dates
-    # default_start_date = datetime.strftime(two_weeks_before_last_entry(user_id), '%Y-%m-%d')
-    # start = request.args.get("start_date", default_start_date)
-    # start_date = datetime.strptime(start, '%Y-%m-%d')
-    # end_date = start_date + timedelta(14)
-    start_date = datetime(2016,5,20)
-    end_date = datetime(2016,5,25)
+    default_start_date = datetime.strftime(two_weeks_before_last_entry(user_id), '%Y-%m-%d')
+    start = request.args.get("start_date", default_start_date)
+    if start == "":
+        start = default_start_date
+    start_date = datetime.strptime(start, '%Y-%m-%d')
+    end_date = start_date + timedelta(14)
 
 
+    # start_date = datetime(2016,5,20)
+    # end_date = datetime(2016,5,25)
 
-    
+
     #Create values & labels for donutChart. 
     a = frequency_insomnia_type(user_id, start_date, end_date, '')
     b = frequency_insomnia_type(user_id, start_date, end_date, 'early-awakening')
@@ -224,6 +225,7 @@ def insom_type_data():
         "avg_median": avg_median_dict
     }
     
+
 
     return jsonify(data_list_of_dicts)
   

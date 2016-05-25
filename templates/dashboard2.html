@@ -68,125 +68,68 @@
     };
     
 
-    // Create donut chart.
-    function drawDonutChart() {
+    // Create donut chart. 
+    function drawDonutChart(results) {
 
         $("#donutChart").remove()
         $("#canvas").append(canvas_tag)
         
         var ctx_donut = $("#donutChart").get(0).getContext("2d");
-
-        $.get("/insom-types.json", function (data) {
-          var myDonutChart = new Chart(ctx_donut).Doughnut(data.donut_chart.insom_type, options);
-          $('#donutLegend').html(myDonutChart.generateLegend());
-        });
+        var myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_chart.insom_type, options);
+        $('#donutLegend').html(myDonutChart.generateLegend());
+        
     }
 
 
     // Create bar chart. 
-    function drawBarChart() {
+    function drawBarChart(results) {
 
         $("#barChart").remove()
         $("#barCanvas").append(bar_canvas_tag)
 
         var ctx_bar = $("#barChart").get(0).getContext("2d");
-
-        $.get("/insom-types.json", function (data) {
-            var myBarChart = new Chart(ctx_bar).Bar(data.bar_chart, options);
-        });
+        var myBarChart = new Chart(ctx_bar).Bar(results.bar_chart, options);
     }
 
 
     // Create line chart. 
-    function drawLineChart() {
+    function drawLineChart(results) {
 
         $("#lineChart").remove()
         $("#lineCanvas").append(line_canvas_tag)
 
         var ctx_line = $("#lineChart").get(0).getContext("2d");
-
-        $.get("/insom-types.json", function (data) {
-            var myLineChart = new Chart(ctx_line).Line(data.line_chart, options);
-            $("#lineLegend").html(myLineChart.generateLegend());
-        });
+        var myLineChart = new Chart(ctx_line).Line(results.line_chart, options);
+        $("#lineLegend").html(myLineChart.generateLegend());
     }
 
 
     // Add textual data insights. 
-    function addDataInsights() {
-        $.get("/insom-types.json", function (data) {
-            var avgSleep = data.avg_median.avg_sleep;
+    function addDataInsights(results) {
+
+            var avgSleep = results.avg_median.avg_sleep;
             $("#avg_sleep").append(avgSleep);
-            var medianSleep = data.avg_median.median_sleep;
+            var medianSleep = results.avg_median.median_sleep;
             $("#median_sleep").append(medianSleep)
-            var avgInsomnia = data.avg_median.avg_insomnia;
+            var avgInsomnia = results.avg_median.avg_insomnia;
             $("#avg_insomnia").append(avgInsomnia);
-            var medianInsomnia = data.avg_median.median_sleep;
+            var medianInsomnia = results.avg_median.median_sleep;
             $("#median_insomnia").append(medianInsomnia);
-
-        })
     }
 
 
-    drawDonutChart();
-    drawBarChart();
-    drawLineChart();
-    addDataInsights();
-
-
+    // Create all charts & insights.  
+    function createCharts(results) {
+        drawDonutChart(results);
+        drawBarChart(results);
+        drawLineChart(results);
+        addDataInsights(results); 
+    }
     
-// HOW TO COMBINE UPDATE & CREATE FUNCTIONS
 
-    // Update donut chart based on user-selected date range. 
-    function updatePieChart(results) {
-
-        $("#donutChart").remove()
-        $("#canvas").append(canvas_tag)
-        var ctx_donut = $("#donutChart").get(0).getContext("2d");
-
-        var myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_dict.insom_type, options);
-
-        $('#donutLegend').html(myDonutChart.generateLegend());
-
-        $('#avg_sleep').html("Average sleep per night: " + results.avg_median.avg_sleep + " hours");
-        $('#median_sleep').html("Median sleep per night: " + results.avg_median.median_sleep + " hours");
-        $('#avg_insomnia').html("Average insomnia severity: " + results.avg_median.avg_insomnia + " / 10");
-        $('#median_insomnia').html("Median insomnia severity: " + results.avg_median.median_insomnia + " / 10");
-
-    }
-
-
-    function updateBarChart(results) {
-        $("#barChart").remove()
-        $("#barCanvas").append(bar_canvas_tag)
-
-        var ctx_bar = $("#barChart").get(0).getContext("2d");
-        var myBarChart = new Chart(ctx_bar).Bar(results, options);
-    }
-
-    function updateCharts(results) {
-        updatePieChart(results); 
-    }
-
-    // updatePieChart(results.pie)
-
-    // function drawBarChart() {
-
-    //     $("#barChart").remove()
-    //     $("#barCanvas").append(bar_canvas_tag)
-
-    //     var ctx_bar = $("#barChart").get(0).getContext("2d");
-
-    //     $.get("/hours-sleep.json", function (data) {
-    //         var myBarChart = new Chart(ctx_bar).Bar(data, options);
-    //     });
-
-    // }
-
-
-
+    // Get user-submitted dates, pass to createCharts. 
     function getDateRange(evt) {
-        evt.preventDefault();
+        // evt.preventDefault();
 
         var formInputs = {
             "start_date": $("#date-range input[name=start_date]").val(),
@@ -195,10 +138,12 @@
 
         $.get('/insom-types.json',
             formInputs,
-            updateCharts); 
+            createCharts);   
         
     };
 
+
+    $( document ).ready(getDateRange);
     $("#date-range").on("submit", getDateRange);
 
     
