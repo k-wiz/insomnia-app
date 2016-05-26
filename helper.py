@@ -92,8 +92,7 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
         insom_severity_lst.append(item[0])
 
     median_insom_severity = median(insom_severity_lst)
-    print insom_severity_lst
-    print median_insom_severity
+    
     return median_insom_severity
 
 
@@ -112,7 +111,7 @@ def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
         return 0
 
 
-
+#CAN THIS FUNC BE GENERALIZED? 
 def insom_severity_data(user_id, start_date, end_date):
     """Returns a tuple of lists, one list of dates as strings, and one list of 
     insomnia severity scores."""
@@ -132,6 +131,28 @@ def insom_severity_data(user_id, start_date, end_date):
         insom_severity_scores.append(insom_severity_score)
 
     return dates, insom_severity_scores
+
+
+
+def stress_data(user_id, start_date, end_date):
+    """Returns a tuple of lists, one list of dates as strings, and one list of 
+    stress_level scores."""
+
+    data_points = sorted(db.session.query(Entry.date, Entry.stress_level).filter\
+        (Entry.user_id == user_id, Entry.date >= start_date, 
+        Entry.date <= end_date).all())
+
+    # dates = []
+    stress_scores = []
+    
+    for item in data_points:
+        # date = "%s/%s" % (item[0].month, item[0].day)
+        # dates.append(date)
+
+        stress_score = item[1]
+        stress_scores.append(stress_score)
+
+    return stress_scores
 
 
 

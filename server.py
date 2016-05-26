@@ -122,7 +122,6 @@ def insom_type_data():
     }
 
     most_frequent_type = max(type_dict)
-    print most_frequent_type
 
     donut_dict = {
         'insom_type': [
@@ -164,6 +163,7 @@ def insom_type_data():
         "labels" : dates,
         "datasets" : [
             {
+                "label" : "Hours Slept Per Night",
                 "fillColor" : "#48A497",
                 "strokeColor" : "#48A4D1",
                 "data" : hours_sleep_scores
@@ -174,12 +174,14 @@ def insom_type_data():
 
     #Create values and labels for lineChart. 
     insom_severity_scores = insom_severity_data(user_id, start_date, end_date)[1]
+    stress_scores = stress_data(user_id, start_date, end_date)
+    print stress_scores
 
     line_dict = {
         "labels": dates,
         "datasets": [
             {
-                "label": "April",
+                "label": "Insomnia Severity",
                 "fillColor": "rgba(220,220,220,0.2)",
                 "strokeColor": "rgba(220,220,220,1)",
                 "pointColor": "rgba(220,220,220,1)",
@@ -188,16 +190,16 @@ def insom_type_data():
                 "pointHighlightStroke": "rgba(220,220,220,1)",
                 "data": insom_severity_scores
             },
-            # {
-            #     "label": "Cantaloupe",
-            #     "fillColor": "rgba(151,187,205,0.2)",
-            #     "strokeColor": "rgba(151,187,205,1)",
-            #     "pointColor": "rgba(151,187,205,1)",
-            #     "pointStrokeColor": "#fff",
-            #     "pointHighlightFill": "#fff",
-            #     "pointHighlightStroke": "rgba(151,187,205,1)",
-            #     "data": [28, 48, 40, 19, 86, 27, 90]
-            # }
+            {
+                "label": "Stress Level",
+                "fillColor": "rgba(151,187,205,0.2)",
+                "strokeColor": "rgba(151,187,205,1)",
+                "pointColor": "rgba(151,187,205,1)",
+                "pointStrokeColor": "#fff",
+                "pointHighlightFill": "#fff",
+                "pointHighlightStroke": "rgba(151,187,205,1)",
+                "data": stress_scores
+            }
         ]
     }
 

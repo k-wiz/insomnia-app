@@ -2,10 +2,12 @@
 {% block content %}
 <h2>Sleep Insights</h2>
 
+
 <form id = "date-range" action = '/insom-types.json'>
     Start date: <input type="date" name="start_date">
     <input type="submit">
 </form>
+
 
 <!-- Insights: average, median sleep; average, median insomnia -->
 <section class="data-insights">
@@ -25,29 +27,35 @@
 <!-- Insight: factors that co-occur with insomnia -->
 <section class="data-insights"> 
     <p>Insomnia happens more frequently when you also ______.</p>
-</section><br><br>
+</section><br><br><br><br>
 
 
 <!-- Donut chart element -->
 <div class="sleep-chart">
+    <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
     <canvas id="donutChart"></canvas>
     <div id="canvas"></div>
     <div id="donutLegend" class="chart-legend"></div>
+    </label>
 </div><br><br>
 
 
 <!-- Bar chart element -->
 <div class="sleep-chart">
+    <label for="barChart">Hours of Sleep per Night<br>
     <canvas id="barChart"></canvas>
     <div id="barCanvas"></div>
+    </label>
 </div><br><br>
 
 
 <!-- Line graph element -->
 <div class="sleep-chart">
+    <label for="lineChart">Insomnia Severity vs. Stress Level<br>
     <canvas id="lineChart"></canvas>
     <div id="lineCanvas"></div>
     <div id="lineLegend" class="chart-legend"></div>
+    </label>
 </div>
 
 
