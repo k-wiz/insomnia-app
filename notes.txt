@@ -63,32 +63,24 @@ Day 12, May 24th:
 1. Spent ALL day working with JS. Created new bar chart; then, 
 refactored JS in dashboard file. Created createCharts function. Then, refactored
 server to return all data for all charts in one JSOn dict. Then, refactored
-insomnia_type (but poorly). Next: finish loading charts. 
+insomniatype (but poorly). Next: finish loading charts. 
+
+Day 13, May 25th: 
+1. Yaaay! Finished JS refactoring; charts create and update with same function. 
+2. Line chart finished. 
+3. Titles added to charts. 
+4. server.py and helper.py refactored. 
+
+TOMORROW: 
+1. Make 2nd line chart, 2nd bar chart, all-time chart. 
+2. Add bedtime standard deviation. 
+3. Finish co-occurrence function. 
+
+THEN: 
+fix up user input!!! (validation, more user input)
+tests
+more features? Tracking button?
 
 
 
- -
- -3. Figure out how to programmatically incorporate insights! Plot insights on scatterplot, explore data. (MVP, yaaay!)
 
- -5. Others: login & 2nd user, fix pie chart -- %, better graphs, better insights, tracking button? 
- -
- -
- -
- -
- -
- -
- -
- -
- -
- -MASTER PLAN:
- -
- -1. Play around with chart.js. Is this sufficient, or do I want D3? Then:
- -    -Is it feasible to view data by month AND
- -    -when month is selected and viewed, averages and medians are recalculated?
- -2. Do research into data analysis techniques. Once the MVP of insights page is complete:
- -3. Add JS to form page. make it all pretty. 
- -4. If time, incorporate data from Fitbit API!!!
- -
- -
- -
- -chart.js (for graph) 
