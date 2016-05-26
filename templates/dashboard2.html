@@ -31,7 +31,7 @@
 
 
 <!-- Donut chart element -->
-<div class="sleep-chart">
+<div class="donut-chart">
     <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
     <canvas id="donutChart"></canvas>
     <div id="canvas"></div>
@@ -41,7 +41,7 @@
 
 
 <!-- Bar chart element -->
-<div class="sleep-chart">
+<div class="small-chart">
     <label for="barChart">Hours of Sleep per Night<br>
     <canvas id="barChart"></canvas>
     <div id="barCanvas"></div>
@@ -49,14 +49,34 @@
 </div><br><br>
 
 
-<!-- Line graph element -->
-<div class="sleep-chart">
+<!-- 2nd bar chart element -->
+<div class="small-chart">
+    <label for="bedtimeBarChart">Bedtime per Night<br>
+    <canvas id="bedtimeBarChart"></canvas>
+    <div id="bedtimeBarCanvas"></div>
+    </label>
+</div><br><br>
+
+
+<!-- Line graph elements -->
+<div class="small-chart">
     <label for="lineChart">Insomnia Severity vs. Stress Level<br>
     <canvas id="lineChart"></canvas>
     <div id="lineCanvas"></div>
     <div id="lineLegend" class="chart-legend"></div>
     </label>
+</div><br><br>
+
+
+<!-- 2nd line graph element -->
+<div class="small-chart">
+    <label for="activityLineChart">Insomnia Severity vs. Physical Activity Level<br>
+    <canvas id="activityLineChart"></canvas>
+    <div id="activityLineCanvas"></div>
+    <div id="actvityLineLegend" class="chart-legend"></div>
+    </label><br><br>
 </div>
+
 
 
 <script src="https://code.jquery.com/jquery.js"></script>
@@ -69,13 +89,15 @@
     var canvas_tag = '<canvas id="donutChart">'
     var bar_canvas_tag = '<canvas id="barChart">'
     var line_canvas_tag = '<canvas id="lineChart">'
+    var activity_line_canvas_tag = '<canvas id="activityLineChart">'
+    var bedtime_bar_canvas_tag = '<canvas id="bedtimeBarChart"'
 
     var options = {
       responsive: true
     };
     
 
-    // Create donut chart. 
+    // Create insom_type donut chart. 
     function drawDonutChart(results) {
 
         $("#donutChart").remove()
@@ -89,7 +111,7 @@
 
 
 
-    // Create bar chart. 
+    // Create hours_sleep bar chart. 
     function drawBarChart(results) {
 
         $("#barChart").remove()
@@ -101,7 +123,20 @@
 
 
 
-    // Create line chart. 
+    // Create bedtime bar chart. 
+    function drawBedtimeBarChart(results) {
+
+        $("#bedtimeBarChart").remove()
+        $("#bedtimeBarCanvas").append(bedtime_bar_canvas_tag)
+
+        var ctx_bar = $("#bedtimeBarChart").get(0).getContext("2d");
+        var myBedtimeBarChart = new Chart(ctx_bar).Bar(results.bedtime_bar_chart, options);
+
+    }
+
+
+
+    // Create stress_level vs. insomnia_severity line chart. 
     function drawLineChart(results) {
 
         $("#lineChart").remove()
@@ -112,6 +147,17 @@
         $("#lineLegend").html(myLineChart.generateLegend());
     }
 
+
+    // Create activity_level vs. insomnia_severity line chart. 
+    function drawActivityLineChart(results) {
+
+        $("#activityLineChart").remove()
+        $("#activityLineCanvas").append(activity_line_canvas_tag)
+
+        var ctx_line = $("#activityLineChart").get(0).getContext("2d");
+        var myActivityLineChart = new Chart(ctx_line).Line(results.activity_line_chart, options);
+        $("#activityLineLegend").html(myActivityLineChart.generateLegend());
+    }
 
 
     // Add textual data insights. 
@@ -141,8 +187,10 @@
     function createCharts(results) {
         drawDonutChart(results);
         drawBarChart(results);
+        // drawBedtimeBarChart(results);
         drawLineChart(results);
-        addDataInsights(results); 
+        drawActivityLineChart(results);
+        addDataInsights(results);
     }
     
 
@@ -162,13 +210,11 @@
     };
 
 
-
+    // Get default dates, pass to createCharts.
     function getDefaultDateRange(evt) {
-        // evt.preventDefault();
 
         var formInputs = {
-            "start_date": $("#date-range input[name=start_date]").val(),
-            "end_date": $("#date-range input[name=end_date]").val() 
+            "start_date": $("#date-range input[name=start_date]").val() 
         };
 
         $.get('/insom-types.json',

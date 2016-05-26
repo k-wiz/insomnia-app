@@ -1,5 +1,11 @@
-.melon-chart {
+.small-chart {
     width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.donut-chart {
+    width: 50%;
     margin-left: auto;
     margin-right: auto;
 }

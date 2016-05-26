@@ -22,7 +22,7 @@ app.jinja_env.undefined = StrictUndefined
 def index():
     """Display today's entry form."""
 
-    #ADD LOGIC -- WHAT IF NO FITBIT?
+    #ADD LOGIC -- WHAT IF NO FITBIT? (try/except)
     consumer_key = os.environ['client_id']
     consumer_secret = os.environ['client_secret']
     access_token = os.environ['access_token']
@@ -79,7 +79,6 @@ def dashboard():
     avg_insom_severity = calculate_avg_insom_severity(user_id, start_date, end_date)
     median_sleep = calculate_median_sleep(user_id, start_date, end_date)
     median_insom_severity = calculate_median_insom_severity(user_id, start_date, end_date)
-    # most_frequent_type_insomnia = (most_frequent_type(user_id, start_date, end_date))[1]
 
 
     # Pass calculated data to template
@@ -100,7 +99,6 @@ def insom_type_data():
     user_id = 1
 
     #Set dates
-    #PLAY AROUND WITH APPROPROATE DATE RANGE -- 4 weeks? 
     default_start_date = datetime.strftime(four_weeks_before_last_entry(user_id), '%Y-%m-%d')
     start = request.args.get("start_date", default_start_date)
     if start == "":
@@ -172,10 +170,26 @@ def insom_type_data():
 
 
 
+    #Create values and labels for bedtimeBarChart. 
+    bedtimes = bedtime_data(user_id, start_date, end_date)
+    print "BEDTIMES", bedtimes
+
+    bedtime_bar_dict = {
+        "labels" : dates,
+        "datasets" : [
+            {
+                "label" : "Hours Slept Per Night",
+                "fillColor" : "#48A497",
+                "strokeColor" : "#48A4D1",
+                "data" : bedtimes
+            }]
+    }
+
+
+
     #Create values and labels for lineChart. 
     insom_severity_scores = insom_severity_data(user_id, start_date, end_date)[1]
     stress_scores = stress_data(user_id, start_date, end_date)
-    print stress_scores
 
     line_dict = {
         "labels": dates,
@@ -205,6 +219,36 @@ def insom_type_data():
 
 
 
+    #Create values and labels for activityLineChart. 
+    activity_scores = activity_data(user_id, start_date, end_date)
+
+    activity_line_dict = {
+        "labels": dates,
+        "datasets": [
+            {
+                "label": "Insomnia Severity",
+                "fillColor": "rgba(220,220,220,0.2)",
+                "strokeColor": "rgba(220,220,220,1)",
+                "pointColor": "rgba(220,220,220,1)",
+                "pointStrokeColor": "#fff",
+                "pointHighlightFill": "#fff",
+                "pointHighlightStroke": "rgba(220,220,220,1)",
+                "data": insom_severity_scores
+            },
+            {
+                "label": "Stress Level",
+                "fillColor": "rgba(151,187,205,0.2)",
+                "strokeColor": "rgba(151,187,205,1)",
+                "pointColor": "rgba(151,187,205,1)",
+                "pointStrokeColor": "#fff",
+                "pointHighlightFill": "#fff",
+                "pointHighlightStroke": "rgba(151,187,205,1)",
+                "data": activity_scores
+            }
+        ]
+    }
+
+
     #Calculate averages and medians from start_date to end_date.
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
     median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
@@ -223,7 +267,7 @@ def insom_type_data():
         'avg_sleep': avg_sleep,
         'median_sleep': median_sleep,
         'avg_insomnia': avg_insomnia,
-        'median_insomnia': median_insomnia
+        'median_insomnia': median_insomnia, 
     }
 
 
@@ -233,10 +277,10 @@ def insom_type_data():
 
         "bar_chart": bar_dict,
         "line_chart": line_dict,
+        "activity_line_chart": activity_line_dict,
         "donut_chart": donut_dict,
         "avg_median": avg_median_dict
     } 
-
 
 
     return jsonify(data_list_of_dicts)

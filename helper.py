@@ -1,13 +1,10 @@
 from sqlalchemy import func, desc
 from model import connect_to_db, db, User, Entry
 import numpy as np
-from datetime import datetime, date, timedelta
+from datetime import datetime, date, timedelta, time
 
 ##################################################
 # Database queries, data-formatting, and logic for server.py.
-# IF TIME, REFACTOR TO FORMAT RESULTS OF FUNCTIONS HERE INSTEAD OF IN HTML 
-# & SERVER FILE. 
-
 
 def convert_to_boolean(value):
     if value == 'True':
@@ -92,7 +89,7 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
         insom_severity_lst.append(item[0])
 
     median_insom_severity = median(insom_severity_lst)
-    
+
     return median_insom_severity
 
 
@@ -132,28 +129,63 @@ def insom_severity_data(user_id, start_date, end_date):
 
     return dates, insom_severity_scores
 
+    #call entry.get and pass in field name
+    #querying by column itself and not by column name. 
+
 
 
 def stress_data(user_id, start_date, end_date):
-    """Returns a tuple of lists, one list of dates as strings, and one list of 
-    stress_level scores."""
+    """Returns a list of stress_level scores from start_date to end_date."""
 
     data_points = sorted(db.session.query(Entry.date, Entry.stress_level).filter\
         (Entry.user_id == user_id, Entry.date >= start_date, 
         Entry.date <= end_date).all())
 
-    # dates = []
     stress_scores = []
     
     for item in data_points:
-        # date = "%s/%s" % (item[0].month, item[0].day)
-        # dates.append(date)
-
         stress_score = item[1]
         stress_scores.append(stress_score)
 
     return stress_scores
 
+
+
+def activity_data(user_id, start_date, end_date):
+    """Returns a list of activity_level scores from start_date to end_date."""
+
+    data_points = sorted(db.session.query(Entry.date, Entry.activity_level).filter\
+        (Entry.user_id == user_id, Entry.date >= start_date, 
+        Entry.date <= end_date).all())
+
+    activity_scores = []
+    
+    for item in data_points:
+        activity_score = item[1]
+        activity_scores.append(activity_score)
+
+    return activity_scores
+
+
+
+def bedtime_data(user_id, start_date, end_date):
+    """Returns a list of activity_level scores from start_date to end_date."""
+
+    data_points = sorted(db.session.query(Entry.date, Entry.bedtime).filter\
+        (Entry.user_id == user_id, Entry.date >= start_date, 
+        Entry.date <= end_date).all())
+
+    bedtimes = []
+    
+    for item in data_points:
+        print item[1]
+        print type(item[1])
+        # bedtime = item
+        # print bedtime
+        # formatted_bedtime = datetime.strftime(bedtime, '%H:%M') 
+        bedtimes.append(item[1])
+
+    return bedtimes
 
 
 # def insom_factors(user_id, factor):
