@@ -33,14 +33,9 @@ def index():
     
     sleep_log = authd_client.sleep()
 
-
-
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
-    
-
 
     #Alert user?
-
 
     return render_template("homepage.html", 
                                 hours_sleep = hours_sleep)
@@ -106,12 +101,12 @@ def insom_type_data():
 
     #Set dates
     #PLAY AROUND WITH APPROPROATE DATE RANGE -- 4 weeks? 
-    default_start_date = datetime.strftime(two_weeks_before_last_entry(user_id), '%Y-%m-%d')
+    default_start_date = datetime.strftime(four_weeks_before_last_entry(user_id), '%Y-%m-%d')
     start = request.args.get("start_date", default_start_date)
     if start == "":
         start = default_start_date
     start_date = datetime.strptime(start, '%Y-%m-%d')
-    end_date = start_date + timedelta(14)
+    end_date = start_date + timedelta(28)
 
 
     #Create values & labels for donutChart. 
@@ -154,7 +149,7 @@ def insom_type_data():
                 "color": "#FDB45C",
                 "highlight": "#FFC870",
                 "label": "Sleep-onset insomnia"
-            }], 
+            }],
 
         'most_frequent_type': most_frequent_type
     }
@@ -211,11 +206,16 @@ def insom_type_data():
     #Calculate averages and medians from start_date to end_date.
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
     median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
-    print median_sleep
     avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
-    print median_insomnia
+
+    # alcohol = insom_factors(user_id, 'alcohol')
+    # menstruation = insom_factors(user_id, 'menstruation')
+    # caffeine = insom_factors(user_id, 'caffeine')
+    # print "ALCOHOL", alcohol
+    # print "MENS", menstruation
+    # print "caffeine", caffeine
     
     avg_median_dict = {
         'avg_sleep': avg_sleep,

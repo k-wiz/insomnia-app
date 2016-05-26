@@ -135,23 +135,23 @@ def insom_severity_data(user_id, start_date, end_date):
 
 
 
-# def insom_factors(user_id):
+# def insom_factors(user_id, factor):
 #     """Returns the percentage co-occurrence between insomnia(T/F) and 
 #     behavioral factors(T/F)."""
 
-#     query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
+#     query_list = db.session.query(Entry.insomnia, Entry.factor).filter\
 #     (Entry.user_id == user_id).order_by('date').all()
 
 #     insom_list = []
-#     alcohol_list = []
+#     factor_list = []
 
 #     for item in query_list:
 #         insom_list.append(item[0])
-#         alcohol_list.append(item[1])
+#         factor_list.append(item[1])
 
-#     insom_and_alcohol = calculate_similarity(insom_list, alcohol_list)
+#     co_occurrence = calculate_similarity(insom_list, factor_list)
 
-#     return insom_and_alcohol
+#     return co_occurrence
 
 
 
@@ -198,12 +198,12 @@ def last_entry(user_id):
 
 
 
-def two_weeks_before_last_entry(user_id):
-    """Returns date of entry two weeks before user's last entry as a datetime object."""
+def four_weeks_before_last_entry(user_id):
+    """Returns date of entry four weeks before user's last entry as a datetime object."""
 
-    two_weeks_date = last_entry(user_id) - timedelta(days=14)
+    date = last_entry(user_id) - timedelta(days=28)
 
-    return two_weeks_date
+    return date
 
 
 
