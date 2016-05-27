@@ -40,6 +40,16 @@ def calculate_similarity(list1, list2):
 
 
 
+def key_of_largest_value(dict):
+    """Returns key of largest value in dictionary if and only if the largest
+    value > .5."""
+
+    v = list(dict.values())
+    k = list(dict.keys())
+    return k[v.index(max(v))]
+
+
+
 def calculate_avg_sleep(user_id, start_date, end_date):
     """Calculates user's all-time average hours of sleep per night."""
 
@@ -58,6 +68,27 @@ def calculate_avg_insom_severity(user_id, start_date, end_date):
                             Entry.date <= end_date)
     avg_insom_severity = avg_insom_severity[0][0]
     return avg_insom_severity
+
+
+
+# def calculate_avg_sleep_over_time(user_id, start_date, end_date):
+#     """Calculates the average of each time interval from start_date to end_date."""
+
+#     averages = []
+#     start_dates = []
+
+#     #BLARGH. Need to convert date to string. Check earlier examples. 
+#     while start_date <= (end_date - timedelta(days=7)):
+#         avg = calculate_avg_sleep(user_id, start_date, end_date)
+#         averages.append(avg)
+#         start_dates.append(start_date) 
+#         start_date = start_date + timedelta(days=7)
+
+#     for item in start_dates:
+#         # item = item.date
+#         item = datetime.strftime(item, '%m-%')#Convert date to string!!!!!
+
+#     return averages, start_dates
 
 
 
@@ -95,6 +126,7 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
 
 
 def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
+    """Returns count of occurrence of insom_type from start_date to end_date."""
 
     frequency_type = db.session.query(Entry.insom_type, db.func.count\
                             (Entry.insom_type)).filter(Entry.user_id == user_id,\
@@ -128,9 +160,6 @@ def insom_severity_data(user_id, start_date, end_date):
         insom_severity_scores.append(insom_severity_score)
 
     return dates, insom_severity_scores
-
-    #call entry.get and pass in field name
-    #querying by column itself and not by column name. 
 
 
 
@@ -178,33 +207,70 @@ def bedtime_data(user_id, start_date, end_date):
     bedtimes = []
     
     for item in data_points:
-        print item[1]
-        print type(item[1])
-        # bedtime = item
-        # print bedtime
-        # formatted_bedtime = datetime.strftime(bedtime, '%H:%M') 
-        bedtimes.append(item[1])
+        hour = int(item[1].hour)
+        # minute = item[1].minute
+        bedtimes.append(hour)
 
     return bedtimes
 
 
-# def insom_factors(user_id, factor):
-#     """Returns the percentage co-occurrence between insomnia(T/F) and 
-#     behavioral factors(T/F)."""
+def insom_factors_alcohol(user_id):
+    """Returns the percentage co-occurrence between insomnia(T/F) and 
+    consuming alcohol(T/F)."""
 
-#     query_list = db.session.query(Entry.insomnia, Entry.factor).filter\
-#     (Entry.user_id == user_id).order_by('date').all()
+    query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
+    (Entry.user_id == user_id).order_by('date').all()
 
-#     insom_list = []
-#     factor_list = []
+    insom_list = []
+    alcohol_list = []
 
-#     for item in query_list:
-#         insom_list.append(item[0])
-#         factor_list.append(item[1])
+    for item in query_list:
+        insom_list.append(item[0])
+        alcohol_list.append(item[1])
 
-#     co_occurrence = calculate_similarity(insom_list, factor_list)
+    co_occurrence = calculate_similarity(insom_list, alcohol_list)
 
-#     return co_occurrence
+    return co_occurrence
+
+
+
+def insom_factors_caffeine(user_id):
+    """Returns the percentage co-occurrence between insomnia(T/F) and 
+    consuming caffeine(T/F)."""
+
+    query_list = db.session.query(Entry.insomnia, Entry.caffeine).filter\
+    (Entry.user_id == user_id).order_by('date').all()
+
+    insom_list = []
+    caffeine_list = []
+
+    for item in query_list:
+        insom_list.append(item[0])
+        caffeine_list.append(item[1])
+
+    co_occurrence = calculate_similarity(insom_list, caffeine_list)
+
+    return co_occurrence
+
+
+
+def insom_factors_mens(user_id):
+    """Returns the percentage co-occurrence between insomnia(T/F) 
+    and menstruation(T/F)."""
+
+    query_list = db.session.query(Entry.insomnia, Entry.menstruation).filter\
+    (Entry.user_id == user_id).order_by('date').all()
+
+    insom_list = []
+    mens_list = []
+
+    for item in query_list:
+        insom_list.append(item[0])
+        mens_list.append(item[1])
+
+    co_occurrence = calculate_similarity(insom_list, mens_list)
+
+    return co_occurrence
 
 
 
@@ -228,6 +294,7 @@ def hours_sleep_data(user_id, start_date, end_date):
         hours_sleep_list.append(hours_sleep)
 
     return dates, hours_sleep_list
+
 
 
 
@@ -301,7 +368,6 @@ def create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
         entry.activity_level = activity_level
         
         db.session.commit()
-
 
 
 ###################################################################

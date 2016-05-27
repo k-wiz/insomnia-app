@@ -23,6 +23,8 @@ def index():
     """Display today's entry form."""
 
     #ADD LOGIC -- WHAT IF NO FITBIT? (try/except)
+    # LEAVE THIS WAY FOR DEMO DAY. But, user will have relationship to Fitbit 
+    # in data model. Does user have fitbit account? 
     consumer_key = os.environ['client_id']
     consumer_secret = os.environ['client_secret']
     access_token = os.environ['access_token']
@@ -35,7 +37,8 @@ def index():
 
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
 
-    #Alert user?
+
+    #Alert user!!!
 
     return render_template("homepage.html", 
                                 hours_sleep = hours_sleep)
@@ -49,7 +52,8 @@ def index():
 def dashboard():
     """Display user's dashboard."""
 
-    # Retrieve form data.  
+    # Retrieve form data. 
+    #ADD CHECK FOR DATES -- DOES USER HAVE ENTRIES FOR DATE RANGE ENTERED? 
     user_id = 1 
     date = datetime.now()
     date = date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -118,7 +122,8 @@ def insom_type_data():
         "sleep-maintenance": c,
         "sleep-onset": d
     }
-
+    
+    #CLARIFY FOR USER: THIS IS TIME-BASED, NOT ALL-TIME. 
     most_frequent_type = max(type_dict)
 
     donut_dict = {
@@ -170,7 +175,7 @@ def insom_type_data():
 
 
 
-    #Create values and labels for bedtimeBarChart. 
+    # Create values and labels for bedtimeBarChart. 
     bedtimes = bedtime_data(user_id, start_date, end_date)
     print "BEDTIMES", bedtimes
 
@@ -178,7 +183,6 @@ def insom_type_data():
         "labels" : dates,
         "datasets" : [
             {
-                "label" : "Hours Slept Per Night",
                 "fillColor" : "#48A497",
                 "strokeColor" : "#48A4D1",
                 "data" : bedtimes
@@ -256,18 +260,31 @@ def insom_type_data():
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
 
-    # alcohol = insom_factors(user_id, 'alcohol')
-    # menstruation = insom_factors(user_id, 'menstruation')
-    # caffeine = insom_factors(user_id, 'caffeine')
-    # print "ALCOHOL", alcohol
-    # print "MENS", menstruation
-    # print "caffeine", caffeine
-    
+
+    # averages = calculate_avg_sleep_over_time(user_id, first_entry(user_id), last_entry(user_id))
+    # print averages
+
+    #FACTOR OUT!!!!!
+    alcohol_factor = insom_factors_alcohol(user_id)
+    caffeine_factor = insom_factors_caffeine(user_id)
+    mens_factor = insom_factors_mens(user_id)
+
+    factors = {
+                "drink alcohol": alcohol_factor,
+                "consume caffeine": caffeine_factor,
+                "menstruate": mens_factor
+                }
+
+
+    #CLARIFY TO USER: THIS INSIGHT IS FOR ALL-TIME. 
+    insom_factor = key_of_largest_value(factors)
+
     avg_median_dict = {
         'avg_sleep': avg_sleep,
         'median_sleep': median_sleep,
         'avg_insomnia': avg_insomnia,
         'median_insomnia': median_insomnia, 
+        'insom_factor' : insom_factor
     }
 
 
@@ -276,6 +293,7 @@ def insom_type_data():
     data_list_of_dicts = {
 
         "bar_chart": bar_dict,
+        # "bedtime_bar_chart": bedtime_bar_dict,
         "line_chart": line_dict,
         "activity_line_chart": activity_line_dict,
         "donut_chart": donut_dict,

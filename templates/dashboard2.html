@@ -26,7 +26,7 @@
 
 <!-- Insight: factors that co-occur with insomnia -->
 <section class="data-insights"> 
-    <p>Insomnia happens more frequently when you also ______.</p>
+    <p>Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
 </section><br><br><br><br>
 
 
@@ -51,7 +51,7 @@
 
 <!-- 2nd bar chart element -->
 <div class="small-chart">
-    <label for="bedtimeBarChart">Bedtime per Night<br>
+    <label for="bedtimeBarChart">Bedtime<br>
     <canvas id="bedtimeBarChart"></canvas>
     <div id="bedtimeBarCanvas"></div>
     </label>
@@ -168,6 +168,7 @@
             $("#avg_insomnia").empty()
             $("#median_insomnia").empty()
             $("#most_frequent_type").empty()
+            $("#insom_factor").empty()
 
             var avgSleep = results.avg_median.avg_sleep;
             $("#avg_sleep").append(avgSleep);
@@ -179,6 +180,8 @@
             $("#median_insomnia").append(medianInsomnia);
             var mostFrequentType = results.donut_chart.most_frequent_type;
             $("#most_frequent_type").append(mostFrequentType);
+            var insomFactor = results.avg_median.insom_factor;
+            $("#insom_factor").append(insomFactor);
     }
 
 
