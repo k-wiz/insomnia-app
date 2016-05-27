@@ -50,8 +50,38 @@ def key_of_largest_value(dict):
 
 
 
+def first_entry(user_id):
+    """Returns date of user's first entry as a datetime object."""
+
+    first_entry = db.session.query(Entry.date).filter(Entry.user_id == user_id).\
+    order_by('date').first()
+
+    return first_entry[0]
+
+
+
+def last_entry(user_id):
+    """Returns date of user's last entry as a datetime object."""
+
+    last_entry = db.session.query(Entry.date).filter(Entry.user_id == user_id).\
+    order_by(desc('date')).first()
+
+    return last_entry[0]
+
+
+##GENERALIZE
+def four_weeks_before_last_entry(user_id):
+    """Returns date of entry four weeks before user's last entry as a datetime object."""
+
+    date = last_entry(user_id) - timedelta(days=28)
+
+    return date
+
+
+##GENERALIZE
 def calculate_avg_sleep(user_id, start_date, end_date):
-    """Calculates user's all-time average hours of sleep per night."""
+    """Calculates user's average hours of sleep per night from start_date
+    to end_date."""
 
     avg_sleep = db.session.query(func.avg(Entry.minutes_asleep)).filter(Entry.user_id\
      == user_id, Entry.date >= start_date, Entry.date <= end_date)
@@ -60,13 +90,23 @@ def calculate_avg_sleep(user_id, start_date, end_date):
 
 
 
+def calculate_avg_insom_severity(user_id, start_date, end_date):
+    """Calculates user's all-time average insomnia severity level."""
+
+    avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter\
+                        (Entry.user_id == user_id, Entry.date >= start_date, \
+                            Entry.date <= end_date)
+    avg_insom_severity = avg_insom_severity[0][0]
+    return avg_insom_severity
+
+
+####GENERALIZE
 def calculate_avg_sleep_over_time(user_id, start_date, end_date):
     """Calculates the average of each time interval from start_date to end_date.
     Returns a list of averages as floats and a list of dates as strings."""
 
     averages = []
     start_dates = []
-
 
     while start_date <= (end_date - timedelta(days=7)):
         interval_end_date = start_date + timedelta(days=7)
@@ -80,17 +120,6 @@ def calculate_avg_sleep_over_time(user_id, start_date, end_date):
         print date
 
     return averages, start_dates
-
-
-
-def calculate_avg_insom_severity(user_id, start_date, end_date):
-    """Calculates user's all-time average insomnia severity level."""
-
-    avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter\
-                        (Entry.user_id == user_id, Entry.date >= start_date, \
-                            Entry.date <= end_date)
-    avg_insom_severity = avg_insom_severity[0][0]
-    return avg_insom_severity
 
 
 
@@ -116,7 +145,7 @@ def calculate_avg_insom_severity_over_time(user_id, start_date, end_date):
     return averages, start_dates
 
 
-
+#GENERALIZE
 def calculate_median_sleep(user_id, start_date, end_date):
     """Calculates user's all-time median hours of sleep per night."""
 
@@ -150,6 +179,27 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
 
 
 
+# def calculate_median(user_id, start_date, end_date, column_name):
+#     """Calculates the median value in a list of integer values queried 
+#     from the db. column_name should be a string, e.g 'insom_severity'."""
+
+#     data_tups = db.session.query(Entry.insom_severity).filter\
+#                             (Entry.user_id == user_id, Entry.date >= start_date,\
+#                             Entry.date <= end_date).order_by(column_name).all()
+
+#     print data_tups
+
+#     data_lst = []
+#     for item in data_tups:
+#         data_lst.append(item[0])
+
+#     median_value = median(sorted(data_lst))
+
+#     print "MEDIAN", sorted(data_lst)
+#     return median_value
+
+
+
 def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
     """Returns count of occurrence of insom_type from start_date to end_date."""
 
@@ -165,32 +215,11 @@ def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
         return 0
 
 
-#CAN THIS FUNC BE GENERALIZED? 
-# def insom_severity_data(user_id, start_date, end_date):
-#     """Returns a tuple of lists, one list of dates as strings, and one list of 
-#     insomnia severity scores."""
-
-#     data_points = sorted(db.session.query(Entry.date, Entry.insom_severity).filter\
-#         (Entry.user_id == user_id, Entry.date >= start_date, 
-#         Entry.date <= end_date).all())
-
-#     dates = []
-#     insom_severity_scores = []
-    
-#     for item in data_points:
-#         date = "%s/%s" % (item[0].month, item[0].day)
-#         dates.append(date)
-
-#         insom_severity_score = item[1]
-#         insom_severity_scores.append(insom_severity_score)
-
-#     return dates, insom_severity_scores
-
-
 
 def integer_type_data(user_id, start_date, end_date, column_name):
     """Returns a tuple of lists, one list of dates as strings, and one list of 
-    data points as integers."""
+    data points as integers. column_name should be an object with attribute
+    column_name, e.g. Entry.stress_level."""
 
     data_points = sorted(db.session.query(Entry.date, column_name).filter\
         (Entry.user_id == user_id, Entry.date >= start_date, 
@@ -210,40 +239,6 @@ def integer_type_data(user_id, start_date, end_date, column_name):
 
 
 
-# def stress_data(user_id, start_date, end_date):
-#     """Returns a list of stress_level scores from start_date to end_date."""
-
-#     data_points = sorted(db.session.query(Entry.date, Entry.stress_level).filter\
-#         (Entry.user_id == user_id, Entry.date >= start_date, 
-#         Entry.date <= end_date).all())
-
-#     stress_scores = []
-    
-#     for item in data_points:
-#         stress_score = item[1]
-#         stress_scores.append(stress_score)
-
-#     return stress_scores
-
-
-
-# def activity_data(user_id, start_date, end_date):
-#     """Returns a list of activity_level scores from start_date to end_date."""
-
-#     data_points = sorted(db.session.query(Entry.date, Entry.activity_level).filter\
-#         (Entry.user_id == user_id, Entry.date >= start_date, 
-#         Entry.date <= end_date).all())
-
-#     activity_scores = []
-    
-#     for item in data_points:
-#         activity_score = item[1]
-#         activity_scores.append(activity_score)
-
-#     return activity_scores
-
-
-
 def bedtime_data(user_id, start_date, end_date):
     """Returns a list of activity_level scores from start_date to end_date."""
 
@@ -260,7 +255,7 @@ def bedtime_data(user_id, start_date, end_date):
 
     return bedtimes
 
-
+############################################GENERALIZE
 
 def insom_factors_alcohol(user_id):
     """Returns the percentage co-occurrence between insomnia(T/F) and 
@@ -342,36 +337,6 @@ def hours_sleep_data(user_id, start_date, end_date):
         hours_sleep_list.append(hours_sleep)
 
     return dates, hours_sleep_list
-
-
-
-
-def first_entry(user_id):
-    """Returns date of user's first entry as a datetime object."""
-
-    first_entry = db.session.query(Entry.date).filter(Entry.user_id == user_id).\
-    order_by('date').first()
-
-    return first_entry[0]
-
-
-
-def last_entry(user_id):
-    """Returns date of user's last entry as a datetime object."""
-
-    last_entry = db.session.query(Entry.date).filter(Entry.user_id == user_id).\
-    order_by(desc('date')).first()
-
-    return last_entry[0]
-
-
-
-def four_weeks_before_last_entry(user_id):
-    """Returns date of entry four weeks before user's last entry as a datetime object."""
-
-    date = last_entry(user_id) - timedelta(days=28)
-
-    return date
 
 
 

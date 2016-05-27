@@ -192,11 +192,9 @@ def insom_type_data():
 
 
     #Create values and labels for insomnia severity vs. stress lineChart. 
-    # insom_severity_scores = insom_severity_data(user_id, start_date, end_date)[1]
     insom_severity_scores = integer_type_data(user_id, start_date, end_date, 
                                                 column_name=Entry.insom_severity)[1]
 
-    # stress_scores = stress_data(user_id, start_date, end_date)
     stress_scores = integer_type_data(user_id, start_date, end_date,
                                         column_name=Entry.stress_level)[1]
 
@@ -230,7 +228,6 @@ def insom_type_data():
 
     #Create values and labels for insomnia severity vs. activity level
     # activityLineChart. 
-    # activity_scores = activity_data(user_id, start_date, end_date)
     activity_scores = integer_type_data(user_id, start_date, end_date,
                                         column_name=Entry.activity_level)[1]
 
@@ -259,14 +256,14 @@ def insom_type_data():
             }
         ]
     }
-    print "BOOGER"
+
+
 
     #Create values and labels for avg_insom_severity_over_time line chart. 
     avg_insom = calculate_avg_insom_severity_over_time(user_id, 
                                                         first_entry(user_id), 
                                                         last_entry(user_id))
-    print avg_insom
-    print "BOOGER"
+
     avg_dates = avg_insom[1]
     avg_insom_severity_scores = avg_insom[0]
     #Calculate growth rate or rate of improvement?
@@ -291,10 +288,15 @@ def insom_type_data():
 
     #Calculate averages and medians from start_date to end_date.
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
-    median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, end_date))
+    median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, 
+                                                    end_date))
     avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
+    # median_sleep = "{0:.1f}".format(calculate_median(user_id, start_date, 
+                                                    # end_date, 'insom_severity'))
+    # median_insomnia = "{0:.1f}".format(calculate_median(user_id, start_date, 
+                                                        # end_date, 'insom_severity'))
 
  
 
