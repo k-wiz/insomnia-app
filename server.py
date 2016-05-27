@@ -176,24 +176,29 @@ def insom_type_data():
 
 
     # Create values and labels for bedtimeBarChart. 
-    bedtimes = bedtime_data(user_id, start_date, end_date)
-    print "BEDTIMES", bedtimes
+    # bedtimes = bedtime_data(user_id, start_date, end_date)
+    # print "BEDTIMES", bedtimes
 
-    bedtime_bar_dict = {
-        "labels" : dates,
-        "datasets" : [
-            {
-                "fillColor" : "#48A497",
-                "strokeColor" : "#48A4D1",
-                "data" : bedtimes
-            }]
-    }
+    # bedtime_bar_dict = {
+    #     "labels" : dates,
+    #     "datasets" : [
+    #         {
+    #             "fillColor" : "#48A497",
+    #             "strokeColor" : "#48A4D1",
+    #             "data" : bedtimes
+    #         }]
+    # }
 
 
 
-    #Create values and labels for lineChart. 
-    insom_severity_scores = insom_severity_data(user_id, start_date, end_date)[1]
-    stress_scores = stress_data(user_id, start_date, end_date)
+    #Create values and labels for insomnia severity vs. stress lineChart. 
+    # insom_severity_scores = insom_severity_data(user_id, start_date, end_date)[1]
+    insom_severity_scores = integer_type_data(user_id, start_date, end_date, 
+                                                column_name=Entry.insom_severity)[1]
+
+    # stress_scores = stress_data(user_id, start_date, end_date)
+    stress_scores = integer_type_data(user_id, start_date, end_date,
+                                        column_name=Entry.stress_level)[1]
 
     line_dict = {
         "labels": dates,
@@ -223,8 +228,11 @@ def insom_type_data():
 
 
 
-    #Create values and labels for activityLineChart. 
-    activity_scores = activity_data(user_id, start_date, end_date)
+    #Create values and labels for insomnia severity vs. activity level
+    # activityLineChart. 
+    # activity_scores = activity_data(user_id, start_date, end_date)
+    activity_scores = integer_type_data(user_id, start_date, end_date,
+                                        column_name=Entry.activity_level)[1]
 
     activity_line_dict = {
         "labels": dates,
@@ -251,6 +259,34 @@ def insom_type_data():
             }
         ]
     }
+    print "BOOGER"
+
+    #Create values and labels for avg_insom_severity_over_time line chart. 
+    avg_insom = calculate_avg_insom_severity_over_time(user_id, 
+                                                        first_entry(user_id), 
+                                                        last_entry(user_id))
+    print avg_insom
+    print "BOOGER"
+    avg_dates = avg_insom[1]
+    avg_insom_severity_scores = avg_insom[0]
+    #Calculate growth rate or rate of improvement?
+
+    avg_line_dict = {
+    "labels": avg_dates,
+    "datasets": [
+        {
+            "label": "Insomnia Severity",
+            "fillColor": "rgba(220,220,220,0.2)",
+            "strokeColor": "rgba(220,220,220,1)",
+            "pointColor": "rgba(220,220,220,1)",
+            "pointStrokeColor": "#fff",
+            "pointHighlightFill": "#fff",
+            "pointHighlightStroke": "rgba(220,220,220,1)",
+            "data": avg_insom_severity_scores
+        }
+    ]
+}
+
 
 
     #Calculate averages and medians from start_date to end_date.
@@ -260,9 +296,7 @@ def insom_type_data():
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
 
-
-    # averages = calculate_avg_sleep_over_time(user_id, first_entry(user_id), last_entry(user_id))
-    # print averages
+ 
 
     #FACTOR OUT!!!!!
     alcohol_factor = insom_factors_alcohol(user_id)
@@ -297,7 +331,8 @@ def insom_type_data():
         "line_chart": line_dict,
         "activity_line_chart": activity_line_dict,
         "donut_chart": donut_dict,
-        "avg_median": avg_median_dict
+        "avg_median": avg_median_dict,
+        "avg_line_chart": avg_line_dict
     } 
 
 

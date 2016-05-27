@@ -50,15 +50,15 @@
 
 
 <!-- 2nd bar chart element -->
-<div class="small-chart">
+<!-- <div class="small-chart">
     <label for="bedtimeBarChart">Bedtime<br>
     <canvas id="bedtimeBarChart"></canvas>
     <div id="bedtimeBarCanvas"></div>
     </label>
-</div><br><br>
+</div><br><br> -->
 
 
-<!-- Line graph elements -->
+<!-- Line graph element -->
 <div class="small-chart">
     <label for="lineChart">Insomnia Severity vs. Stress Level<br>
     <canvas id="lineChart"></canvas>
@@ -74,9 +74,17 @@
     <canvas id="activityLineChart"></canvas>
     <div id="activityLineCanvas"></div>
     <div id="actvityLineLegend" class="chart-legend"></div>
-    </label><br><br>
-</div>
+    </label>
+</div><br><br>
 
+
+<div class="small-chart">
+    <label for="avgLineChart">Average Insomnia Severity by Week (all time)<br>
+    <canvas id="avgLineChart"></canvas>
+    <div id="avgLineCanvas"></div>
+    <div id="avgLineLegend" class="chart-legend"></div>
+    </label>
+</div><br><br>
 
 
 <script src="https://code.jquery.com/jquery.js"></script>
@@ -90,7 +98,8 @@
     var bar_canvas_tag = '<canvas id="barChart">'
     var line_canvas_tag = '<canvas id="lineChart">'
     var activity_line_canvas_tag = '<canvas id="activityLineChart">'
-    var bedtime_bar_canvas_tag = '<canvas id="bedtimeBarChart"'
+    // var bedtime_bar_canvas_tag = '<canvas id="bedtimeBarChart"'
+    var avg_line_canvas_tag = '<canvas id="avgLineChart">'
 
     var options = {
       responsive: true
@@ -124,15 +133,15 @@
 
 
     // Create bedtime bar chart. 
-    function drawBedtimeBarChart(results) {
+    // function drawBedtimeBarChart(results) {
 
-        $("#bedtimeBarChart").remove()
-        $("#bedtimeBarCanvas").append(bedtime_bar_canvas_tag)
+    //     $("#bedtimeBarChart").remove()
+    //     $("#bedtimeBarCanvas").append(bedtime_bar_canvas_tag)
 
-        var ctx_bar = $("#bedtimeBarChart").get(0).getContext("2d");
-        var myBedtimeBarChart = new Chart(ctx_bar).Bar(results.bedtime_bar_chart, options);
+    //     var ctx_bar = $("#bedtimeBarChart").get(0).getContext("2d");
+    //     var myBedtimeBarChart = new Chart(ctx_bar).Bar(results.bedtime_bar_chart, options);
 
-    }
+    // }
 
 
 
@@ -157,6 +166,18 @@
         var ctx_line = $("#activityLineChart").get(0).getContext("2d");
         var myActivityLineChart = new Chart(ctx_line).Line(results.activity_line_chart, options);
         $("#activityLineLegend").html(myActivityLineChart.generateLegend());
+    }
+
+
+    // Create average insomnia_severity over time line chart. 
+    function drawAvgLineChart(results) {
+
+        $("#avgLineChart").remove()
+        $("#avgLineCanvas").append(avg_line_canvas_tag)
+
+        var ctx_line = $("#avgLineChart").get(0).getContext("2d");
+        var myAvgLineChart = new Chart(ctx_line).Line(results.avg_line_chart, options);
+        // $("#avgLineLegend").html(myAvgLineChart.generateLegend());
     }
 
 
@@ -193,6 +214,7 @@
         // drawBedtimeBarChart(results);
         drawLineChart(results);
         drawActivityLineChart(results);
+        drawAvgLineChart(results);
         addDataInsights(results);
     }
     
@@ -200,7 +222,7 @@
     // WAY TO CONDENSE THESE 2 FUNCTIONS? 
     // Get user-submitted dates, pass to createCharts. 
     function getDateRange(evt) {
-
+        // if event is this type of event, prevent default. 
         evt.preventDefault();
 
         var formInputs = {

@@ -71,10 +71,11 @@ Day 13, May 25th:
 3. Titles added to charts. 
 4. server.py and helper.py refactored. 
 
+Day 14: 
+
 TOMORROW: 
-1. Make 2nd line chart, 2nd bar chart, all-time chart. 
-2. Add bedtime standard deviation. 
-3. Finish co-occurrence function. 
+1. Made 2nd line chart, 2nd bar chart, all-time chart.  
+2. Finish co-occurrence function. 
 
 THEN: 
 fix up user input!!! (validation, more user input)
