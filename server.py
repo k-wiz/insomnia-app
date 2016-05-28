@@ -77,20 +77,22 @@ def dashboard():
 
 
     # Calculate sleep insights for user with user_id. 
-    start_date = first_entry(user_id)
-    end_date = last_entry(user_id)
-    avg_sleep = calculate_avg_sleep(user_id, start_date, end_date)
-    avg_insom_severity = calculate_avg_insom_severity(user_id, start_date, end_date)
-    median_sleep = calculate_median_sleep(user_id, start_date, end_date)
-    median_insom_severity = calculate_median_insom_severity(user_id, start_date, end_date)
+    # start_date = first_entry(user_id)
+    # end_date = last_entry(user_id)
+
+    # avg_sleep = calculate_avg_sleep(user_id, start_date, end_date)
+    # avg_insom_severity = calculate_avg(user_id, start_date, end_date, 
+    #                                     column_name=Entry.insom_severity)
+    # median_sleep = calculate_median_sleep(user_id, start_date, end_date)
+    # median_insom_severity = calculate_median_insom_severity(user_id, start_date, end_date)
 
 
     # Pass calculated data to template
-    return render_template("dashboard2.html", 
-                                avg_sleep=avg_sleep,
-                                median_sleep=median_sleep,
-                                avg_insom_severity=avg_insom_severity,
-                                median_insom_severity=median_insom_severity)
+    return render_template("dashboard2.html")
+                                # avg_sleep=avg_sleep,
+                                # median_sleep=median_sleep,
+                                # avg_insom_severity=avg_insom_severity,
+                                # median_insom_severity=median_insom_severity)
 
 
 ##########################################################################
@@ -226,8 +228,7 @@ def insom_type_data():
 
 
 
-    #Create values and labels for insomnia severity vs. activity level
-    # activityLineChart. 
+    #Create values and lables for insomnia severity vs. activity level line chart. 
     activity_scores = integer_type_data(user_id, start_date, end_date,
                                         column_name=Entry.activity_level)[1]
 
@@ -290,20 +291,25 @@ def insom_type_data():
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
     median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, 
                                                     end_date))
-    avg_insomnia = "{0:.1f}".format(calculate_avg_insom_severity(user_id, start_date, end_date))
+    avg_insomnia = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
+                                                    column_name=Entry.insom_severity))
     median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
                                         (user_id, start_date, end_date))
-    # median_sleep = "{0:.1f}".format(calculate_median(user_id, start_date, 
-                                                    # end_date, 'insom_severity'))
-    # median_insomnia = "{0:.1f}".format(calculate_median(user_id, start_date, 
-                                                        # end_date, 'insom_severity'))
+    avg_stress = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
+                                                column_name=Entry.stress_level))
+    avg_activity = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
+                                                column_name=Entry.activity_level))
+
+    print avg_stress
+    print "AVG ACTIV", avg_activity
+    print avg_insomnia
 
  
 
     #FACTOR OUT!!!!!
-    alcohol_factor = insom_factors_alcohol(user_id)
-    caffeine_factor = insom_factors_caffeine(user_id)
-    mens_factor = insom_factors_mens(user_id)
+    alcohol_factor = insom_factors(user_id, Entry.alcohol)
+    caffeine_factor = insom_factors(user_id, Entry.caffeine)
+    mens_factor = insom_factors(user_id, Entry.menstruation)
 
     factors = {
                 "drink alcohol": alcohol_factor,

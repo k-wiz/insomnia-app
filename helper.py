@@ -69,7 +69,7 @@ def last_entry(user_id):
     return last_entry[0]
 
 
-##GENERALIZE
+
 def four_weeks_before_last_entry(user_id):
     """Returns date of entry four weeks before user's last entry as a datetime object."""
 
@@ -78,7 +78,7 @@ def four_weeks_before_last_entry(user_id):
     return date
 
 
-##GENERALIZE
+
 def calculate_avg_sleep(user_id, start_date, end_date):
     """Calculates user's average hours of sleep per night from start_date
     to end_date."""
@@ -90,17 +90,28 @@ def calculate_avg_sleep(user_id, start_date, end_date):
 
 
 
-def calculate_avg_insom_severity(user_id, start_date, end_date):
-    """Calculates user's all-time average insomnia severity level."""
+# def calculate_avg_insom_severity(user_id, start_date, end_date):
+#     """Calculates user's all-time average insomnia severity level."""
 
-    avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter\
+#     avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter\
+#                         (Entry.user_id == user_id, Entry.date >= start_date, \
+#                             Entry.date <= end_date)
+#     avg_insom_severity = avg_insom_severity[0][0]
+#     return avg_insom_severity
+
+
+
+def calculate_avg(user_id, start_date, end_date, column_name):
+    """Calculates average of field with column_name from start_date to end_date."""
+
+    avg = db.session.query(func.avg(column_name)).filter\
                         (Entry.user_id == user_id, Entry.date >= start_date, \
                             Entry.date <= end_date)
-    avg_insom_severity = avg_insom_severity[0][0]
-    return avg_insom_severity
+    avg = avg[0][0]
+    return avg
 
 
-####GENERALIZE
+
 def calculate_avg_sleep_over_time(user_id, start_date, end_date):
     """Calculates the average of each time interval from start_date to end_date.
     Returns a list of averages as floats and a list of dates as strings."""
@@ -112,12 +123,10 @@ def calculate_avg_sleep_over_time(user_id, start_date, end_date):
         interval_end_date = start_date + timedelta(days=7)
         avg = calculate_avg_sleep(user_id, start_date, interval_end_date)
         averages.append(avg)
-        print avg
 
         start_date = start_date + timedelta(days=7)
         date = "%s/%s" % (start_date.month, start_date.day)
         start_dates.append(date)
-        print date
 
     return averages, start_dates
 
@@ -133,19 +142,18 @@ def calculate_avg_insom_severity_over_time(user_id, start_date, end_date):
 
     while start_date <= (end_date - timedelta(days=7)):
         interval_end_date = start_date + timedelta(days=7)
-        avg = float(calculate_avg_insom_severity(user_id, start_date, interval_end_date))
+        avg = float(calculate_avg(user_id, start_date, interval_end_date, 
+                                column_name=Entry.insom_severity))
         averages.append(avg)
-        print avg
 
         start_date = start_date + timedelta(days=7)
         date = "%s/%s" % (start_date.month, start_date.day)
         start_dates.append(date)
-        print date
 
     return averages, start_dates
 
 
-#GENERALIZE
+
 def calculate_median_sleep(user_id, start_date, end_date):
     """Calculates user's all-time median hours of sleep per night."""
 
@@ -176,27 +184,6 @@ def calculate_median_insom_severity(user_id, start_date, end_date):
     median_insom_severity = median(insom_severity_lst)
 
     return median_insom_severity
-
-
-
-# def calculate_median(user_id, start_date, end_date, column_name):
-#     """Calculates the median value in a list of integer values queried 
-#     from the db. column_name should be a string, e.g 'insom_severity'."""
-
-#     data_tups = db.session.query(Entry.insom_severity).filter\
-#                             (Entry.user_id == user_id, Entry.date >= start_date,\
-#                             Entry.date <= end_date).order_by(column_name).all()
-
-#     print data_tups
-
-#     data_lst = []
-#     for item in data_tups:
-#         data_lst.append(item[0])
-
-#     median_value = median(sorted(data_lst))
-
-#     print "MEDIAN", sorted(data_lst)
-#     return median_value
 
 
 
@@ -239,87 +226,9 @@ def integer_type_data(user_id, start_date, end_date, column_name):
 
 
 
-def bedtime_data(user_id, start_date, end_date):
-    """Returns a list of activity_level scores from start_date to end_date."""
-
-    data_points = sorted(db.session.query(Entry.date, Entry.bedtime).filter\
-        (Entry.user_id == user_id, Entry.date >= start_date, 
-        Entry.date <= end_date).all())
-
-    bedtimes = []
-    
-    for item in data_points:
-        hour = int(item[1].hour)
-        # minute = item[1].minute
-        bedtimes.append(hour)
-
-    return bedtimes
-
-############################################GENERALIZE
-
-def insom_factors_alcohol(user_id):
-    """Returns the percentage co-occurrence between insomnia(T/F) and 
-    consuming alcohol(T/F)."""
-
-    query_list = db.session.query(Entry.insomnia, Entry.alcohol).filter\
-    (Entry.user_id == user_id).order_by('date').all()
-
-    insom_list = []
-    alcohol_list = []
-
-    for item in query_list:
-        insom_list.append(item[0])
-        alcohol_list.append(item[1])
-
-    co_occurrence = calculate_similarity(insom_list, alcohol_list)
-
-    return co_occurrence
-
-
-
-def insom_factors_caffeine(user_id):
-    """Returns the percentage co-occurrence between insomnia(T/F) and 
-    consuming caffeine(T/F)."""
-
-    query_list = db.session.query(Entry.insomnia, Entry.caffeine).filter\
-    (Entry.user_id == user_id).order_by('date').all()
-
-    insom_list = []
-    caffeine_list = []
-
-    for item in query_list:
-        insom_list.append(item[0])
-        caffeine_list.append(item[1])
-
-    co_occurrence = calculate_similarity(insom_list, caffeine_list)
-
-    return co_occurrence
-
-
-
-def insom_factors_mens(user_id):
-    """Returns the percentage co-occurrence between insomnia(T/F) 
-    and menstruation(T/F)."""
-
-    query_list = db.session.query(Entry.insomnia, Entry.menstruation).filter\
-    (Entry.user_id == user_id).order_by('date').all()
-
-    insom_list = []
-    mens_list = []
-
-    for item in query_list:
-        insom_list.append(item[0])
-        mens_list.append(item[1])
-
-    co_occurrence = calculate_similarity(insom_list, mens_list)
-
-    return co_occurrence
-
-
-
 def hours_sleep_data(user_id, start_date, end_date):
-    """Returns a list of 2 lists: the first is a list of dates as strings,
-    the second is a list of hours_sleep data points as integers."""
+    """Returns a tuple of lists, one list of dates as strings,
+    and one list of hours_sleep data points as integers."""
 
     data_points = sorted(db.session.query(Entry.date, Entry.minutes_asleep).filter
         (Entry.user_id == user_id, Entry.date>= start_date, Entry.date <= 
@@ -337,6 +246,45 @@ def hours_sleep_data(user_id, start_date, end_date):
         hours_sleep_list.append(hours_sleep)
 
     return dates, hours_sleep_list
+
+
+
+# def bedtime_data(user_id, start_date, end_date):
+#     """Returns a list of activity_level scores from start_date to end_date."""
+
+#     data_points = sorted(db.session.query(Entry.date, Entry.bedtime).filter\
+#         (Entry.user_id == user_id, Entry.date >= start_date, 
+#         Entry.date <= end_date).all())
+
+#     bedtimes = []
+    
+#     for item in data_points:
+#         hour = int(item[1].hour)
+#         # minute = item[1].minute
+#         bedtimes.append(hour)
+
+#     return bedtimes
+
+
+
+def insom_factors(user_id, column_name):
+    """Returns the percentage co-occurrence between insomnia(T/F) 
+    and another column with T/F values. column_name should be a table object
+    with attribute column_name."""
+
+    query_list = db.session.query(Entry.insomnia, column_name).filter\
+    (Entry.user_id == user_id).order_by('date').all()
+
+    insom_list = []
+    mens_list = []
+
+    for item in query_list:
+        insom_list.append(item[0])
+        mens_list.append(item[1])
+
+    co_occurrence = calculate_similarity(insom_list, mens_list)
+
+    return co_occurrence
 
 
 
@@ -383,13 +331,6 @@ def create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
         db.session.commit()
 
 
-# data_points = sorted(db.session.query(Entry.date, Entry.stress_level).filter\
-#         (Entry.user_id == 1, Entry.date >= datetime(2016,1,1), 
-#         Entry.date <= datetime(2016,2,1)).all())
-
-
-# avg_sleep = db.session.query(func.avg(Entry.minutes_asleep)).filter(Entry.user_id\
-#      == 1, Entry.date >= datetime(2015,11,15), Entry.date <= datetime(2015,11,28))
 
 ###################################################################
 
