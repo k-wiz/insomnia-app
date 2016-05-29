@@ -72,8 +72,7 @@ Day 13, May 25th:
 4. server.py and helper.py refactored. 
 
 Day 14: 
-
-TOMORROW: 
+ 
 1. Made 2nd line chart, 2nd bar chart, all-time chart.  
 2. Finish co-occurrence function. 
 

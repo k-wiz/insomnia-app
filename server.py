@@ -18,25 +18,23 @@ app.jinja_env.undefined = StrictUndefined
 
 ###################################################################
 
+consumer_key = os.environ['client_id']
+consumer_secret = os.environ['client_secret']
+access_token = os.environ['access_token']
+refresh_token = os.environ['refresh_token']
+
+
 @app.route('/')
 def index():
     """Display today's entry form."""
 
-    #ADD LOGIC -- WHAT IF NO FITBIT? (try/except)
     # LEAVE THIS WAY FOR DEMO DAY. But, user will have relationship to Fitbit 
     # in data model. Does user have fitbit account? 
-    consumer_key = os.environ['client_id']
-    consumer_secret = os.environ['client_secret']
-    access_token = os.environ['access_token']
-    refresh_token = os.environ['refresh_token']
 
     authd_client = fitbit.Fitbit(consumer_key, consumer_secret,
                              access_token=access_token, refresh_token=refresh_token)
-    
     sleep_log = authd_client.sleep()
-
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
-
 
     #Alert user!!!
 
@@ -76,23 +74,9 @@ def dashboard():
                             bedtime, stress_level, activity_level)
 
 
-    # Calculate sleep insights for user with user_id. 
-    # start_date = first_entry(user_id)
-    # end_date = last_entry(user_id)
-
-    # avg_sleep = calculate_avg_sleep(user_id, start_date, end_date)
-    # avg_insom_severity = calculate_avg(user_id, start_date, end_date, 
-    #                                     column_name=Entry.insom_severity)
-    # median_sleep = calculate_median_sleep(user_id, start_date, end_date)
-    # median_insom_severity = calculate_median_insom_severity(user_id, start_date, end_date)
-
 
     # Pass calculated data to template
     return render_template("dashboard2.html")
-                                # avg_sleep=avg_sleep,
-                                # median_sleep=median_sleep,
-                                # avg_insom_severity=avg_insom_severity,
-                                # median_insom_severity=median_insom_severity)
 
 
 ##########################################################################
@@ -175,21 +159,6 @@ def insom_type_data():
             }]
     }
 
-
-
-    # Create values and labels for bedtimeBarChart. 
-    # bedtimes = bedtime_data(user_id, start_date, end_date)
-    # print "BEDTIMES", bedtimes
-
-    # bedtime_bar_dict = {
-    #     "labels" : dates,
-    #     "datasets" : [
-    #         {
-    #             "fillColor" : "#48A497",
-    #             "strokeColor" : "#48A4D1",
-    #             "data" : bedtimes
-    #         }]
-    # }
 
 
 
@@ -299,12 +268,13 @@ def insom_type_data():
                                                 column_name=Entry.stress_level))
     avg_activity = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
                                                 column_name=Entry.activity_level))
+    median_stress = None
+    median_activity = None
 
     print avg_stress
     print "AVG ACTIV", avg_activity
     print avg_insomnia
 
- 
 
     #FACTOR OUT!!!!!
     alcohol_factor = insom_factors(user_id, Entry.alcohol)

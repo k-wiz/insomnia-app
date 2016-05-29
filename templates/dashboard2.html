@@ -2,263 +2,118 @@
 {% block content %}
 <h2>Sleep Insights</h2>
 
+<div class="panel">
 
-<form id = "date-range" action = '/insom-types.json'>
-    Start date: <input type="date" name="start_date">
-    <input type="submit">
-</form>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">By Date</a></li>
+    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">All Time</a></li>
+  </ul>
 
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <!-- Home Tab -->
+    <div role="tabpanel" class="tab-pane active" id="home"><br>
 
-<!-- Insights: average, median sleep; average, median insomnia -->
-<section class="data-insights">
-    <p>Average sleep per night: <span id="avg_sleep"></span> hours</p>
-    <p>Median sleep per night: <span id="median_sleep"></span> hours</p>
-    <p>Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
-    <p>Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
-</section>
-
-
-<!-- Insight: most common type of insomnia -->
-<section class="data-insights">
-    <p>Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
-</section>
+        <form id = "date-range" action = '/insom-types.json'>
+            Start date: <input type="date" name="start_date">
+            <input type="submit">
+        </form><br>
 
 
-<!-- Insight: factors that co-occur with insomnia -->
-<section class="data-insights"> 
-    <p>Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
-</section><br><br><br><br>
+        <!-- Donut chart element -->
+        <div class="donut-chart">
+            <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
+            <canvas id="donutChart"></canvas>
+            <div id="canvas"></div>
+            <div id="donutLegend" class="chart-legend"></div>
+            </label>
+            <section class="data-insights">
+            <p>Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
+        </section>
+        </div><br><br>
 
 
-<!-- Donut chart element -->
-<div class="donut-chart">
-    <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
-    <canvas id="donutChart"></canvas>
-    <div id="canvas"></div>
-    <div id="donutLegend" class="chart-legend"></div>
-    </label>
-</div><br><br>
+        <!-- Bar chart element -->
+        <div class="small-chart">
+            <label for="barChart">Hours of Sleep per Night<br>
+            <canvas id="barChart"></canvas>
+            <div id="barCanvas"></div>
+            </label>
+            <p>Average sleep per night: <span id="avg_sleep"></span> hours</p>
+            <p>Median sleep per night: <span id="median_sleep"></span> hours</p>
+        </div><br><br>
 
 
-<!-- Bar chart element -->
-<div class="small-chart">
-    <label for="barChart">Hours of Sleep per Night<br>
-    <canvas id="barChart"></canvas>
-    <div id="barCanvas"></div>
-    </label>
-</div><br><br>
+        <!-- Insom vs. Stress Line graph element -->
+        <div class="small-chart">
+            <label for="lineChart">Insomnia Severity vs. Stress Level<br>
+            <canvas id="lineChart"></canvas>
+            <div id="lineCanvas"></div>
+            <div id="lineLegend" class="chart-legend"></div>
+            </label>
+            <p>Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
+            <p>Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
+            <p>Average stress level:</p>
+            <p>Median stress level:</p>
+        </div><br><br>
 
 
-<!-- 2nd bar chart element -->
-<!-- <div class="small-chart">
-    <label for="bedtimeBarChart">Bedtime<br>
-    <canvas id="bedtimeBarChart"></canvas>
-    <div id="bedtimeBarCanvas"></div>
-    </label>
-</div><br><br> -->
+        <!-- Insom vs. Activity line graph element -->
+        <div class="small-chart">
+            <label for="activityLineChart">Insomnia Severity vs. Physical Activity Level<br>
+            <canvas id="activityLineChart"></canvas>
+            <div id="activityLineCanvas"></div>
+            <div id="actvityLineLegend" class="chart-legend"></div>
+            </label>
+            <p>Average activity level:</p>
+            <p>Median activity level:</p>
+        </div><br><br>
 
 
-<!-- Line graph element -->
-<div class="small-chart">
-    <label for="lineChart">Insomnia Severity vs. Stress Level<br>
-    <canvas id="lineChart"></canvas>
-    <div id="lineCanvas"></div>
-    <div id="lineLegend" class="chart-legend"></div>
-    </label>
-</div><br><br>
+        
 
 
-<!-- 2nd line graph element -->
-<div class="small-chart">
-    <label for="activityLineChart">Insomnia Severity vs. Physical Activity Level<br>
-    <canvas id="activityLineChart"></canvas>
-    <div id="activityLineCanvas"></div>
-    <div id="actvityLineLegend" class="chart-legend"></div>
-    </label>
-</div><br><br>
+    </div>
 
 
-<div class="small-chart">
-    <label for="avgLineChart">Average Insomnia Severity by Week (all time)<br>
-    <canvas id="avgLineChart"></canvas>
-    <div id="avgLineCanvas"></div>
-    <div id="avgLineLegend" class="chart-legend"></div>
-    </label>
-</div><br><br>
+    <!-- All-time Insights -->
+    <div role="tabpanel" class="tab-pane" id="profile"><br><br>
+    <!-- Insight: factors that co-occur with insomnia -->
+      <section class="data-insights"> 
+          <p>Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
+      </section><br><br><br><br>
+
+      <!-- Avg Insom Severity by Week line graph element -->
+        <div class="small-chart">
+            <label for="avgLineChart">Average Insomnia Severity by Week (all time)<br>
+                <canvas id="avgLineChart"></canvas>
+                <div id="avgLineCanvas"></div>
+                <div id="avgLineLegend" class="chart-legend"></div>
+            </label>
+        </div>
 
 
+
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+
+
+
+
+<!--    Javascript Imports -->
 <script src="https://code.jquery.com/jquery.js"></script>
-<script src="static/dashboard.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+<script src="/static/dashboard.js"></script>
 
-<script>
-
-    
-    // Create canvas elements to add to empty div.
-    var canvas_tag = '<canvas id="donutChart">'
-    var bar_canvas_tag = '<canvas id="barChart">'
-    var line_canvas_tag = '<canvas id="lineChart">'
-    var activity_line_canvas_tag = '<canvas id="activityLineChart">'
-    // var bedtime_bar_canvas_tag = '<canvas id="bedtimeBarChart"'
-    var avg_line_canvas_tag = '<canvas id="avgLineChart">'
-
-    var options = {
-      responsive: true
-    };
-    
-
-    // Create insom_type donut chart. 
-    function drawDonutChart(results) {
-
-        $("#donutChart").remove()
-        $("#canvas").append(canvas_tag)
-        
-        var ctx_donut = $("#donutChart").get(0).getContext("2d");
-        var myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_chart.insom_type, options);
-        $('#donutLegend').html(myDonutChart.generateLegend());
-        
-    }
-
-
-
-    // Create hours_sleep bar chart. 
-    function drawBarChart(results) {
-
-        $("#barChart").remove()
-        $("#barCanvas").append(bar_canvas_tag)
-
-        var ctx_bar = $("#barChart").get(0).getContext("2d");
-        var myBarChart = new Chart(ctx_bar).Bar(results.bar_chart, options);
-    }
-
-
-
-    // Create bedtime bar chart. 
-    // function drawBedtimeBarChart(results) {
-
-    //     $("#bedtimeBarChart").remove()
-    //     $("#bedtimeBarCanvas").append(bedtime_bar_canvas_tag)
-
-    //     var ctx_bar = $("#bedtimeBarChart").get(0).getContext("2d");
-    //     var myBedtimeBarChart = new Chart(ctx_bar).Bar(results.bedtime_bar_chart, options);
-
-    // }
-
-
-
-    // Create stress_level vs. insomnia_severity line chart. 
-    function drawLineChart(results) {
-
-        $("#lineChart").remove()
-        $("#lineCanvas").append(line_canvas_tag)
-
-        var ctx_line = $("#lineChart").get(0).getContext("2d");
-        var myLineChart = new Chart(ctx_line).Line(results.line_chart, options);
-        $("#lineLegend").html(myLineChart.generateLegend());
-    }
-
-
-    // Create activity_level vs. insomnia_severity line chart. 
-    function drawActivityLineChart(results) {
-
-        $("#activityLineChart").remove()
-        $("#activityLineCanvas").append(activity_line_canvas_tag)
-
-        var ctx_line = $("#activityLineChart").get(0).getContext("2d");
-        var myActivityLineChart = new Chart(ctx_line).Line(results.activity_line_chart, options);
-        $("#activityLineLegend").html(myActivityLineChart.generateLegend());
-    }
-
-
-    // Create average insomnia_severity over time line chart. 
-    function drawAvgLineChart(results) {
-
-        $("#avgLineChart").remove()
-        $("#avgLineCanvas").append(avg_line_canvas_tag)
-
-        var ctx_line = $("#avgLineChart").get(0).getContext("2d");
-        var myAvgLineChart = new Chart(ctx_line).Line(results.avg_line_chart, options);
-        // $("#avgLineLegend").html(myAvgLineChart.generateLegend());
-    }
-
-
-    // Add textual data insights. 
-    function addDataInsights(results) {
-
-            $("#avg_sleep").empty()
-            $("#median_sleep").empty()
-            $("#avg_insomnia").empty()
-            $("#median_insomnia").empty()
-            $("#most_frequent_type").empty()
-            $("#insom_factor").empty()
-
-            var avgSleep = results.avg_median.avg_sleep;
-            $("#avg_sleep").append(avgSleep);
-            var medianSleep = results.avg_median.median_sleep;
-            $("#median_sleep").append(medianSleep)
-            var avgInsomnia = results.avg_median.avg_insomnia;
-            $("#avg_insomnia").append(avgInsomnia);
-            var medianInsomnia = results.avg_median.median_insomnia;
-            $("#median_insomnia").append(medianInsomnia);
-            var mostFrequentType = results.donut_chart.most_frequent_type;
-            $("#most_frequent_type").append(mostFrequentType);
-            var insomFactor = results.avg_median.insom_factor;
-            $("#insom_factor").append(insomFactor);
-    }
-
-
-
-    // Create all charts & insights.  
-    function createCharts(results) {
-        drawDonutChart(results);
-        drawBarChart(results);
-        // drawBedtimeBarChart(results);
-        drawLineChart(results);
-        drawActivityLineChart(results);
-        drawAvgLineChart(results);
-        addDataInsights(results);
-    }
-    
-
-    // WAY TO CONDENSE THESE 2 FUNCTIONS? 
-    // Get user-submitted dates, pass to createCharts. 
-    function getDateRange(evt) {
-        // if event is this type of event, prevent default. 
-        evt.preventDefault();
-
-        var formInputs = {
-            "start_date": $("#date-range input[name=start_date]").val() 
-        };
-
-        $.get('/insom-types.json',
-            formInputs,
-            createCharts);   
-    };
-
-
-    // Get default dates, pass to createCharts.
-    function getDefaultDateRange(evt) {
-
-        var formInputs = {
-            "start_date": $("#date-range input[name=start_date]").val() 
-        };
-
-        $.get('/insom-types.json',
-            formInputs,
-            createCharts);     
-    };
-
-
-    //On page load, create charts with default start_date. 
-    $( document ).ready(getDefaultDateRange);
-    //On submit, create charts with user-selected start_date. 
-    $("#date-range").on("submit", getDateRange);
-
-    
-
-
-
-
-</script>
 
 
 

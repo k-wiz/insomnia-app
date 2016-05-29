@@ -288,6 +288,14 @@ def insom_factors(user_id, column_name):
 
 
 
+def strongest_insom_factor(user_id, start_date, end_date):
+    """Returns the insom_factor with the highest correlation 
+    with insom_severity. """
+
+    pass
+
+
+
 def create_or_update_record(user_id, date, minutes_asleep, insomnia, insom_type,
                             insom_severity, alcohol, caffeine, menstruation,
                             bedtime, stress_level, activity_level):
