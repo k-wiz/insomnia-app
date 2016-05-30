@@ -86,12 +86,24 @@
 
       <!-- Avg Insom Severity by Week line graph element -->
         <div class="small-chart">
-            <label for="avgLineChart">Average Insomnia Severity by Week (all time)<br>
+            <label for="avgLineChart">Average Insomnia Severity by Week, all-time<br>
                 <canvas id="avgLineChart"></canvas>
                 <div id="avgLineCanvas"></div>
                 <div id="avgLineLegend" class="chart-legend"></div>
             </label>
         </div>
+
+        <!-- Insomnia Type (All-time) Donut chart element -->
+        <div class="all-time-donut-chart">
+            <label for="allTimeDonutChart">Occurrence of Insomnia Type, all-time (in days)<br>
+                <canvas id="allTimeDonutChart"></canvas>
+                <div id="allTimeDonutCanvas"></div>
+                <div id="allTimeDonutLegend" class="chart-legend"></div>
+            </label>
+            <section class="data-insights">
+            <p>All-time most frequent type of insomnia: <span id="all_time_most_frequent_type"></span> insomnia.</p>
+        </section>
+        </div><br><br>
 
 
 

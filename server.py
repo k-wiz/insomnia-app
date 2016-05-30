@@ -104,7 +104,7 @@ def insom_type_data():
         "sleep-onset": d
     }
     
-    most_frequent_type = max(type_dict)
+    most_frequent_type = key_of_largest_value(type_dict)
 
     donut_dict = {
         'insom_type': [
@@ -152,7 +152,6 @@ def insom_type_data():
                 "data" : hours_sleep_scores
             }]
     }
-
 
 
 
@@ -243,9 +242,55 @@ def insom_type_data():
             "pointHighlightFill": "#fff",
             "pointHighlightStroke": "rgba(220,220,220,1)",
             "data": avg_insom_severity_scores
-        }
-    ]
-}
+            }
+        ]
+    }
+
+
+
+    #Create values & labels for allTimeDonutChart.
+    w = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), '')
+    x = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'early-awakening')
+    y = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'sleep-maintenance')
+    z = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'sleep-onset')
+
+    all_time_type_dict = {
+        "early-awakening": x,
+        "sleep-maintenance": y,
+        "sleep-onset": z
+    }
+    
+    all_time_most_frequent_type = key_of_largest_value(all_time_type_dict)
+
+    all_time_donut_dict = {
+        'insom_type': [
+            {
+                "value": w, 
+                "color": "#A9A9A9",
+                "highlight": "#808080",
+                "label": "No insomnia yay!"
+            },
+            {
+                "value": x,
+                "color": "#46BFBD",
+                "highlight": "#5AD3D1",
+                "label": "Early-awakening insomnia"
+            },
+            {
+                "value": y,
+                "color": "#F7464A",
+                "highlight": "#FF5A5E",
+                "label": "Sleep-maintenace insomnia"
+            },
+            {
+                "value": z,
+                "color": "#FDB45C",
+                "highlight": "#FFC870",
+                "label": "Sleep-onset insomnia"
+            }],
+
+        'all_time_most_frequent_type': all_time_most_frequent_type
+    }
 
 
 
@@ -258,35 +303,29 @@ def insom_type_data():
     median_insomnia = "{0:.1f}".format(calculate_median(user_id, 
                                                         start_date, 
                                                         end_date,
-                                                        column_name="insom_severity"))
+                                                        column_name=Entry.insom_severity))
     avg_stress = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
                                                 column_name=Entry.stress_level))
     avg_activity = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
                                                 column_name=Entry.activity_level))
-    ##FIX MEDIAN STRESS. ALWAYS CALCS TO 0!
     median_stress = "{0:.1f}".format(calculate_median(user_id, 
                                                     start_date, 
                                                     end_date,
-                                                    column_name="stress_level"))
+                                                    column_name=Entry.stress_level))
     median_activity = "{0:.1f}".format(calculate_median(user_id, 
                                                         start_date, 
                                                         end_date,
-                                                        column_name="activity_level"))
-
-    print "AVG act", avg_activity
-    print "AVG stress", avg_stress
-    print "median_activity", median_activity
-    print "median_stress", median_stress
-
-
+                                                        column_name=Entry.activity_level))
+    #CHANGE THIS TO FIRST_ENTRY, LAST_ENTRY. STILL TIME PERIOD BASED, BUT WANT ALL-TIME. 
     insom_factor = strongest_insom_factor(user_id, start_date, end_date)
+
 
     avg_median_dict = {
         'avg_sleep': avg_sleep,
         'median_sleep': median_sleep,
         'avg_insomnia': avg_insomnia,
-        'median_insomnia': median_insomnia, 
-        'insom_factor' : insom_factor,
+        'median_insomnia': median_insomnia,
+        'insom_factor': insom_factor,
         'avg_stress': avg_stress,
         'median_stress': median_stress,
         'avg_activity': avg_activity,
@@ -303,7 +342,8 @@ def insom_type_data():
         "activity_line_chart": activity_line_dict,
         "donut_chart": donut_dict,
         "avg_median": avg_median_dict,
-        "avg_line_chart": avg_line_dict
+        "avg_line_chart": avg_line_dict, 
+        "all_time_donut_chart": all_time_donut_dict
     } 
 
 

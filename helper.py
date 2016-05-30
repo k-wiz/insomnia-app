@@ -90,17 +90,6 @@ def calculate_avg_sleep(user_id, start_date, end_date):
 
 
 
-# def calculate_avg_insom_severity(user_id, start_date, end_date):
-#     """Calculates user's all-time average insomnia severity level."""
-
-#     avg_insom_severity = db.session.query(func.avg(Entry.insom_severity)).filter\
-#                         (Entry.user_id == user_id, Entry.date >= start_date, \
-#                             Entry.date <= end_date)
-#     avg_insom_severity = avg_insom_severity[0][0]
-#     return avg_insom_severity
-
-
-
 def calculate_avg(user_id, start_date, end_date, column_name):
     """Calculates average of field with column_name from start_date to end_date."""
 
@@ -171,17 +160,17 @@ def calculate_median_sleep(user_id, start_date, end_date):
 
 def calculate_median(user_id, start_date, end_date, column_name):
     """Calculates median value in a list of values returned from db query.
-    Column_name is the name of a db column as a string."""
+    column_name should be an object with attribute column_name, e.g. Entry.stress_level."""
     
-    data_point_tuples = db.session.query(Entry.insom_severity).filter\
+    data_point_tuples = db.session.query(column_name).filter\
                             (Entry.user_id == user_id, Entry.date >= start_date,\
-                            Entry.date <= end_date).order_by(column_name).all()
+                            Entry.date <= end_date).all()
 
     data_points = []
     for item in data_point_tuples:
         data_points.append(item[0])
 
-    median_value = median(data_points)
+    median_value = median(sorted(data_points))
 
     return median_value
 

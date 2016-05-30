@@ -5,8 +5,8 @@
     var bar_canvas_tag = '<canvas id="barChart">';
     var line_canvas_tag = '<canvas id="lineChart">';
     var activity_line_canvas_tag = '<canvas id="activityLineChart">';
-    // var bedtime_bar_canvas_tag = '<canvas id="bedtimeBarChart"'
     var avg_line_canvas_tag = '<canvas id="avgLineChart">';
+    var all_time_donut_canvas_tag = '<canvas id="allTimeDonutChart">';
 
     var options = {
       responsive: true
@@ -76,6 +76,19 @@
 
 
 
+    // Create all-time insom_type donut chart. 
+    function drawAllTimeDonutChart(results) {
+
+        $("#allTimeDonutChart").remove();
+        $("#allTimeDonutCanvas").append(all_time_donut_canvas_tag);
+        
+        var ctx_donut = $("#allTimeDonutChart").get(0).getContext("2d");
+        var myAllTimeDonutChart = new Chart(ctx_donut).Doughnut(results.all_time_donut_chart.insom_type, options);
+        $('#donutLegend').html(myAllTimeDonutChart.generateLegend());
+    }
+
+
+
     // Add textual data insights. 
     function addDataInsights(results) {
 
@@ -84,12 +97,12 @@
             $("#avg_insomnia").empty();
             $("#median_insomnia").empty();
             $("#most_frequent_type").empty();
-            $("#insom_factor").empty();
             $("#avg_stress").empty();
             $("#median_stress").empty();
             $("#avg_activity").empty();
             $("#median_activity").empty();
             $("#insom_factor").empty();
+            $("#all_time_most_frequent_type").empty();
 
             var avgSleep = results.avg_median.avg_sleep;
             $("#avg_sleep").append(avgSleep);
@@ -111,6 +124,8 @@
             $("#median_activity").append(medianActivity);
             var insomFactor = results.avg_median.insom_factor;
             $("#insom_factor").append(insomFactor);
+            var allTimeMostFrequentType = results.all_time_donut_chart.all_time_most_frequent_type;
+            $("#all_time_most_frequent_type").append(allTimeMostFrequentType);
     }
 
 
@@ -122,6 +137,7 @@
         drawLineChart(results);
         drawActivityLineChart(results);
         drawAvgLineChart(results);
+        drawAllTimeDonutChart(results);
         addDataInsights(results);
     }
     
