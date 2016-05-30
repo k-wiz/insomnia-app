@@ -139,7 +139,6 @@ def calculate_avg_insom_severity_over_time(user_id, start_date, end_date):
     averages = []
     start_dates = []
 
-
     while start_date <= (end_date - timedelta(days=7)):
         interval_end_date = start_date + timedelta(days=7)
         avg = float(calculate_avg(user_id, start_date, interval_end_date, 

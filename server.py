@@ -263,6 +263,7 @@ def insom_type_data():
                                                 column_name=Entry.stress_level))
     avg_activity = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
                                                 column_name=Entry.activity_level))
+    ##FIX MEDIAN STRESS. ALWAYS CALCS TO 0!
     median_stress = "{0:.1f}".format(calculate_median(user_id, 
                                                     start_date, 
                                                     end_date,

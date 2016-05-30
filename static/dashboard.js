@@ -21,8 +21,7 @@
         
         var ctx_donut = $("#donutChart").get(0).getContext("2d");
         var myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_chart.insom_type, options);
-        $('#donutLegend').html(myDonutChart.generateLegend());
-        
+        $('#donutLegend').html(myDonutChart.generateLegend());   
     }
 
 
@@ -51,6 +50,7 @@
     }
 
 
+
     // Create activity_level vs. insomnia_severity line chart. 
     function drawActivityLineChart(results) {
 
@@ -63,6 +63,7 @@
     }
 
 
+
     // Create average insomnia_severity over time line chart. 
     function drawAvgLineChart(results) {
 
@@ -71,8 +72,8 @@
 
         var ctx_line = $("#avgLineChart").get(0).getContext("2d");
         var myAvgLineChart = new Chart(ctx_line).Line(results.avg_line_chart, options);
-        // $("#avgLineLegend").html(myAvgLineChart.generateLegend());
     }
+
 
 
     // Add textual data insights. 
