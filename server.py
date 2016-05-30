@@ -16,8 +16,6 @@ app = Flask(__name__)
 app.secret_key = "DOESNTMATTER"
 app.jinja_env.undefined = StrictUndefined
 
-###################################################################
-
 consumer_key = os.environ['client_id']
 consumer_secret = os.environ['client_secret']
 access_token = os.environ['access_token']
@@ -27,9 +25,6 @@ refresh_token = os.environ['refresh_token']
 @app.route('/')
 def index():
     """Display today's entry form."""
-
-    # LEAVE THIS WAY FOR DEMO DAY. But, user will have relationship to Fitbit 
-    # in data model. Does user have fitbit account? 
 
     authd_client = fitbit.Fitbit(consumer_key, consumer_secret,
                              access_token=access_token, refresh_token=refresh_token)
@@ -109,7 +104,6 @@ def insom_type_data():
         "sleep-onset": d
     }
     
-    #CLARIFY FOR USER: THIS IS TIME-BASED, NOT ALL-TIME. 
     most_frequent_type = max(type_dict)
 
     donut_dict = {
@@ -236,7 +230,6 @@ def insom_type_data():
 
     avg_dates = avg_insom[1]
     avg_insom_severity_scores = avg_insom[0]
-    #Calculate growth rate or rate of improvement?
 
     avg_line_dict = {
     "labels": avg_dates,
@@ -262,41 +255,41 @@ def insom_type_data():
                                                     end_date))
     avg_insomnia = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
                                                     column_name=Entry.insom_severity))
-    median_insomnia = "{0:.1f}".format(calculate_median_insom_severity\
-                                        (user_id, start_date, end_date))
+    median_insomnia = "{0:.1f}".format(calculate_median(user_id, 
+                                                        start_date, 
+                                                        end_date,
+                                                        column_name="insom_severity"))
     avg_stress = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
                                                 column_name=Entry.stress_level))
     avg_activity = "{0:.1f}".format(calculate_avg(user_id, start_date, end_date,
                                                 column_name=Entry.activity_level))
-    median_stress = None
-    median_activity = None
+    median_stress = "{0:.1f}".format(calculate_median(user_id, 
+                                                    start_date, 
+                                                    end_date,
+                                                    column_name="stress_level"))
+    median_activity = "{0:.1f}".format(calculate_median(user_id, 
+                                                        start_date, 
+                                                        end_date,
+                                                        column_name="activity_level"))
 
-    print avg_stress
-    print "AVG ACTIV", avg_activity
-    print avg_insomnia
-
-
-    #FACTOR OUT!!!!!
-    alcohol_factor = insom_factors(user_id, Entry.alcohol)
-    caffeine_factor = insom_factors(user_id, Entry.caffeine)
-    mens_factor = insom_factors(user_id, Entry.menstruation)
-
-    factors = {
-                "drink alcohol": alcohol_factor,
-                "consume caffeine": caffeine_factor,
-                "menstruate": mens_factor
-                }
+    print "AVG act", avg_activity
+    print "AVG stress", avg_stress
+    print "median_activity", median_activity
+    print "median_stress", median_stress
 
 
-    #CLARIFY TO USER: THIS INSIGHT IS FOR ALL-TIME. 
-    insom_factor = key_of_largest_value(factors)
+    insom_factor = strongest_insom_factor(user_id, start_date, end_date)
 
     avg_median_dict = {
         'avg_sleep': avg_sleep,
         'median_sleep': median_sleep,
         'avg_insomnia': avg_insomnia,
         'median_insomnia': median_insomnia, 
-        'insom_factor' : insom_factor
+        'insom_factor' : insom_factor,
+        'avg_stress': avg_stress,
+        'median_stress': median_stress,
+        'avg_activity': avg_activity,
+        'median_activity': median_activity
     }
 
 
@@ -305,7 +298,6 @@ def insom_type_data():
     data_list_of_dicts = {
 
         "bar_chart": bar_dict,
-        # "bedtime_bar_chart": bedtime_bar_dict,
         "line_chart": line_dict,
         "activity_line_chart": activity_line_dict,
         "donut_chart": donut_dict,

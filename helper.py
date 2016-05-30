@@ -170,20 +170,21 @@ def calculate_median_sleep(user_id, start_date, end_date):
 
 
 
-def calculate_median_insom_severity(user_id, start_date, end_date):
-    """Calculates user's all-time median insomnia severity level."""
+def calculate_median(user_id, start_date, end_date, column_name):
+    """Calculates median value in a list of values returned from db query.
+    Column_name is the name of a db column as a string."""
     
-    insom_severity_tups = db.session.query(Entry.insom_severity).filter\
+    data_point_tuples = db.session.query(Entry.insom_severity).filter\
                             (Entry.user_id == user_id, Entry.date >= start_date,\
-                            Entry.date <= end_date).order_by('insom_severity').all()
+                            Entry.date <= end_date).order_by(column_name).all()
 
-    insom_severity_lst = []
-    for item in insom_severity_tups:
-        insom_severity_lst.append(item[0])
+    data_points = []
+    for item in data_point_tuples:
+        data_points.append(item[0])
 
-    median_insom_severity = median(insom_severity_lst)
+    median_value = median(data_points)
 
-    return median_insom_severity
+    return median_value
 
 
 
@@ -249,24 +250,6 @@ def hours_sleep_data(user_id, start_date, end_date):
 
 
 
-# def bedtime_data(user_id, start_date, end_date):
-#     """Returns a list of activity_level scores from start_date to end_date."""
-
-#     data_points = sorted(db.session.query(Entry.date, Entry.bedtime).filter\
-#         (Entry.user_id == user_id, Entry.date >= start_date, 
-#         Entry.date <= end_date).all())
-
-#     bedtimes = []
-    
-#     for item in data_points:
-#         hour = int(item[1].hour)
-#         # minute = item[1].minute
-#         bedtimes.append(hour)
-
-#     return bedtimes
-
-
-
 def insom_factors(user_id, column_name):
     """Returns the percentage co-occurrence between insomnia(T/F) 
     and another column with T/F values. column_name should be a table object
@@ -292,7 +275,19 @@ def strongest_insom_factor(user_id, start_date, end_date):
     """Returns the insom_factor with the highest correlation 
     with insom_severity. """
 
-    pass
+    alcohol_factor = insom_factors(user_id, Entry.alcohol)
+    caffeine_factor = insom_factors(user_id, Entry.caffeine)
+    mens_factor = insom_factors(user_id, Entry.menstruation)
+
+    factors = {
+                "drink alcohol": alcohol_factor,
+                "consume caffeine": caffeine_factor,
+                "menstruate": mens_factor
+                }
+ 
+    insom_factor = key_of_largest_value(factors)
+
+    return insom_factor
 
 
 

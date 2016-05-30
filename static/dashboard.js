@@ -39,19 +39,6 @@
 
 
 
-    // Create bedtime bar chart. 
-    // function drawBedtimeBarChart(results) {
-
-    //     $("#bedtimeBarChart").remove()
-    //     $("#bedtimeBarCanvas").append(bedtime_bar_canvas_tag)
-
-    //     var ctx_bar = $("#bedtimeBarChart").get(0).getContext("2d");
-    //     var myBedtimeBarChart = new Chart(ctx_bar).Bar(results.bedtime_bar_chart, options);
-
-    // }
-
-
-
     // Create stress_level vs. insomnia_severity line chart. 
     function drawLineChart(results) {
 
@@ -97,6 +84,11 @@
             $("#median_insomnia").empty();
             $("#most_frequent_type").empty();
             $("#insom_factor").empty();
+            $("#avg_stress").empty();
+            $("#median_stress").empty();
+            $("#avg_activity").empty();
+            $("#median_activity").empty();
+            $("#insom_factor").empty();
 
             var avgSleep = results.avg_median.avg_sleep;
             $("#avg_sleep").append(avgSleep);
@@ -108,6 +100,14 @@
             $("#median_insomnia").append(medianInsomnia);
             var mostFrequentType = results.donut_chart.most_frequent_type;
             $("#most_frequent_type").append(mostFrequentType);
+            var avgStress = results.avg_median.avg_stress;
+            $("#avg_stress").append(avgStress);
+            var medianStress = results.avg_median.median_stress;
+            $("#median_stress").append(medianStress);
+            var avgActivity = results.avg_median.avg_activity;
+            $("#avg_activity").append(avgActivity);
+            var medianActivity = results.avg_median.median_activity;
+            $("#median_activity").append(medianActivity);
             var insomFactor = results.avg_median.insom_factor;
             $("#insom_factor").append(insomFactor);
     }
@@ -118,7 +118,6 @@
     function createCharts(results) {
         drawDonutChart(results);
         drawBarChart(results);
-        // drawBedtimeBarChart(results);
         drawLineChart(results);
         drawActivityLineChart(results);
         drawAvgLineChart(results);
