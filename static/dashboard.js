@@ -3,7 +3,7 @@
     // Create canvas elements to add to empty div.
     // add size tags to tags; does it get overwritten?
     // PLAY AROUND WITH JS IMPORTS -- SHOULD I IMPORT bootstrap after chart.js.
-    var canvas_tag = '<canvas id="donutChart">';
+    var canvas_tag = '<canvas id="donutChart" width = "200px" height = "200px">';
     var bar_canvas_tag = '<canvas id="barChart" class="col-xs-12" width="600px" height="300px">';
     var line_canvas_tag = '<canvas id="lineChart">';
     var activity_line_canvas_tag = '<canvas id="activityLineChart">';

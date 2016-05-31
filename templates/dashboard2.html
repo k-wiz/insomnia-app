@@ -2,33 +2,40 @@
 {% block content %}
 
 <div class="container-fluid">
-    <div class="row">
+        <div class="row">
         <h2>Sleep Insights</h2>
-    </div>
+        </div>
 
         <div class="panel">
 
+          <!-- ROW -->
+          <div class="row">
           <!-- Nav tabs -->
           <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">By Date</a></li>
             <li role="presentation"><a href="#profile" aria-controls="all-time" role="tab" data-toggle="tab">All Time</a></li>
           </ul>
+          </div>
+          <!-- END ROW -->
+
 
           <!-- Tab panes -->
           <div class="tab-content">
             <!-- Home Tab -->
             <div role="tabpanel" class="tab-pane active" id="home"><br>
-
+              <!-- ROW?? -->
+              <div class="row">
                 <form id = "date-range" action = '/insom-types.json'>
                     Start date: <input type="date" name="start_date">
                     <input type="submit">
                 </form><br>
+              </div>
+              <!-- END ROW -->
 
-
-    <div class="row">
-        <div class="col-lg-12">            
+            
                 <!-- Donut chart element -->
-                <div class="donut-chart">
+                <div class="row">
+                  <div class="col-lg-12">
                     <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
                     <canvas id="donutChart"></canvas>
                     <div id="canvas"></div>
@@ -37,14 +44,12 @@
                     <section class="data-insights">
                         <p>Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
                     </section>
+                  </div>
                 </div><br><br>
-        </div>
-    </div>
 
 
-    <div class="row">
                 <!-- Bar chart element -->
-                <div>
+                <div class="row">
                     <label for="barChart">Hours of Sleep per Night<br>
                     <div id="barCanvas">
                         <canvas id="barChart"></canvas>
@@ -53,11 +58,10 @@
                     <p>Average sleep per night: <span id="avg_sleep"></span> hours</p>
                     <p>Median sleep per night: <span id="median_sleep"></span> hours</p>
                 </div><br><br>
-    </div>
 
 
                 <!-- Insom vs. Stress Line graph element -->
-                <div class="small-chart">
+                <div class="row">
                     <label for="lineChart">Insomnia Severity vs. Stress Level<br>
                     <canvas id="lineChart"></canvas>
                     <div id="lineCanvas"></div>
@@ -71,7 +75,7 @@
 
 
                 <!-- Insom vs. Activity line graph element -->
-                <div class="small-chart">
+                <div class="row">
                     <label for="activityLineChart">Insomnia Severity vs. Physical Activity Level<br>
                     <canvas id="activityLineChart"></canvas>
                     <div id="activityLineCanvas"></div>
@@ -79,24 +83,23 @@
                     </label>
                     <p>Average activity level: <span id="avg_activity"></span> / 10</p>
                     <p>Median activity level: <span id="median_activity"></span> / 10</p>
-                </div><br><br>
-
-
-                
-
+                </div><br><br> 
 
             </div>
 
 
             <!-- All-time Insights -->
             <div role="tabpanel" class="tab-pane" id="profile"><br><br>
+
+            <div class="row">
             <!-- Insight: factors that co-occur with insomnia -->
               <section class="data-insights"> 
                   <p>Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
               </section><br><br><br><br>
+            </div>
 
-              <!-- Avg Insom Severity by Week line graph element -->
-                <div class="small-chart">
+                <!-- Avg Insom Severity by Week line graph element -->
+                <div class="row">
                     <label for="avgLineChart">Average Insomnia Severity by Week, all-time<br>
                         <canvas id="avgLineChart"></canvas>
                         <div id="avgLineCanvas"></div>
@@ -104,8 +107,9 @@
                     </label>
                 </div>
 
+
                 <!-- Insomnia Type (All-time) Donut chart element -->
-                <div class="all-time-donut-chart">
+                <div class="row">
                     <label for="allTimeDonutChart">Occurrence of Insomnia Type, all-time (in days)<br>
                         <canvas id="allTimeDonutChart"></canvas>
                         <div id="allTimeDonutCanvas"></div>
@@ -116,13 +120,9 @@
                 </section>
                 </div><br><br>
 
-
-
             </div>
 
-
           </div>
-
 
         </div>
 
