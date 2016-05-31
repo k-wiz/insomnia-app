@@ -1,132 +1,143 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Sleep Insights</h2>
 
-<div class="panel">
-
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">By Date</a></li>
-    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">All Time</a></li>
-  </ul>
-
-  <!-- Tab panes -->
-  <div class="tab-content">
-    <!-- Home Tab -->
-    <div role="tabpanel" class="tab-pane active" id="home"><br>
-
-        <form id = "date-range" action = '/insom-types.json'>
-            Start date: <input type="date" name="start_date">
-            <input type="submit">
-        </form><br>
-
-
-        <!-- Donut chart element -->
-        <div class="donut-chart">
-            <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
-            <canvas id="donutChart"></canvas>
-            <div id="canvas"></div>
-            <div id="donutLegend" class="chart-legend"></div>
-            </label>
-            <section class="data-insights">
-            <p>Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
-        </section>
-        </div><br><br>
-
-
-        <!-- Bar chart element -->
-        <div class="small-chart">
-            <label for="barChart">Hours of Sleep per Night<br>
-            <canvas id="barChart"></canvas>
-            <div id="barCanvas"></div>
-            </label>
-            <p>Average sleep per night: <span id="avg_sleep"></span> hours</p>
-            <p>Median sleep per night: <span id="median_sleep"></span> hours</p>
-        </div><br><br>
-
-
-        <!-- Insom vs. Stress Line graph element -->
-        <div class="small-chart">
-            <label for="lineChart">Insomnia Severity vs. Stress Level<br>
-            <canvas id="lineChart"></canvas>
-            <div id="lineCanvas"></div>
-            <div id="lineLegend" class="chart-legend"></div>
-            </label>
-            <p>Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
-            <p>Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
-            <p>Average stress level: <span id="avg_stress"></span> / 10</p>
-            <p>Median stress level: <span id="median_stress"></span> / 10</p>
-        </div><br><br>
-
-
-        <!-- Insom vs. Activity line graph element -->
-        <div class="small-chart">
-            <label for="activityLineChart">Insomnia Severity vs. Physical Activity Level<br>
-            <canvas id="activityLineChart"></canvas>
-            <div id="activityLineCanvas"></div>
-            <div id="actvityLineLegend" class="chart-legend"></div>
-            </label>
-            <p>Average activity level: <span id="avg_activity"></span> / 10</p>
-            <p>Median activity level: <span id="median_activity"></span> / 10</p>
-        </div><br><br>
-
-
-        
-
-
+<div class="container-fluid">
+    <div class="row">
+        <h2>Sleep Insights</h2>
     </div>
 
+        <div class="panel">
 
-    <!-- All-time Insights -->
-    <div role="tabpanel" class="tab-pane" id="profile"><br><br>
-    <!-- Insight: factors that co-occur with insomnia -->
-      <section class="data-insights"> 
-          <p>Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
-      </section><br><br><br><br>
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">By Date</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="all-time" role="tab" data-toggle="tab">All Time</a></li>
+          </ul>
 
-      <!-- Avg Insom Severity by Week line graph element -->
-        <div class="small-chart">
-            <label for="avgLineChart">Average Insomnia Severity by Week, all-time<br>
-                <canvas id="avgLineChart"></canvas>
-                <div id="avgLineCanvas"></div>
-                <div id="avgLineLegend" class="chart-legend"></div>
-            </label>
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <!-- Home Tab -->
+            <div role="tabpanel" class="tab-pane active" id="home"><br>
+
+                <form id = "date-range" action = '/insom-types.json'>
+                    Start date: <input type="date" name="start_date">
+                    <input type="submit">
+                </form><br>
+
+
+    <div class="row">
+        <div class="col-lg-12">            
+                <!-- Donut chart element -->
+                <div class="donut-chart">
+                    <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
+                    <canvas id="donutChart"></canvas>
+                    <div id="canvas"></div>
+                    <div id="donutLegend" class="chart-legend"></div>
+                    </label>
+                    <section class="data-insights">
+                        <p>Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
+                    </section>
+                </div><br><br>
         </div>
-
-        <!-- Insomnia Type (All-time) Donut chart element -->
-        <div class="all-time-donut-chart">
-            <label for="allTimeDonutChart">Occurrence of Insomnia Type, all-time (in days)<br>
-                <canvas id="allTimeDonutChart"></canvas>
-                <div id="allTimeDonutCanvas"></div>
-                <div id="allTimeDonutLegend" class="chart-legend"></div>
-            </label>
-            <section class="data-insights">
-            <p>All-time most frequent type of insomnia: <span id="all_time_most_frequent_type"></span> insomnia.</p>
-        </section>
-        </div><br><br>
-
-
-
     </div>
 
 
-  </div>
+    <div class="row">
+                <!-- Bar chart element -->
+                <div>
+                    <label for="barChart">Hours of Sleep per Night<br>
+                    <div id="barCanvas">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                    </label>
+                    <p>Average sleep per night: <span id="avg_sleep"></span> hours</p>
+                    <p>Median sleep per night: <span id="median_sleep"></span> hours</p>
+                </div><br><br>
+    </div>
 
+
+                <!-- Insom vs. Stress Line graph element -->
+                <div class="small-chart">
+                    <label for="lineChart">Insomnia Severity vs. Stress Level<br>
+                    <canvas id="lineChart"></canvas>
+                    <div id="lineCanvas"></div>
+                    <div id="lineLegend" class="chart-legend"></div>
+                    </label>
+                    <p>Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
+                    <p>Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
+                    <p>Average stress level: <span id="avg_stress"></span> / 10</p>
+                    <p>Median stress level: <span id="median_stress"></span> / 10</p>
+                </div><br><br>
+
+
+                <!-- Insom vs. Activity line graph element -->
+                <div class="small-chart">
+                    <label for="activityLineChart">Insomnia Severity vs. Physical Activity Level<br>
+                    <canvas id="activityLineChart"></canvas>
+                    <div id="activityLineCanvas"></div>
+                    <div id="actvityLineLegend" class="chart-legend"></div>
+                    </label>
+                    <p>Average activity level: <span id="avg_activity"></span> / 10</p>
+                    <p>Median activity level: <span id="median_activity"></span> / 10</p>
+                </div><br><br>
+
+
+                
+
+
+            </div>
+
+
+            <!-- All-time Insights -->
+            <div role="tabpanel" class="tab-pane" id="profile"><br><br>
+            <!-- Insight: factors that co-occur with insomnia -->
+              <section class="data-insights"> 
+                  <p>Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
+              </section><br><br><br><br>
+
+              <!-- Avg Insom Severity by Week line graph element -->
+                <div class="small-chart">
+                    <label for="avgLineChart">Average Insomnia Severity by Week, all-time<br>
+                        <canvas id="avgLineChart"></canvas>
+                        <div id="avgLineCanvas"></div>
+                        <div id="avgLineLegend" class="chart-legend"></div>
+                    </label>
+                </div>
+
+                <!-- Insomnia Type (All-time) Donut chart element -->
+                <div class="all-time-donut-chart">
+                    <label for="allTimeDonutChart">Occurrence of Insomnia Type, all-time (in days)<br>
+                        <canvas id="allTimeDonutChart"></canvas>
+                        <div id="allTimeDonutCanvas"></div>
+                        <div id="allTimeDonutLegend" class="chart-legend"></div>
+                    </label>
+                    <section class="data-insights">
+                    <p>All-time most frequent type of insomnia: <span id="all_time_most_frequent_type"></span> insomnia.</p>
+                </section>
+                </div><br><br>
+
+
+
+            </div>
+
+
+          </div>
+
+
+        </div>
 
 </div>
 
 
 
 
-
-
-<!--    Javascript Imports -->
-<script src="https://code.jquery.com/jquery.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
-<script src="/static/dashboard.js"></script>
+        <!--    Javascript Imports -->
+        <script src="https://code.jquery.com/jquery.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+        <script src="/static/dashboard.js"></script>
 
 
 
 
-{% endblock %}
+        {% endblock %}
