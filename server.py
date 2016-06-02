@@ -31,7 +31,9 @@ def index():
     sleep_log = authd_client.sleep()
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
 
-    #Alert user!!!
+    fitbit_stats = authd_client._COLLECTION_RESOURCE('sleep')
+    # print "FITBIT STATS: ", fitbit_stats
+
 
     return render_template("homepage.html", 
                                 hours_sleep = hours_sleep)

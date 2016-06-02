@@ -1,14 +1,12 @@
 
     
     // Create canvas elements to add to empty div.
-    // add size tags to tags; does it get overwritten?
-    // PLAY AROUND WITH JS IMPORTS -- SHOULD I IMPORT bootstrap after chart.js.
     var canvas_tag = '<canvas id="donutChart" width = "200px" height = "200px">';
     var bar_canvas_tag = '<canvas id="barChart" class="col-xs-12" width="600px" height="300px">';
-    var line_canvas_tag = '<canvas id="lineChart">';
-    var activity_line_canvas_tag = '<canvas id="activityLineChart">';
-    var avg_line_canvas_tag = '<canvas id="avgLineChart">';
-    var all_time_donut_canvas_tag = '<canvas id="allTimeDonutChart">';
+    var line_canvas_tag = '<canvas id="lineChart" width="600px" height="300px">';
+    var activity_line_canvas_tag = '<canvas id="activityLineChart" width="600px" height="300px">';
+    var avg_line_canvas_tag = '<canvas id="avgLineChart" width="600px" height="300px">';
+    var all_time_donut_canvas_tag = '<canvas id="allTimeDonutChart" width = "200px" height = "200px">';
 
     var options = {
       responsive: true
@@ -23,7 +21,7 @@
         
         var ctx_donut = $("#donutChart").get(0).getContext("2d");
         var myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_chart.insom_type, options);
-        $('#donutLegend').html(myDonutChart.generateLegend());   
+        $('#donutLegend').html(myDonutChart.generateLegend());
     }
 
 
