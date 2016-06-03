@@ -31,6 +31,13 @@ body {
     margin-bottom: 2em;
 }*/
 
-/*.top-buffer { 
+.top-buffer { 
     margin-top:100px; 
-}*/
+}
+
+.jumbotron {
+    margin-left: 50px;
+    margin-right: 50px;
+    /*background: url('/static/images/counting-sheep.jpg>');*/
+
+}
