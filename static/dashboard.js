@@ -1,15 +1,16 @@
 
     
     // Create canvas elements to add to empty div.
-    var canvas_tag = '<canvas id="donutChart" width = "200px" height = "200px">';
-    var bar_canvas_tag = '<canvas id="barChart" class="col-xs-12" width="600px" height="300px">';
+    var canvas_tag = '<canvas id="donutChart" width = "250px" height = "250px">';
+    var bar_canvas_tag = '<canvas id="barChart" width="600px" height="300px">';
     var line_canvas_tag = '<canvas id="lineChart" width="600px" height="300px">';
     var activity_line_canvas_tag = '<canvas id="activityLineChart" width="600px" height="300px">';
-    var avg_line_canvas_tag = '<canvas id="avgLineChart" width="600px" height="300px">';
+    var avg_line_canvas_tag = '<canvas id="avgLineChart" width="550px" height="275px">';
     var all_time_donut_canvas_tag = '<canvas id="allTimeDonutChart" width = "200px" height = "200px">';
 
     var options = {
-      responsive: true
+      responsive: true,
+      maintainAspectRatio: false
     };
     
 
@@ -84,7 +85,7 @@
         
         var ctx_donut = $("#allTimeDonutChart").get(0).getContext("2d");
         var myAllTimeDonutChart = new Chart(ctx_donut).Doughnut(results.all_time_donut_chart.insom_type, options);
-        $('#donutLegend').html(myAllTimeDonutChart.generateLegend());
+        $('#allTimeDonutLegend').html(myAllTimeDonutChart.generateLegend());
     }
 
 
@@ -177,6 +178,7 @@
     $("#date-range").on("submit", getDateRange);
     //On tab toggle, create charts with default date range. 
     $('a[data-toggle="tab"]').on('shown.bs.tab', getDateRange);
+
 
 
 

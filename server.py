@@ -26,17 +26,24 @@ refresh_token = os.environ['refresh_token']
 def index():
     """Display today's entry form."""
 
+    return render_template("index.html")
+
+
+@app.route('/entry')
+def form():
+    """Display today's entry form."""
+
     authd_client = fitbit.Fitbit(consumer_key, consumer_secret,
                              access_token=access_token, refresh_token=refresh_token)
     sleep_log = authd_client.sleep()
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
 
     fitbit_stats = authd_client._COLLECTION_RESOURCE('sleep')
-    # print "FITBIT STATS: ", fitbit_stats
 
 
     return render_template("homepage.html", 
                                 hours_sleep = hours_sleep)
+
 
 
 
@@ -210,7 +217,7 @@ def insom_type_data():
                 "data": insom_severity_scores
             },
             {
-                "label": "Stress Level",
+                "label": "Activity Level",
                 "fillColor": "rgba(151,187,205,0.2)",
                 "strokeColor": "rgba(151,187,205,1)",
                 "pointColor": "rgba(151,187,205,1)",
