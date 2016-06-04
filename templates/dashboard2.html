@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<div class="container-fluid">
+<div id="dashboardInsights" class="container-fluid">
         <h2>Sleep Insights</h2>
 
         <div class="panel">
@@ -9,8 +9,8 @@
           
           <!-- Nav tabs -->
           <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">By Date</a></li>
-            <li role="presentation"><a href="#profile" aria-controls="all-time" role="tab" data-toggle="tab">All Time</a></li>
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Insights</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="all-time" role="tab" data-toggle="tab">Treatment</a></li>
           </ul>
 
 
@@ -18,100 +18,119 @@
           <div class="tab-content">
             <!-- Home Tab -->
             <div role="tabpanel" class="tab-pane active" id="home"><br>
+
                 <form id = "date-range" action = '/insom-types.json'>
                     Start date: <input type="date" name="start_date">
-                    <input type="submit">
-                </form><br>
+                    <input class="btn btn-primary btn-xs" type="submit" >
+                </form><br><br>
 
-            
-                <!-- Donut chart element -->
-                <div class="row" id="donut-chart">
-                  <div class="col-lg-offset-1 col-lg-6">
-                    <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
-                    <!-- <canvas id="donutChart"></canvas> -->
-                    <div id="canvas"></div>
-                    <div id="donutLegend" class="chart-legend"></div>
-                    </label>
-                  </div>
-                  <div class="col-lg-3">
-                    <section class="data-insights">
-                        <p>Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
-                    </section>
-                  </div>
-                </div><br><br>
+                <div class="row">
+            <div class="col-xs-12">
+              <section class="data-insights"> 
+                  <p class="bg-info text-center">Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
+              </section><br>
+            </div>
+            <div class="col-xs-12">
+              <section class="data-insights">
+                    <p class="bg-info text-center">Your all-time most frequent type of insomnia is <span id="all_time_most_frequent_type"></span> insomnia.</p>
+              </section><br>
+            </div>
+            </div>
 
+                <hr><br><h3>Hours of Sleep</h3><br>
 
                 <!-- Bar chart element -->
                 <div class="row" id="bar-chart">
-                  <div class="col-lg-offset-1 col-lg-6">
-                    <label for="barChart">Hours of Sleep per Night<br>
+                  <div class="col-md-8">
+                    <label for="barChart"><br>
                     <!-- <canvas id="barChart"></canvas> -->
                     <div id="barCanvas"><canvas id="barChart"></canvas></div>
                     </label>
                   </div>
-                  <div class="col-lg-4">
-                    <p>Average sleep per night: <span id="avg_sleep"></span> hours</p>
-                    <p>Median sleep per night: <span id="median_sleep"></span> hours</p>
+                  <div class="col-md-4">
+                    <p class="bg-info">Average sleep per night: <span id="avg_sleep"></span> hours</p>
+                    <p class="bg-info">Median sleep per night: <span id="median_sleep"></span> hours</p>
                   </div>
-                </div><br><br>
+                </div>
+
+                <hr><br><h3>Insomnia Type</h3><br>
+            
+                <!-- Donut chart element -->
+                <div class="row" id="donut-chart">
+                  <div class="col-md-8">
+                    
+                    <!-- <canvas id="donutChart"></canvas> -->
+                    <div id="canvas"></div>
+                    <div id="donutLegend" class="chart-legend"></div>
+                    <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <section class="data-insights">
+                        <p class="bg-info">Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
+                    </section>
+                  </div>
+                </div>
+
+                <hr><br><h3>Insomnia Severity vs. Stress Level</h3><br>
 
 
                 <!-- Insom vs. Stress Line graph element -->
                 <div class="row">
-                  <div class="col-lg-offset-1 col-lg-6">
-                    <label for="lineChart">Insomnia Severity vs. Stress Level<br>
+                  <div class="col-md-8">
+                    <label for="lineChart"><br>
                     <!-- <canvas id="lineChart"></canvas> -->
                     <div id="lineCanvas"></div>
                     <div id="lineLegend" class="chart-legend"></div>
                     </label>
                   </div>
-                  <div class="col-lg-4">
-                    <p>Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
-                    <p>Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
-                    <p>Average stress level: <span id="avg_stress"></span> / 10</p>
-                    <p>Median stress level: <span id="median_stress"></span> / 10</p>
+                  <div class="col-md-4">
+                    <p class="bg-info">Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
+                    <p class="bg-info">Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
+                    <p class="bg-info">Average stress level: <span id="avg_stress"></span> / 10</p>
+                    <p class="bg-info">Median stress level: <span id="median_stress"></span> / 10</p>
                   </div>
-                </div><br><br>
+                </div>
 
+                <hr><br><h3>Insomnia Severity vs. Physical Activity Level</h3><br>
 
                 <!-- Insom vs. Activity line graph element -->
                 <div class="row">
-                  <div class="col-lg-offset-1 col-lg-6">
-                    <label for="activityLineChart">Insomnia Severity vs. Physical Activity Level<br>
+                  <div class="col-md-8">
+                    <label for="activityLineChart"><br>
                     <!-- <canvas id="activityLineChart"></canvas> -->
                     <div id="activityLineCanvas"></div>
                     <div id="activityLineLegend" class="chart-legend"></div>
                     </label>
                   </div>
-                  <div class="col-lg-4">
-                    <p>Average activity level: <span id="avg_activity"></span> / 10</p>
-                    <p>Median activity level: <span id="median_activity"></span> / 10</p>
+                  <div class="col-md-4">
+                    <p class="bg-info">Average activity level: <span id="avg_activity"></span> / 10</p>
+                    <p class="bg-info">Median activity level: <span id="median_activity"></span> / 10</p>
                   </div>
                 </div><br><br> 
 
             </div>
 
-
             <!-- All-time Insights -->
             <div role="tabpanel" class="tab-pane" id="profile"><br><br>
 
-            <div class="row">
-            <div class="col-xs-12">
             <!-- Insight: factors that co-occur with insomnia -->
+            <!-- <div class="row">
+            <div class="col-xs-12">
               <section class="data-insights"> 
-                  <p class="text-center">Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
+                  <p class="bg-info text-center">Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
               </section><br>
             </div>
             <div class="col-xs-12">
               <section class="data-insights">
-                    <p class="text-center">All-time most frequent type of insomnia: <span id="all_time_most_frequent_type"></span> insomnia.</p>
+                    <p class="bg-info text-center">All-time most frequent type of insomnia: <span id="all_time_most_frequent_type"></span> insomnia.</p>
               </section><br><br><br><br>
             </div>
-            </div>
+            </div> -->
 
                 <!-- Avg Insom Severity by Week line graph element -->
                 <div class="row">
-                  <div class="col-lg-offset-1 col-lg-6">
+                  <div class="col-md-8">
                     <label for="avgLineChart">Average Insomnia Severity by Week, all-time<br>
                         <!-- <canvas id="avgLineChart"></canvas> -->
                         <div id="avgLineCanvas"></div>

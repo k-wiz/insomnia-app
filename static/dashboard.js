@@ -1,11 +1,11 @@
 
     
     // Create canvas elements to add to empty div.
-    var canvas_tag = '<canvas id="donutChart" width = "250px" height = "250px">';
-    var bar_canvas_tag = '<canvas id="barChart" width="600px" height="300px">';
-    var line_canvas_tag = '<canvas id="lineChart" width="600px" height="300px">';
-    var activity_line_canvas_tag = '<canvas id="activityLineChart" width="600px" height="300px">';
-    var avg_line_canvas_tag = '<canvas id="avgLineChart" width="550px" height="275px">';
+    var canvas_tag = '<canvas id="donutChart" width = "320px" height = "320px">';
+    var bar_canvas_tag = '<canvas id="barChart" width="900px" height="300px">';
+    var line_canvas_tag = '<canvas id="lineChart" width="900px" height="300px">';
+    var activity_line_canvas_tag = '<canvas id="activityLineChart" width="900px" height="300px">';
+    var avg_line_canvas_tag = '<canvas id="avgLineChart" width="900px" height="275px">';
     var all_time_donut_canvas_tag = '<canvas id="allTimeDonutChart" width = "200px" height = "200px">';
 
     var options = {

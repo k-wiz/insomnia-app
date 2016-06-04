@@ -5,28 +5,28 @@
 
 <div class="container">
 
-<div class="alert alert-dismissible alert-success">
+<div class="entryAlert alert alert-dismissible alert-success">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
-  <strong>Well done!</strong> Your Fitbit data has been successfully added.</a>.
+  <strong>Well done!</strong> Your Fitbit data has been successfully added.
 </div>
 
 <div class="col-md-offset-1 col-md-10">
     <div class="well bs-component">
 
-        <form class="form-horizontal" action="/dashboard" method="POST">
+        <form id="entryForm" class="form-horizontal" action="/dashboard" method="POST">
           <fieldset>
             <legend>How did you sleep last night?</legend>
 
             <div class="form-group">
-              <label class="col-lg-1 control-label">Hours Slept</label>
-              <div class="col-lg-10">
+              <label class="control-label">Hours Slept</label>
+              <div class="">
                 <input type="number" class="form-control" name="hours_sleep" min="0" max="24" value={{hours_sleep}}>
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-lg-2 control-label">Insomnia?</label>
-              <div class="col-lg-10">
+              <label class="control-label">Insomnia?</label>
+              <div class="">
                 <div class="radio">
                   <label>
                     <input type="radio" name="insomnia" value="True" checked="checked">
@@ -43,8 +43,8 @@
             </div>
 
             <div class="form-group">
-              <label for="select" class="col-lg-2 control-label">Type of Insomnia</label>
-              <div class="col-lg-10">
+              <label for="select" class="control-label">Type of Insomnia</label>
+              <div class="">
                 <select class="form-control" id="select" name="insom_type">
                   <option value=""></option>
                   <option value="sleep-onset" selected="selected">Couldn't fall asleep</option>
@@ -55,15 +55,15 @@
             </div>
 
             <div class="form-group">
-              <label class="col-lg-1 control-label">Insomnia Severity</label>
-              <div class="col-lg-10">
+              <label class="control-label">Insomnia Severity</label>
+              <div class="">
                 <input type="number" class="form-control" name="insom_severity" min="0" max="10" value="3">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-lg-2 control-label">Did you drink alcohol yesterday?</label>
-              <div class="col-lg-10">
+              <label class="control-label">Did you drink alcohol yesterday?</label>
+              <div class="">
                 <div class="radio">
                   <label>
                     <input type="radio" name="alcohol" value="True">
@@ -80,8 +80,8 @@
             </div>
 
             <div class="form-group">
-              <label class="col-lg-2 control-label">Did you have caffeine yesterday?</label>
-              <div class="col-lg-10">
+              <label class="control-label">Did you have caffeine yesterday?</label>
+              <div class="">
                 <div class="radio">
                   <label>
                     <input type="radio" name="caffeine" value="True" checked="checked">
@@ -98,8 +98,8 @@
             </div>
 
             <div class="form-group">
-              <label class="col-lg-2 control-label">Are you on your period?</label>
-              <div class="col-lg-10">
+              <label class="control-label">Are you on your period?</label>
+              <div class="">
                 <div class="radio">
                   <label>
                     <input type="radio" name="menstruation" value="True">
@@ -116,31 +116,28 @@
             </div>
 
             <div class="form-group">
-              <label class="col-lg-1 control-label">What time did you go to bed?</label>
-              <div class="col-lg-10">
+              <label class="control-label">What time did you go to bed?</label>
+              <div class="">
                 <input type="time" class="form-control" name="bedtime" value="23:00">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-lg-1 control-label">How stressful was your day?</label>
-              <div class="col-lg-10">
+              <label class="control-label">How stressful was your day?</label>
+              <div class="">
                 <input type="number" class="form-control" name="stress_level" min="0" max="10" value="3">
               </div>
             </div>
 
             <div class="form-group">
-              <label class="col-lg-1 control-label">How physically active were you?</label>
-              <div class="col-lg-10">
+              <label class="control-label">How physically active were you?</label>
+              <div class="">
                 <input type="number" class="form-control" name="activity_level" min="0" max="10" value="6">
               </div>
             </div>
 
             <div class="form-group">
-              <div class="col-lg-10 col-lg-offset-2">
-                <button type="reset" class="btn btn-default">Cancel</button>
-                <button type="submit" class="btn btn-primary">Submit</button>
-              </div>
+                <button type="submit" class="btn btn-primary">Create Entry</button>
             </div>
           </fieldset>
         </form>

@@ -41,3 +41,71 @@ body {
     /*background: url('/static/images/counting-sheep.jpg>');*/
 
 }
+
+#entryForm {
+    padding: 30px;
+}
+
+.entryAlert{
+    width: 920px;
+    margin: 0 auto 10px auto;
+}
+
+#dashboardInsights {
+    padding: 70px;
+}
+
+#date-range {
+    padding: 15px;
+    margin-top: -22px;
+    border: 1px solid #ddd;
+}
+
+#home .row {
+    padding: 0 20px;
+}
+
+#dashboardInsights h3{
+    text-align: center;
+}
+
+#dashboardInsights .col-md-4{
+    padding-top: 30px;
+}
+
+#dashboardInsights .bg-info{
+    padding: 12px;
+    font-size: 13px;
+}
+
+#dashboardInsights .data-insights .bg-info{
+    font-weight: 400;
+    font-size: 17px;
+}
+
+/*#donutLegend ul {
+    position: relative;
+    top: -310px;
+    left: 300px;
+    list-style: none;
+}*/
+
+#donutLegend ul li {
+    font-size: 14px;
+}
+
+/*#lineLegend ul li {
+    list-style: none;
+}
+
+#activityLineLegend ul li {
+    list-style: none;
+}*/
+
+.chart-legend ul li {
+    list-style: none;
+}
+
+#homepageJumbo {
+    padding: 40px;
+}
