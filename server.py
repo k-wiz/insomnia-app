@@ -325,6 +325,7 @@ def insom_type_data():
                                                         start_date, 
                                                         end_date,
                                                         column_name=Entry.activity_level))
+    
     #CHANGE THIS TO FIRST_ENTRY, LAST_ENTRY. STILL TIME PERIOD BASED, BUT WANT ALL-TIME. 
     insom_factor = strongest_insom_factor(user_id, start_date, end_date)
 

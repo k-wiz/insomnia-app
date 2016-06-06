@@ -65,14 +65,6 @@ class Entry(db.Model):
 # Helper functions
 
 
-# def connect_to_db(app):
-#     """Connect the database to Flask app."""
-
-#     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///insomnia'
-#     db.app = app
-#     db.init_app(app)
-
-
 def connect_to_db(app, db_name='postgresql:///insomnia'):
     """Connect the database to Flask app."""
 
@@ -138,32 +130,68 @@ def example_data():
                 stress_level=3,
                 activity_level=4)
 
-    db.session.add_all([user1, e1, e2, e3, e4])
+    e5 = Entry(user_id=1, 
+                date=datetime(2016,5,5), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    e6 = Entry(user_id=1, 
+                date=datetime(2016,5,6), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    e7 = Entry(user_id=1, 
+                date=datetime(2016,5,7), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    e8 = Entry(user_id=1, 
+                date=datetime(2016,5,8), 
+                minutes_asleep=420, 
+                insomnia=True,
+                insom_type='',
+                insom_severity=1,
+                alcohol=False,
+                caffeine=True,
+                menstruation=False,
+                bedtime='23:00',
+                stress_level=3,
+                activity_level=4)
+
+    db.session.add_all([user1, e1, e2, e3, e4, e5, e6, e7, e8])
     db.session.commit()
+
+
+#########################################################
 
 if __name__ == "__main__":
 
     from server import app
     connect_to_db(app)
     print "Connected to DB."
-
-
-#########################################################
-
-# Notes: 
-# Fields to possibly add -- (this will take ~ 1 day to get data from Fitbit API, 
-#     modify my model, and re-create db.)
-
-# 1. minutes_asleep = minutes_asleep
-# 2. activty_level = some calculation for overall activity from Activity API data
-# 3. bedtime = sleep_start_time
-
-# OTHER POSSIBLES: 
-# 1. efficiency
-# 2. awake_count
-# 3. awake_duration
-# 4. time_in_bed
-
-
 
 

@@ -26,25 +26,6 @@ class MyAppUnitTestCase(unittest.TestCase):
 
 
 
-# class MyAppIntegrationTestCase(unittest.TestCase):
-#     """Integration tests: testing Flask server."""
-
-#     def setUp(self):
-#         print "(setUp ran)"
-#         self.client = server.app.test_client()
-#         server.app.config['TESTING'] = True
-#         server.app.config['DEBUG'] = False
-
-#     def tearDown(self):
-#         print "(tearDown ran)"
-
-#     def test_home(self):
-#         result = self.client.get('/')
-#         self.assertIn('<h1>How did you sleep last night?</h1>', result.data)
-
-
-
-
 class FlaskTests(TestCase):
     """Flask & database tests"""
 
@@ -70,7 +51,7 @@ class FlaskTests(TestCase):
         """Test root page."""
         
         result = self.client.get('/')
-        self.assertIn('<h1>How did you sleep last night?</h1>', result.data)
+        self.assertIn('<h1>Log Your Sleep</h1>', result.data)
 
 
     def test_dashboard(self):
@@ -82,7 +63,14 @@ class FlaskTests(TestCase):
                                                         'bedtime': '23:00',
                                                         'stress_level': '1',
                                                         'activity_level': '1'})
-        self.assertIn('<div class="sleep-chart">', result.data)
+        self.assertIn('<div class="panel">', result.data)
+
+
+    def test_entry(self):
+        """Test entry route."""
+
+        result = self.client.get('/entry')
+        self.assertIn('<legend>How did you sleep last night?</legend>', result.data)
 
 
     def test_insom_types(self):
@@ -92,12 +80,6 @@ class FlaskTests(TestCase):
         self.assertIn("insom_type", result.data)
 
 
-    def test_insom_severity(self):
-        """Test insom-severity.json route."""
-
-        result = self.client.get('/insom-severity.json')
-        self.assertIn("labels", result.data)
-
 
     #Tests for functions in helper.py that call the db. 
     def test_calculate_avg_sleep(self):
@@ -106,10 +88,11 @@ class FlaskTests(TestCase):
                                             datetime(2016,5,2)), 7.0)
 
 
-    def test_calculate_avg_insom_severity(self):
-        self.assertEqual(calculate_avg_insom_severity('1', 
+    def test_calculate_avg_sleep_over_time(self):
+        self.assertEqual(calculate_avg_sleep_over_time('1', 
                                             datetime(2016,5,1), 
-                                            datetime(2016,5,2)), 1.0)
+                                            datetime(2016,5,8)), ([7.0], ['5/8']))
+
 
 
     def test_calculate_median_sleep(self):
@@ -117,36 +100,26 @@ class FlaskTests(TestCase):
                                             datetime(2016,5,1), 
                                             datetime(2016,5,2)), 7.0)
 
-
-    def test_calculate_median_insom_severity(self):
-        self.assertEqual(calculate_median_insom_severity('1', 
-                                            datetime(2016,5,1), 
-                                            datetime(2016,5,2)), 1.0)
-
-
-    def test_insom_type_frequency(self):
-        self.assertEqual(insom_type_frequency('1', 
-                                                datetime(2016,5,1), 
-                                                datetime(2016,5,2)), 
-                                                ([(u'early-awakening', 1L), 
-                                                  (u'sleep-maintenance', 1L)]))
-
-
-    def test_most_frequent_type(self):
-        self.assertEqual(most_frequent_type('1', 
-                                            datetime(2016,5,1), 
-                                            datetime(2016,5,2)), 
-                                            (1L, u'early-awakening'))
-
+   
 
     def test_first_entry(self):
         self.assertEqual(first_entry('1'), date(2016, 5, 1))
 
 
-    def test_last_entry(self):
-        self.assertEqual(last_entry('1'), date(2016, 5, 4))
 
-    #NOT A GREAT TEST -- TEST IF CORRECT THING ADDED TO DB INSTEAD.
+    def test_last_entry(self):
+        self.assertEqual(last_entry('1'), date(2016, 5, 8))
+
+
+
+    def test_frequency_insomnia_type(self):
+        self.assertEqual(frequency_insomnia_type('1', 
+                                            datetime(2016,5,1), 
+                                            datetime(2016,5,2), 'x'), 0)
+
+
+
+
     def test_create_or_update_record(self):
         """Test if creating a record works."""
 
