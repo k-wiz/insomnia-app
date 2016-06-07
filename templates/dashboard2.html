@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<br><br>
 <div id="dashboardInsights" class="container-fluid">
-        <h2>Sleep Insights</h2>
 
         <div class="panel">
 
@@ -22,20 +22,40 @@
                 <form id = "date-range" action = '/insom-types.json'>
                     Start date: <input type="date" name="start_date">
                     <input class="btn btn-primary btn-xs" type="submit" >
-                </form><br><br>
+                </form><br>
 
-                <div class="row">
+            <div class="row">
             <div class="col-xs-12">
+              <!-- <br><h3>Top Sleep Insights</h3><br><br> -->
+              <br><br>
+              <div class="row top-insight">
               <section class="data-insights"> 
-                  <p class="bg-info text-center">Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p>
+                  <div class="col-xs-11">
+                  <div class="insight-text"><h4><strong>New Insight: Alcohol increases insomnia</strong></h4>
+                  <p>Have you noticed that alcohol impacts your sleep? Based on the data you've provided, there's a strong correlation between insomnia and drinking alcohol. As an experiment, give up alcohol for two weeks, log your sleep, and see if your insomnia improves.</p></div></div>
+                  <div class="col-xs-1">
+                  <div class="icon"><i class="fa fa-beer fa-4x" aria-hidden="true"></i></div></div>
+
+                  <!-- <p class="bg-info top-insight text-center">Insomnia happens more frequently when you also <span id="insom_factor"></span>.</p> -->
               </section><br>
             </div>
-            <div class="col-xs-12">
+            <br>
+
+            <!-- <div class="col-xs-12"> -->
+              <div class="row top-insight">
               <section class="data-insights">
-                    <p class="bg-info text-center">Your all-time most frequent type of insomnia is <span id="all_time_most_frequent_type"></span> insomnia.</p>
-              </section><br>
+                  <div class="col-xs-11">
+                  <div class="insight-text"><h4><strong>New Insight: Your insomnia is worst early in the morning</strong></h4>
+                  <p>Early-awakening insomnia has a variety of causes, including inconsistent bedtimes, depression, low blood sugar, and hormonal imbalances. Talk to your doctor about triggers of your early-awakening insomnia.</p></div></div>
+                  <div class="col-xs-1">
+                  <div class="icon"><i class="fa fa-sun-o fa-4x" aria-hidden="true"></i></div></div>
+
+                    <!-- <p class="bg-info text-center">Your all-time most frequent type of insomnia is <span id="all_time_most_frequent_type"></span> insomnia.</p> -->
+              </section><br><br>
+              </div>
+            <!-- </div> -->
             </div>
-            </div>
+          </div><br><br>
 
                 <hr><br><h3>Hours of Sleep</h3><br>
 
@@ -51,9 +71,9 @@
                     <p class="bg-info">Average sleep per night: <span id="avg_sleep"></span> hours</p>
                     <p class="bg-info">Median sleep per night: <span id="median_sleep"></span> hours</p>
                   </div>
-                </div>
+                </div><br><br>
 
-                <hr><br><h3>Insomnia Type</h3><br>
+                <hr><br><h3>Occurrence of Insomnia Type (in days)</h3><br><br>
             
                 <!-- Donut chart element -->
                 <div class="row" id="donut-chart">
@@ -62,7 +82,7 @@
                     <!-- <canvas id="donutChart"></canvas> -->
                     <div id="canvas"></div>
                     <div id="donutLegend" class="chart-legend"></div>
-                    <label for="donutChart">Occurrence of Insomnia Type (in days)<br>
+                    <label for="donutChart"><br>
                     </label>
                   </div>
                   <div class="col-md-4">
@@ -70,7 +90,7 @@
                         <p class="bg-info">Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
                     </section>
                   </div>
-                </div>
+                </div><br>
 
                 <hr><br><h3>Insomnia Severity vs. Stress Level</h3><br>
 
@@ -90,7 +110,7 @@
                     <p class="bg-info">Average stress level: <span id="avg_stress"></span> / 10</p>
                     <p class="bg-info">Median stress level: <span id="median_stress"></span> / 10</p>
                   </div>
-                </div>
+                </div><br>
 
                 <hr><br><h3>Insomnia Severity vs. Physical Activity Level</h3><br>
 
