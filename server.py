@@ -16,6 +16,10 @@ app = Flask(__name__)
 app.secret_key = "DOESNTMATTER"
 app.jinja_env.undefined = StrictUndefined
 
+
+###################################################################
+
+# Import Fitbit credentials. 
 consumer_key = os.environ['client_id']
 consumer_secret = os.environ['client_secret']
 access_token = os.environ['access_token']
@@ -24,27 +28,33 @@ refresh_token = os.environ['refresh_token']
 
 @app.route('/')
 def index():
-    """Display today's entry form."""
+    """Display homepage."""
 
     return render_template("index.html")
+
+
+###################################################################
 
 
 @app.route('/entry')
 def form():
     """Display today's entry form."""
 
+    #NOTE: Calling Fitbit API using Python Fitbit library, which only provides
+    #limited user data. For more data, must make a manual request to Fitbit API.
+
+    #NOTE: Accessing user data via implicit grant authorization flow. This auth 
+    #flow only works for the currently logged in user. For increased security 
+    #and app usage by others, must implement OAuth. 
+
     authd_client = fitbit.Fitbit(consumer_key, consumer_secret,
                              access_token=access_token, refresh_token=refresh_token)
     sleep_log = authd_client.sleep()
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
+    print hours_sleep, "hours_sleep"
 
-    fitbit_stats = authd_client._COLLECTION_RESOURCE('sleep')
-
-
-    return render_template("homepage.html", 
+    return render_template("entry.html", 
                                 hours_sleep = hours_sleep)
-
-
 
 
 ##########################################################################
@@ -54,8 +64,10 @@ def form():
 def dashboard():
     """Display user's dashboard."""
 
+    # NOTE: user_id hardcoded because I haven't implemented sessions. Once
+    # login implemented, grab user_id from session. 
+
     # Retrieve form data. 
-    #ADD CHECK FOR DATES -- DOES USER HAVE ENTRIES FOR DATE RANGE ENTERED? 
     user_id = 1 
     date = datetime.now()
     date = date.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -80,7 +92,7 @@ def dashboard():
 
 
     # Pass calculated data to template
-    return render_template("dashboard2.html")
+    return render_template("dashboard.html")
 
 
 ##########################################################################
@@ -97,11 +109,14 @@ def insom_type_data():
     start = request.args.get("start_date", default_start_date)
     if start == "":
         start = default_start_date
+    # NOTE: Implement check for date ranges during Phase 3 refactor. Does user 
+    # have entries for date_range entered by user. If not, what happens? 
     start_date = datetime.strptime(start, '%Y-%m-%d')
     end_date = start_date + timedelta(28)
 
 
-    #Create values & labels for donutChart. 
+    # Create values & labels for donutChart.
+    # NOTE: Refactor to helper.py during Phase 3 refactor.  
     a = frequency_insomnia_type(user_id, start_date, end_date, '')
     b = frequency_insomnia_type(user_id, start_date, end_date, 'early-awakening')
     c = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-maintenance')
@@ -147,7 +162,7 @@ def insom_type_data():
 
 
 
-    #Create values and labels for barChart. 
+    #Create values and labels for hours_sleep barChart. 
     dates = hours_sleep_data(user_id, start_date, end_date)[0]
     hours_sleep_scores = hours_sleep_data(user_id, start_date, end_date)[1]
 
@@ -257,7 +272,8 @@ def insom_type_data():
 
 
 
-    #Create values & labels for allTimeDonutChart.
+    # Create values & labels for allTimeDonutChart.
+    # NOTE: Refactor to helper.py during Phase 3 refactor. 
     w = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), '')
     x = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'early-awakening')
     y = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'sleep-maintenance')
@@ -270,6 +286,9 @@ def insom_type_data():
     }
     
     all_time_most_frequent_type = key_of_largest_value(all_time_type_dict)
+
+    most_frequent_insom_type_text = most_frequent_type_text(all_time_most_frequent_type)
+
 
     all_time_donut_dict = {
         'insom_type': [
@@ -298,12 +317,13 @@ def insom_type_data():
                 "label": "Sleep-onset insomnia"
             }],
 
-        'all_time_most_frequent_type': all_time_most_frequent_type
+        'all_time_most_frequent_type': all_time_most_frequent_type,
+        'most_frequent_insom_type_text': most_frequent_insom_type_text
     }
 
 
 
-    #Calculate averages and medians from start_date to end_date.
+    # Calculate textual insights from start_date to end_date.
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
     median_sleep = "{0:.1f}".format(calculate_median_sleep(user_id, start_date, 
                                                     end_date))
@@ -326,8 +346,10 @@ def insom_type_data():
                                                         end_date,
                                                         column_name=Entry.activity_level))
     
-    #CHANGE THIS TO FIRST_ENTRY, LAST_ENTRY. STILL TIME PERIOD BASED, BUT WANT ALL-TIME. 
-    insom_factor = strongest_insom_factor(user_id, start_date, end_date)
+    insom_factor = strongest_insom_factor(user_id, 
+                                            first_entry(user_id),
+                                            last_entry(user_id))
+    insom_factor_insight_text = insom_factor_text(user_id, start_date, end_date)
 
 
     avg_median_dict = {
@@ -336,6 +358,7 @@ def insom_type_data():
         'avg_insomnia': avg_insomnia,
         'median_insomnia': median_insomnia,
         'insom_factor': insom_factor,
+        'insom_factor_insight_text': insom_factor_insight_text,
         'avg_stress': avg_stress,
         'median_stress': median_stress,
         'avg_activity': avg_activity,

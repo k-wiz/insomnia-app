@@ -1,5 +1,7 @@
 
-    
+    // NOTE: During Phase 3 refactor, rename tags and ids more descriptive
+    // and intuitive names. 
+
     // Create canvas elements to add to empty div.
     var canvas_tag = '<canvas id="donutChart" width = "320px" height = "320px">';
     var bar_canvas_tag = '<canvas id="barChart" width="900px" height="300px">';
@@ -104,6 +106,8 @@
             $("#median_activity").empty();
             $("#insom_factor").empty();
             $("#all_time_most_frequent_type").empty();
+            $("#insom_factor_insight_text").empty();
+            $("#most_frequent_insom_type_text").empty();
 
             var avgSleep = results.avg_median.avg_sleep;
             $("#avg_sleep").append(avgSleep);
@@ -125,8 +129,12 @@
             $("#median_activity").append(medianActivity);
             var insomFactor = results.avg_median.insom_factor;
             $("#insom_factor").append(insomFactor);
+            var insomFactorText = results.avg_median.insom_factor_insight_text;
+            $("#insom_factor_insight_text").append(insomFactorText);
             var allTimeMostFrequentType = results.all_time_donut_chart.all_time_most_frequent_type;
             $("#all_time_most_frequent_type").append(allTimeMostFrequentType);
+            var mostFrequentInsomTypeText = results.all_time_donut_chart.most_frequent_insom_type_text;
+            $("#most_frequent_insom_type_text").append(mostFrequentInsomTypeText);
     }
 
 
@@ -143,24 +151,12 @@
     }
     
 
-    // WAY TO CONDENSE THESE 2 FUNCTIONS? 
-    // Get user-submitted dates, pass to createCharts. 
+    // Get user-submitted dates or default date range, pass to createCharts. 
     function getDateRange(evt) {
-        // if event is this type of event, prevent default. 
-        evt.preventDefault();
-
-        var formInputs = {
-            "start_date": $("#date-range input[name=start_date]").val()
-        };
-
-        $.get('/insom-types.json',
-            formInputs,
-            createCharts);
-    }
-
-
-    // Get default dates, pass to createCharts.
-    function getDefaultDateRange(evt) {
+ 
+        if (evt.type == "submit") {
+            evt.preventDefault();
+        }
 
         var formInputs = {
             "start_date": $("#date-range input[name=start_date]").val()
@@ -173,9 +169,11 @@
 
 
     //On page load, create charts with default start_date. 
-    $( document ).ready(getDefaultDateRange);
+    $( document ).ready(getDateRange);
+
     //On submit, create charts with user-selected start_date. 
     $("#date-range").on("submit", getDateRange);
+
     //On tab toggle, create charts with default date range. 
     $('a[data-toggle="tab"]').on('shown.bs.tab', getDateRange);
 

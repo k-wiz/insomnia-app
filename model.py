@@ -60,6 +60,18 @@ class Entry(db.Model):
         return "<User user_id={} date={}>".format(self.user_id, self.date)
 
 
+# NOTE: Add Fitbit table once I drop and re-seed db.
+
+# class Fitbit(db.Model):
+#     """Fitbits authorized by users."""
+
+#     __tablename__ = "fitbits"
+
+#     fitbit_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+#     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+
+#     user = db.relationship('User')
+
 
 #######################################################
 # Helper functions

@@ -1,230 +1,165 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<br><br>
+<div id="dashboardInsights" class="container-fluid">
 
-<div>
-    <p>Average sleep per night: {{ '{0:0.1f}'.format(avg_sleep) }} hours</p>
-    <p>Median sleep per night: {{ '{0:0.1f}'.format(median_sleep) }} hours</p>
-    <p>Average insomnia severity: {{ '{0:0.1f}'.format(avg_insom_severity) }} / 10</p>
-    <p>Median insomnia severity: {{ '{0:0.1f}'.format(median_insom_severity) }} / 10</p>
-    <div>
-        <h2>Insights</h2>
-        <ul>
-            <li>Your most frequent type of insomnia is: </p>
+        <div class="panel">
 
-        </ul>
-    </div>
+          
+          <!-- Nav tabs -->
+          <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#home" aria-controls="home" role="tab" data-toggle="tab">Insights</a></li>
+            <li role="presentation"><a href="#profile" aria-controls="all-time" role="tab" data-toggle="tab">Treatment</a></li>
+          </ul>
 
+
+          <!-- Tab panes -->
+          <div class="tab-content">
+            <!-- Home Tab -->
+            <div role="tabpanel" class="tab-pane active" id="home"><br>
+
+                <form id = "date-range" action = '/insom-types.json'>
+                    Start date: <input type="date" name="start_date">
+                    <input class="btn btn-primary btn-xs" type="submit" >
+                </form><br>
+
+            <div class="row">
+            <div class="col-xs-12">
+              <br><br>
+              <div class="row top-insight">
+              <section class="data-insights"> 
+                  <div class="col-xs-11">
+                  <div class="insight-text"><h4><strong>New Insight: <span id="insom_factor"></span> increases insomnia</strong></h4>
+                  <p id="insom_factor_insight_text"></p></div></div>
+                  <div class="col-xs-1">
+                  <div class="icon"><i class="fa fa-beer fa-4x" aria-hidden="true"></i></div></div>
+
+              </section><br>
+            </div>
+            <br>
+
+              <div class="row top-insight">
+              <section class="data-insights">
+                  <div class="col-xs-11">
+
+                  <div class="insight-text"><h4><strong>New Insight: <span id="most_frequent_insom_type">Your insomnia is worst early in the morning</span></strong></h4>
+                  <p id="most_frequent_insom_type_text"></p></div></div>
+
+                  <div class="col-xs-1">
+                  <div class="icon"><i class="fa fa-sun-o fa-4x" aria-hidden="true"></i></div></div>
+              </section><br><br>
+              </div>
+            </div>
+          </div><br><br>
+
+                <hr><br><h3>Hours of Sleep</h3><br>
+
+                <!-- Hours_sleep bar chart element -->
+                <div class="row" id="bar-chart">
+                  <div class="col-md-8">
+                    <label for="barChart"><br>
+                    <div id="barCanvas"><canvas id="barChart"></canvas></div>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <p class="bg-info">Average sleep per night: <span id="avg_sleep"></span> hours</p>
+                    <p class="bg-info">Median sleep per night: <span id="median_sleep"></span> hours</p>
+                  </div>
+                </div><br><br>
+
+                <hr><br><h3>Occurrence of Insomnia Type (in days)</h3><br><br>
+            
+                <!-- Insom_type donut chart element -->
+                <div class="row" id="donut-chart">
+                  <div class="col-md-8">
+                    
+                    <div id="canvas"></div>
+                    <div id="donutLegend" class="chart-legend"></div>
+                    <label for="donutChart"><br>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <section class="data-insights">
+                        <p class="bg-info">Most frequent type of insomnia: <span id="most_frequent_type"></span> insomnia.</p>
+                    </section>
+                  </div>
+                </div><br>
+
+                <hr><br><h3>Insomnia Severity vs. Stress Level</h3><br>
+
+
+                <!-- Insom vs. Stress Line graph element -->
+                <div class="row">
+                  <div class="col-md-8">
+                    <label for="lineChart"><br>
+                    <div id="lineCanvas"></div>
+                    <div id="lineLegend" class="chart-legend"></div>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <p class="bg-info">Average insomnia severity: <span id="avg_insomnia"></span> / 10</p>
+                    <p class="bg-info">Median insomnia severity: <span id="median_insomnia"></span> / 10</p>
+                    <p class="bg-info">Average stress level: <span id="avg_stress"></span> / 10</p>
+                    <p class="bg-info">Median stress level: <span id="median_stress"></span> / 10</p>
+                  </div>
+                </div><br>
+
+                <hr><br><h3>Insomnia Severity vs. Physical Activity Level</h3><br>
+
+                <!-- Insom vs. Activity line graph element -->
+                <div class="row">
+                  <div class="col-md-8">
+                    <label for="activityLineChart"><br>
+                    <div id="activityLineCanvas"></div>
+                    <div id="activityLineLegend" class="chart-legend"></div>
+                    </label>
+                  </div>
+                  <div class="col-md-4">
+                    <p class="bg-info">Average activity level: <span id="avg_activity"></span> / 10</p>
+                    <p class="bg-info">Median activity level: <span id="median_activity"></span> / 10</p>
+                  </div>
+                </div><br><br> 
+
+            </div>
+
+            <!-- All-time Insights -->
+            <!-- NOTE: These all-time graphs to be replaced by a new feature:
+            treatment modules. No longer updating or maintaining this code. -->
+            <div role="tabpanel" class="tab-pane" id="profile"><br><br>
+
+                <!-- Avg Insom Severity by Week line graph element -->
+                <div class="row">
+                  <div class="col-md-8">
+                    <label for="avgLineChart">Average Insomnia Severity by Week, all-time<br>
+                        <div id="avgLineCanvas"></div>
+                        <div id="avgLineLegend" class="chart-legend"></div>
+                    </label>
+                  </div>
+                  <div class="col-lg-5">
+                    <label for="allTimeDonutChart">Occurrence of Insomnia Type, all-time (in days)<br>
+                        <div id="allTimeDonutCanvas"></div>
+                        <div id="allTimeDonutLegend" class="chart-legend"></div>
+                    </label>
+                  </div>
+                </div>
+
+            </div>
+
+          </div>
+
+        </div>
 
 </div>
 
+
+
+<!--    Javascript Imports -->
 <script src="https://code.jquery.com/jquery.js"></script>
-<script src="static/dashboard.js"></script>
-<!-- Add button that allows user to change date range by month. -->
-<canvas id="myChart" width="100" height="30"></canvas>
-<canvas id="insomTypeChart" width="100" height="30"></canvas>
-<canvas id="insomSeverChart" width="100" height="30"></canvas>
-<canvas id="insomTypePieChart" width="600" height="400"></canvas>
-
-<script>
-//////////////////////////////////////////////////////
-// LINE CHART
-
-// Need to get the json object, loop through it, and return a list of values, 
-// corresponding to ordered keys. Set that list = to variable data_points. 
-
-
-function chartData(results) {
-    var data_points = [];
-    var labels = [];
-
-    for (var item in results) {
-        data_points.push(results[item]);
-        labels.push(item);
-
-    var ctx = document.getElementById("myChart");
-    }; 
-    var data = {
-    labels: labels,
-    datasets: [
-        {
-            label: "Last Month",
-            fillColor : "rgba(99,123,133,0.4)",
-            strokeColor : "rgba(220,220,220,1)",
-            pointColor : "rgba(220,220,220,1)",
-            pointStrokeColor : "#fff",
-            data: data_points,
-        },
-        {
-            label: "This Month",
-            backgroundColor: "rgba(75,192,192,0.4)",
-            borderColor: "rgba(75,192,192,1)",
-            data: data_points_2,
-            fillColor : "rgba(219,186,52,0.4)",
-            strokeColor : "rgba(220,220,220,1)",
-            pointColor : "rgba(220,220,220,1)",
-            pointStrokeColor : "#fff",
-        },
-    ]
-}  
-    new Chart(ctx, {
-    type: 'line',
-    data: data,
-    options: {
-        xAxes: [{
-            display: false
-        }]
-    }
-});
-    // return data_points, labels;
-}
-// I need to take the data from '/user-data.json' and pass it to chartData, which should create a new chart using data_points returned from chartData
-
-// NEED TO get result of above function into a variable called data_points! 
-
-
-// var data_points;
-$.get("/user-data.json", chartData);
-// console.log(data_points);
-
-
-var ctx = document.getElementById("myChart");
-
-// var labels = ['4/1', '4/2', '4/3', '4/4', '4/5', '4/6', '4/7', '4/8', '4/9', '4/10', '4/11', '4/12', '4/13', '4/14', '4/15', '4/16', '4/17', '4/18', '4/19', '4/20', '4/21', '4/22', '4/23', '4/24', '4/25', '4/26', '4/27', '4/28', '4/29', '4/30', '5/1']
-// var data_points = [2, 7, 4, 8, 0, 7, 7, 10, 0, 2, 8, 5, 5, 0, 6, 6, 0, 0, 0, 0, 0, 0, 0, 6, 0, 6, 0, 0, 0, 0, 0];
-
-var data_points_2 = [1, 2, 3, 4, 0, 1, 1, 5, 0, 2, 7, 3, 3, 0, 1, 7, 0, 3, 0, 2, 0, 0, 0, 1, 0, 1, 0, 0, 3, 0, 0];
-
-// var data = {
-//     labels: labels,
-//     datasets: [
-//         {
-//             label: "Last Month",
-//             fillColor : "rgba(99,123,133,0.4)",
-//             strokeColor : "rgba(220,220,220,1)",
-//             pointColor : "rgba(220,220,220,1)",
-//             pointStrokeColor : "#fff",
-//             data: data_points,
-//         },
-//         {
-//             label: "This Month",
-//             backgroundColor: "rgba(75,192,192,0.4)",
-//             borderColor: "rgba(75,192,192,1)",
-//             data: data_points_2,
-//             fillColor : "rgba(219,186,52,0.4)",
-//             strokeColor : "rgba(220,220,220,1)",
-//             pointColor : "rgba(220,220,220,1)",
-//             pointStrokeColor : "#fff",
-//         },
-//     ]
-// }
-
-
-// new Chart(ctx, {
-//     type: 'line',
-//     data: data,
-//     options: {
-//         xAxes: [{
-//             display: false
-//         }]
-//     }
-// });
-
-//////////////////////////////////////////////////////
-// BAR CHART
-
-var barChart = document.getElementById("insomTypeChart");
-
-var myChart = new Chart(barChart, {
-    type: 'bar',
-    data: {
-        labels: ["Sleep-onset", "Early-awakening", "Sleep-maintenance"],
-        datasets: [{
-            label: '# of Occurrences',
-            data: [123, 68, 26]
-        }]
-    },
-    options: {
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        }
-    }
-});
-
-
-//////////////////////////////////////////////////////
-// PIE CHART
-
-
-// var pieData = [
-//     {
-//         value: 20,
-//         color:"#878BB6"
-//     },
-//     {
-//         value : 40,
-//         color : "#4ACAB4"
-//     },
-//     {
-//         value : 10,
-//         color : "#FF8153"
-//     },
-//     {
-//         value : 30,
-//         color : "#FFEA88"
-//     }
-// ];
-
-// var pieOptions = {
-//     segmentShowStroke : false,
-//     animateScale : true
-// }
-
-// var insomType = document.getElementById("insomTypePieChart").getContext("2d");
-
-// // new Chart(insomType).Doughnut(pieData, pieOptions);
-
-// new Chart(insomType, {
-//     type: "pie",
-//     data: pieData,
-//     options: pieOptions
-// });
-
-
-// var pieData = [
-//     {
-//         value: 20,
-//         color:"#637b85"
-//     },
-//     {
-//         value : 30,
-//         color : "#2c9c69"
-//     },
-//     {
-//         value : 40,
-//         color : "#dbba34"
-//     },
-//     {
-//         value : 10,
-//         color : "#c62f29"
-//     }
-
-// ];
-// var canvas = document.getElementById("insomTypePieChart");
-// var ctx = canvas.getContext("2d");
-// new Chart(ctx).Doughnut(pieData);
-
-
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.js"></script>
+<script src="/static/dashboard.js"></script>
 
 
 
 
-
-
-
-{% endblock %}
+        {% endblock %}

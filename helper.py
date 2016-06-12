@@ -16,6 +16,7 @@ def convert_to_boolean(value):
 
 
 
+# NOTE: Remove during Refactor Phase 2 and replace with built-in NumPy function. 
 def median(lst):
     """Calculates the median value in a list of numbers."""
 
@@ -70,6 +71,7 @@ def last_entry(user_id):
 
 
 
+# NOTE: Generalize and rename function.
 def four_weeks_before_last_entry(user_id):
     """Returns date of entry four weeks before user's last entry as a datetime object."""
 
@@ -79,6 +81,7 @@ def four_weeks_before_last_entry(user_id):
 
 
 
+# NOTE: Collapse into calculate_avg during Phase 3 refactor. 
 def calculate_avg_sleep(user_id, start_date, end_date):
     """Calculates user's average hours of sleep per night from start_date
     to end_date."""
@@ -142,6 +145,7 @@ def calculate_avg_insom_severity_over_time(user_id, start_date, end_date):
 
 
 
+# NOTE: Collapse into calculate_median during Phase 3 refactor.
 def calculate_median_sleep(user_id, start_date, end_date):
     """Calculates user's all-time median hours of sleep per night."""
 
@@ -176,6 +180,8 @@ def calculate_median(user_id, start_date, end_date, column_name):
 
 
 
+# NOTE: Refactor to return a dictionary of insom_type frequencies, with 
+# insom_type as key and frequency as value.
 def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
     """Returns count of occurrence of insom_type from start_date to end_date."""
 
@@ -192,6 +198,22 @@ def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
 
 
 
+# NOTE: Complete return statements during Phase 3 refactor.
+def most_frequent_type_text(insom_type):
+    """Returns text that accompanies the most_frequent_insom_type insight."""
+
+    if insom_type == 'early-awakening':
+        return "Early-awakening insomnia has a variety of causes, including \
+        inconsistent bedtimes, depression, low blood sugar, and hormonal \
+        imbalances. Talk to your doctor about triggers of your \
+        early-awakening insomnia."
+    elif insom_type == 'sleep-maintenance':
+        return "sleep main"
+    elif insom_type == 'sleep-onset':
+        return "sleep ons"
+
+
+# NOTE: Rename to more intuitive name during Phase 3 refactor.
 def integer_type_data(user_id, start_date, end_date, column_name):
     """Returns a tuple of lists, one list of dates as strings, and one list of 
     data points as integers. column_name should be an object with attribute
@@ -222,7 +244,6 @@ def hours_sleep_data(user_id, start_date, end_date):
     data_points = sorted(db.session.query(Entry.date, Entry.minutes_asleep).filter
         (Entry.user_id == user_id, Entry.date>= start_date, Entry.date <= 
         end_date).all())
-
 
     dates = []
     hours_sleep_list = []
@@ -268,14 +289,36 @@ def strongest_insom_factor(user_id, start_date, end_date):
     mens_factor = insom_factors(user_id, Entry.menstruation)
 
     factors = {
-                "drink alcohol": alcohol_factor,
-                "consume caffeine": caffeine_factor,
-                "menstruate": mens_factor
+                "Alcohol": alcohol_factor,
+                "Caffeine": caffeine_factor,
+                "Menstruation": mens_factor
                 }
  
     insom_factor = key_of_largest_value(factors)
 
     return insom_factor
+
+
+
+def insom_factor_text(user_id, start_date, end_date):
+    """Returns text that accompanies the strongest_insom_factor."""
+
+    insom_factor = strongest_insom_factor(user_id, start_date, end_date)
+
+    if insom_factor == "Alcohol":
+        return "Have you noticed that alcohol impacts your sleep? Based on the \
+        data you've provided, there's a strong correlation between insomnia and \
+        drinking alcohol. Try giving up alcohol for 4 weeks, log your sleep, \
+        and see if your insomnia improves."
+    elif insom_factor == "Caffeine":
+        return "Have you noticed that caffeine impacts your sleep? Based on the \
+        data you've provided, there's a strong correlation between insomnia and \
+        consuming caffeine. Try giving up caffeine for 4 weeks, log your sleep, \
+        and see if your insomnia improves."
+    elif insom_factor == "Menstruation":
+        return "Have you noticed that your insomnia gets worse during your \
+        period? If so, you may have a hormonal imbalance. Talk to your doctor \
+        about treatments for hormonal insomnia."
 
 
 

@@ -2,10 +2,13 @@
 {% block content %}
 
 
+<!-- NOTE: There are superfluous divs (class = "") around each question. 
+Remove during Phase 3 refactor.-->
 
 <div class="container">
 <br><br><br><br>
-<div class="entryAlert alert alert-dismissible alert-success">
+<!-- Alert message; only shows if Fitbit data has been added. -->
+<div class="entryAlert alert alert-dismissible alert-success" id="fitbit-alert">
   <button type="button" class="close" data-dismiss="alert">&times;</button>
   <strong>Well done!</strong> Your Fitbit data has been successfully added.
 </div>
@@ -13,17 +16,20 @@
 <div class="col-md-offset-1 col-md-10">
     <div class="well bs-component">
 
+        <!-- Beginning of entry form. -->
         <form id="entryForm" class="form-horizontal" action="/dashboard" method="POST">
           <fieldset>
             <legend>How did you sleep last night?</legend>
 
+            <!-- Hours Slept -->
             <div class="form-group">
               <label class="control-label">Hours Slept</label>
               <div class="">
-                <input type="number" class="form-control" name="hours_sleep" min="0" max="24" value="8">
+                <input id="fitbit_data" type="number" class="form-control" name="hours_sleep" min="0" max="24" value = {{ hours_sleep }}>
               </div>
             </div>
 
+            <!-- Insomnia? -->
             <div class="form-group">
               <label class="control-label">Insomnia?</label>
               <div class="">
@@ -42,6 +48,8 @@
               </div>
             </div>
 
+
+            <!-- Type of Insomnia -->
             <div class="form-group">
               <label for="select" class="control-label">Type of Insomnia</label>
               <div class="">
@@ -54,6 +62,7 @@
               </div>
             </div>
 
+            <!-- Insomnia Severity -->
             <div class="form-group">
               <label class="control-label">Insomnia Severity</label>
               <div class="">
@@ -61,6 +70,8 @@
               </div>
             </div>
 
+
+            <!-- Did you drink alcohol yesterday? -->
             <div class="form-group">
               <label class="control-label">Did you drink alcohol yesterday?</label>
               <div class="">
@@ -79,6 +90,7 @@
               </div>
             </div>
 
+            <!-- Did you have caffeine yesterday? -->
             <div class="form-group">
               <label class="control-label">Did you have caffeine yesterday?</label>
               <div class="">
@@ -97,6 +109,7 @@
               </div>
             </div>
 
+            <!-- Are you on your period? -->
             <div class="form-group">
               <label class="control-label">Are you on your period?</label>
               <div class="">
@@ -115,6 +128,7 @@
               </div>
             </div>
 
+            <!-- What time did you go to bed? -->
             <div class="form-group">
               <label class="control-label">What time did you go to bed?</label>
               <div class="">
@@ -129,6 +143,7 @@
               </div>
             </div>
 
+            <!-- How physically active were you? -->
             <div class="form-group">
               <label class="control-label">How physically active were you?</label>
               <div class="">
@@ -146,9 +161,20 @@
 
 
 
-<!--    Javascript Imports -->
+<!-- Javascript Imports -->
 <script src="https://code.jquery.com/jquery.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+<!-- Show alert message if user's Fitbit data populates. -->
+<script>
+  
+  if (document.forms["entryForm"]["hours_sleep"].value) {
+    $("#fitbit-alert").show();
+  } else {
+    $("#fitbit-alert").hide();
+  }
+
+</script>
 
 
 {% endblock %}
