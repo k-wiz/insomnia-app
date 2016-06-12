@@ -28,3 +28,6 @@ Users will be able to authorize the app via OAuth instead of Fitbit's implicit g
 
 ###### Treatment Modules
 In the next iteration, The 'Treatment' tab will allow users to compare their insomnia 30 days before and 30 days after a treatment module is started.  For example, a user will be able to eliminate caffeine for 30 days, and the app will track whether insomnia improves as a result.    
+
+#### Installation Instructions
+To use this app with your own Fitbit, register your instance of the app here: https://dev.fitbit.com/apps/new, and then generate an access token here: https://dev.fitbit.com/apps/oauthinteractivetutorial. 
