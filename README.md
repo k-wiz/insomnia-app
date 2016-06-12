@@ -5,9 +5,9 @@ Learn more about the developer: www.linkedin.com/in/kelliwiz
 
 *Insomnia Coach* is a fullstack web application that helps users conquer their insomnia and get a better night's sleep. By collecting data on users' sleep and sleep-related behaviors, Insomnia Coach provides users with insights that help them better understand their sleep habits and insomnia triggers.  The app's mission is to empower users to take responsibility for their own health.
 
-![Homepage](file:///Users/Kelli/Desktop/misc/App%20Screenshots/Screen%20Shot%202016-06-12%20at%203.19.04%20PM.png)
-![Insights Dashboard](file:///Users/Kelli/Desktop/misc/App%20Screenshots/Screen%20Shot%202016-06-12%20at%203.19.34%20PM.png)
-(file:///Users/Kelli/Desktop/misc/App%20Screenshots/Screen%20Shot%202016-06-12%20at%203.19.48%20PM.png)
+
+![Insights Dashboard](https://cloud.githubusercontent.com/assets/18225190/15994536/36dc4e1a-30bc-11e6-97a9-07537e32f313.png)
+
 
 #### Technologies
 Python, Flask, PostgresQL, SQLAlchemy,
