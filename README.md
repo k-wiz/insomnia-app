@@ -7,6 +7,8 @@ Learn more about the developer: www.linkedin.com/in/kelliwiz
 
 
 ![Insights Dashboard](https://cloud.githubusercontent.com/assets/18225190/15994536/36dc4e1a-30bc-11e6-97a9-07537e32f313.png)
+(https://cloud.githubusercontent.com/assets/18225190/15994537/39699c28-30bc-11e6-9b59-de88af376383.png)
+
 
 
 #### Technologies
