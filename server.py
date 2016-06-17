@@ -20,6 +20,8 @@ app.jinja_env.undefined = StrictUndefined
 ###################################################################
 
 # Import Fitbit credentials. 
+# NOTE: There is currently no Fitbit table in my data model, so there's
+# no way to check whether user has Fitbit or not. Add during Phase 3 refactor. 
 consumer_key = os.environ['client_id']
 consumer_secret = os.environ['client_secret']
 access_token = os.environ['access_token']
@@ -35,6 +37,46 @@ def index():
 
 ###################################################################
 
+@app.route('/login')
+def login():
+    """Display login page."""
+
+    return render_template("login.html")
+
+###################################################################
+
+@app.route('/verify-login', methods=["POST"])
+def verify_login():
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+
+    user_object = User.query.filter_by(email=username).first()
+
+    # If username exists in database:
+    if user_object: 
+
+        # If given password matches password in database:
+        if password == user_object.password:
+
+            # Add user to the session.
+            session["user_id"] = user_object.user_id
+
+            # Redirect to dashboard.
+            return redirect('/entry')
+
+        # If password doesn't match:
+        else:
+            flash("Your password is incorrect. Please try again.")
+            return redirect('/login')
+
+    # If user doesn't exist:
+    else:
+        flash("You're not registered. Please register here.")
+        # return redirect('/register')
+ 
+
+###################################################################
 
 @app.route('/entry')
 def form():
