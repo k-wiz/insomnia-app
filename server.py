@@ -19,9 +19,10 @@ app.jinja_env.undefined = StrictUndefined
 
 ###################################################################
 
+
 # Import Fitbit credentials. 
-# NOTE: There is currently no Fitbit table in my data model, so there's
-# no way to check whether user has Fitbit or not. Add during Phase 3 refactor. 
+# NOTE: Fitbit integration just added. Currently no Fitbit table in data model, 
+# so no way to check whether user has Fitbit or not. Add during Phase 3 refactor. 
 consumer_key = os.environ['client_id']
 consumer_secret = os.environ['client_secret']
 access_token = os.environ['access_token']
@@ -37,13 +38,16 @@ def index():
 
 ###################################################################
 
+
 @app.route('/login')
 def login():
     """Display login page."""
 
     return render_template("login.html")
 
+
 ###################################################################
+
 
 @app.route('/verify-login', methods=["POST"])
 def verify_login():
@@ -73,10 +77,76 @@ def verify_login():
     # If user doesn't exist:
     else:
         flash("You're not registered. Please register here.")
-        # return redirect('/register')
+        return redirect('/register')
  
 
 ###################################################################
+
+
+@app.route('/register')
+def register():
+    """Displays user registration page."""
+
+    return render_template("register.html")
+
+
+###################################################################
+
+
+@app.route('/verify-registration', methods=["POST"])
+def verify_registration():
+    """Creates new user. If user already exists, redirects to login page."""
+
+    username = request.form.get("username")
+    password = request.form.get("password")
+    first_name = request.form.get("firstname")
+    age = request.form.get("age")
+    gender = request.form.get("gender")
+    zipcode = request.form.get("zipcode")
+
+
+    user = User.query.filter_by(email=username).first()
+
+    # if user doesn't exist, create new user in db.
+    if user == None:
+        new_user = User(email=username, 
+                        password=password, 
+                        first_name=first_name, 
+                        age=age,
+                        gender=gender,
+                        zipcode=zipcode)
+        db.session.add(new_user)
+        db.session.commit()
+
+        flash("Thanks for registering! Please login.")
+
+    # if user exists and password matches, redirect to login. If username
+    # already taken, reload registration page. 
+    elif user:
+        if user.password == password:
+            flash("You're already registered. Please login.")
+        else:
+            flash("That username is taken. Please choose another username.")
+            return redirect('/register')
+
+    return redirect('/login')
+
+
+
+###################################################################
+
+
+@app.route('/logout')
+def logout():
+
+    del session['user_id']
+    flash("You've been logged out.")
+    
+    return redirect('/')
+
+
+###################################################################
+
 
 @app.route('/entry')
 def form():
@@ -93,7 +163,6 @@ def form():
                              access_token=access_token, refresh_token=refresh_token)
     sleep_log = authd_client.sleep()
     hours_sleep = sleep_log['summary']['totalMinutesAsleep'] / 60
-    print hours_sleep, "hours_sleep"
 
     return render_template("entry.html", 
                                 hours_sleep = hours_sleep)
@@ -110,7 +179,9 @@ def dashboard():
     # login implemented, grab user_id from session. 
 
     # Retrieve form data. 
-    user_id = 1 
+    # user_id = 1 
+    user_id = session["user_id"]
+    print "USER ID", user_id
     date = datetime.now()
     date = date.replace(hour=0, minute=0, second=0, microsecond=0)
     minutes_asleep = int(request.form.get("hours_sleep")) * 60
@@ -287,30 +358,30 @@ def insom_type_data():
     }
 
 
+    # NOTE: GRAPH TO BE REPLACED. 
+    # Create values and labels for avg_insom_severity_over_time line chart. 
+    # avg_insom = calculate_avg_insom_severity_over_time(user_id, 
+    #                                                     first_entry(user_id), 
+    #                                                     last_entry(user_id))
 
-    #Create values and labels for avg_insom_severity_over_time line chart. 
-    avg_insom = calculate_avg_insom_severity_over_time(user_id, 
-                                                        first_entry(user_id), 
-                                                        last_entry(user_id))
+    # avg_dates = avg_insom[1]
+    # avg_insom_severity_scores = avg_insom[0]
 
-    avg_dates = avg_insom[1]
-    avg_insom_severity_scores = avg_insom[0]
-
-    avg_line_dict = {
-    "labels": avg_dates,
-    "datasets": [
-        {
-            "label": "Insomnia Severity",
-            "fillColor": "rgba(220,220,220,0.2)",
-            "strokeColor": "rgba(220,220,220,1)",
-            "pointColor": "rgba(220,220,220,1)",
-            "pointStrokeColor": "#fff",
-            "pointHighlightFill": "#fff",
-            "pointHighlightStroke": "rgba(220,220,220,1)",
-            "data": avg_insom_severity_scores
-            }
-        ]
-    }
+    # avg_line_dict = {
+    # "labels": avg_dates,
+    # "datasets": [
+    #     {
+    #         "label": "Insomnia Severity",
+    #         "fillColor": "rgba(220,220,220,0.2)",
+    #         "strokeColor": "rgba(220,220,220,1)",
+    #         "pointColor": "rgba(220,220,220,1)",
+    #         "pointStrokeColor": "#fff",
+    #         "pointHighlightFill": "#fff",
+    #         "pointHighlightStroke": "rgba(220,220,220,1)",
+    #         "data": avg_insom_severity_scores
+    #         }
+    #     ]
+    # }
 
 
 
@@ -417,7 +488,7 @@ def insom_type_data():
         "activity_line_chart": activity_line_dict,
         "donut_chart": donut_dict,
         "avg_median": avg_median_dict,
-        "avg_line_chart": avg_line_dict, 
+        # "avg_line_chart": avg_line_dict, 
         "all_time_donut_chart": all_time_donut_dict
     } 
 

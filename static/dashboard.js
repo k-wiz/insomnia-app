@@ -145,7 +145,7 @@
         drawBarChart(results);
         drawLineChart(results);
         drawActivityLineChart(results);
-        drawAvgLineChart(results);
+        // drawAvgLineChart(results);
         drawAllTimeDonutChart(results);
         addDataInsights(results);
     }

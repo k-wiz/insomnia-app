@@ -124,24 +124,24 @@ def calculate_avg_sleep_over_time(user_id, start_date, end_date):
 
 
 
-def calculate_avg_insom_severity_over_time(user_id, start_date, end_date):
-    """Calculates the average of each time interval from start_date to end_date.
-    Returns a list of averages as floats and a list of dates as strings."""
+# def calculate_avg_insom_severity_over_time(user_id, start_date, end_date):
+#     """Calculates the average of each time interval from start_date to end_date.
+#     Returns a list of averages as floats and a list of dates as strings."""
 
-    averages = []
-    start_dates = []
+#     averages = []
+#     start_dates = []
 
-    while start_date <= (end_date - timedelta(days=7)):
-        interval_end_date = start_date + timedelta(days=7)
-        avg = float(calculate_avg(user_id, start_date, interval_end_date, 
-                                column_name=Entry.insom_severity))
-        averages.append(avg)
+#     while start_date <= (end_date - timedelta(days=7)):
+#         interval_end_date = start_date + timedelta(days=7)
+#         avg = float(calculate_avg(user_id, start_date, interval_end_date, 
+#                                 column_name=Entry.insom_severity))
+#         averages.append(avg)
 
-        start_date = start_date + timedelta(days=7)
-        date = "%s/%s" % (start_date.month, start_date.day)
-        start_dates.append(date)
+#         start_date = start_date + timedelta(days=7)
+#         date = "%s/%s" % (start_date.month, start_date.day)
+#         start_dates.append(date)
 
-    return averages, start_dates
+#     return averages, start_dates
 
 
 
