@@ -141,7 +141,7 @@ def logout():
 
     del session['user_id']
     flash("You've been logged out.")
-    
+
     return redirect('/')
 
 
@@ -175,13 +175,8 @@ def form():
 def dashboard():
     """Display user's dashboard."""
 
-    # NOTE: user_id hardcoded because I haven't implemented sessions. Once
-    # login implemented, grab user_id from session. 
-
     # Retrieve form data. 
-    # user_id = 1 
     user_id = session["user_id"]
-    print "USER ID", user_id
     date = datetime.now()
     date = date.replace(hour=0, minute=0, second=0, microsecond=0)
     minutes_asleep = int(request.form.get("hours_sleep")) * 60
@@ -215,7 +210,7 @@ def dashboard():
 def insom_type_data():
     """Returns a jsonified dictionary of values needed to create charts."""
  
-    user_id = 1
+    user_id = session["user_id"]
 
     #Set dates
     default_start_date = datetime.strftime(four_weeks_before_last_entry(user_id), '%Y-%m-%d')
@@ -358,83 +353,6 @@ def insom_type_data():
     }
 
 
-    # NOTE: GRAPH TO BE REPLACED. 
-    # Create values and labels for avg_insom_severity_over_time line chart. 
-    # avg_insom = calculate_avg_insom_severity_over_time(user_id, 
-    #                                                     first_entry(user_id), 
-    #                                                     last_entry(user_id))
-
-    # avg_dates = avg_insom[1]
-    # avg_insom_severity_scores = avg_insom[0]
-
-    # avg_line_dict = {
-    # "labels": avg_dates,
-    # "datasets": [
-    #     {
-    #         "label": "Insomnia Severity",
-    #         "fillColor": "rgba(220,220,220,0.2)",
-    #         "strokeColor": "rgba(220,220,220,1)",
-    #         "pointColor": "rgba(220,220,220,1)",
-    #         "pointStrokeColor": "#fff",
-    #         "pointHighlightFill": "#fff",
-    #         "pointHighlightStroke": "rgba(220,220,220,1)",
-    #         "data": avg_insom_severity_scores
-    #         }
-    #     ]
-    # }
-
-
-
-    # Create values & labels for allTimeDonutChart.
-    # NOTE: Refactor to helper.py during Phase 3 refactor. 
-    w = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), '')
-    x = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'early-awakening')
-    y = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'sleep-maintenance')
-    z = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'sleep-onset')
-
-    all_time_type_dict = {
-        "early-awakening": x,
-        "sleep-maintenance": y,
-        "sleep-onset": z
-    }
-    
-    all_time_most_frequent_type = key_of_largest_value(all_time_type_dict)
-
-    most_frequent_insom_type_text = most_frequent_type_text(all_time_most_frequent_type)
-
-
-    all_time_donut_dict = {
-        'insom_type': [
-            {
-                "value": w, 
-                "color": "#A9A9A9",
-                "highlight": "#808080",
-                "label": "No insomnia yay!"
-            },
-            {
-                "value": x,
-                "color": "#46BFBD",
-                "highlight": "#5AD3D1",
-                "label": "Early-awakening insomnia"
-            },
-            {
-                "value": y,
-                "color": "#F7464A",
-                "highlight": "#FF5A5E",
-                "label": "Sleep-maintenace insomnia"
-            },
-            {
-                "value": z,
-                "color": "#FDB45C",
-                "highlight": "#FFC870",
-                "label": "Sleep-onset insomnia"
-            }],
-
-        'all_time_most_frequent_type': all_time_most_frequent_type,
-        'most_frequent_insom_type_text': most_frequent_insom_type_text
-    }
-
-
 
     # Calculate textual insights from start_date to end_date.
     avg_sleep = "{0:.1f}".format(calculate_avg_sleep(user_id, start_date, end_date))
@@ -464,6 +382,22 @@ def insom_type_data():
                                             last_entry(user_id))
     insom_factor_insight_text = insom_factor_text(user_id, start_date, end_date)
 
+    # REFACTOR!!! Move to helper function. 
+    x = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'early-awakening')
+    y = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'sleep-maintenance')
+    z = frequency_insomnia_type(user_id, first_entry(user_id), last_entry(user_id), 'sleep-onset')
+
+    all_time_type_dict = {
+        "early-awakening": x,
+        "sleep-maintenance": y,
+        "sleep-onset": z
+    }
+    
+    all_time_most_frequent_type = key_of_largest_value(all_time_type_dict)
+
+    most_frequent_insom_type_text = most_frequent_type_text(all_time_most_frequent_type)
+
+
 
     avg_median_dict = {
         'avg_sleep': avg_sleep,
@@ -475,7 +409,9 @@ def insom_type_data():
         'avg_stress': avg_stress,
         'median_stress': median_stress,
         'avg_activity': avg_activity,
-        'median_activity': median_activity
+        'median_activity': median_activity,
+        'all_time_most_frequent_type': all_time_most_frequent_type,
+        'most_frequent_insom_type_text': most_frequent_insom_type_text
     }
 
 
@@ -487,9 +423,7 @@ def insom_type_data():
         "line_chart": line_dict,
         "activity_line_chart": activity_line_dict,
         "donut_chart": donut_dict,
-        "avg_median": avg_median_dict,
-        # "avg_line_chart": avg_line_dict, 
-        "all_time_donut_chart": all_time_donut_dict
+        "avg_median": avg_median_dict
     } 
 
 

@@ -3,14 +3,22 @@
     // and intuitive names. 
 
     // Create canvas elements to add to empty div.
-    var canvas_tag = '<canvas id="donutChart" width = "320px" height = "320px">';
-    var bar_canvas_tag = '<canvas id="barChart" width="900px" height="300px">';
-    var line_canvas_tag = '<canvas id="lineChart" width="900px" height="300px">';
-    var activity_line_canvas_tag = '<canvas id="activityLineChart" width="900px" height="300px">';
-    var avg_line_canvas_tag = '<canvas id="avgLineChart" width="900px" height="275px">';
-    var all_time_donut_canvas_tag = '<canvas id="allTimeDonutChart" width = "200px" height = "200px">';
+    var canvas_tag,
+        bar_canvas_tag,
+        line_canvas_tag,
+        activity_line_canvas_tag,
+        avg_line_canvas_tag,
+        all_time_donut_canvas_tag,
+        options;
 
-    var options = {
+    canvas_tag = '<canvas id="donutChart" width = "320px" height = "320px">';
+    bar_canvas_tag = '<canvas id="barChart" width="900px" height="300px">';
+    line_canvas_tag = '<canvas id="lineChart" width="900px" height="300px">';
+    activity_line_canvas_tag = '<canvas id="activityLineChart" width="900px" height="300px">';
+    avg_line_canvas_tag = '<canvas id="avgLineChart" width="900px" height="275px">';
+    all_time_donut_canvas_tag = '<canvas id="allTimeDonutChart" width = "200px" height = "200px">';
+
+    options = {
       responsive: true,
       maintainAspectRatio: false
     };
@@ -22,8 +30,10 @@
         $("#donutChart").remove();
         $("#canvas").append(canvas_tag);
         
-        var ctx_donut = $("#donutChart").get(0).getContext("2d");
-        var myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_chart.insom_type, options);
+        var ctx_donut, myDonutChart;
+
+        ctx_donut = $("#donutChart").get(0).getContext("2d");
+        myDonutChart = new Chart(ctx_donut).Doughnut(results.donut_chart.insom_type, options);
         $('#donutLegend').html(myDonutChart.generateLegend());
     }
 
@@ -35,8 +45,10 @@
         $("#barChart").remove();
         $("#barCanvas").append(bar_canvas_tag);
 
-        var ctx_bar = $("#barChart").get(0).getContext("2d");
-        var myBarChart = new Chart(ctx_bar).Bar(results.bar_chart, options);
+        var ctx_bar, myBarChart;
+
+        ctx_bar = $("#barChart").get(0).getContext("2d");
+        myBarChart = new Chart(ctx_bar).Bar(results.bar_chart, options);
     }
 
 
@@ -47,8 +59,10 @@
         $("#lineChart").remove();
         $("#lineCanvas").append(line_canvas_tag);
 
-        var ctx_line = $("#lineChart").get(0).getContext("2d");
-        var myLineChart = new Chart(ctx_line).Line(results.line_chart, options);
+        var ctx_line, myLineChart;
+
+        ctx_line = $("#lineChart").get(0).getContext("2d");
+        myLineChart = new Chart(ctx_line).Line(results.line_chart, options);
         $("#lineLegend").html(myLineChart.generateLegend());
     }
 
@@ -60,35 +74,41 @@
         $("#activityLineChart").remove();
         $("#activityLineCanvas").append(activity_line_canvas_tag);
 
-        var ctx_line = $("#activityLineChart").get(0).getContext("2d");
-        var myActivityLineChart = new Chart(ctx_line).Line(results.activity_line_chart, options);
+        var ctx_line, myActivityLineChart;
+
+        ctx_line = $("#activityLineChart").get(0).getContext("2d");
+        myActivityLineChart = new Chart(ctx_line).Line(results.activity_line_chart, options);
         $("#activityLineLegend").html(myActivityLineChart.generateLegend());
     }
 
 
 
     // Create average insomnia_severity over time line chart. 
-    function drawAvgLineChart(results) {
+    // function drawAvgLineChart(results) {
 
-        $("#avgLineChart").remove();
-        $("#avgLineCanvas").append(avg_line_canvas_tag);
+    //     $("#avgLineChart").remove();
+    //     $("#avgLineCanvas").append(avg_line_canvas_tag);
 
-        var ctx_line = $("#avgLineChart").get(0).getContext("2d");
-        var myAvgLineChart = new Chart(ctx_line).Line(results.avg_line_chart, options);
-    }
+    //     var ctx_line, myAvgLineChart;
+
+    //     ctx_line = $("#avgLineChart").get(0).getContext("2d");
+    //     myAvgLineChart = new Chart(ctx_line).Line(results.avg_line_chart, options);
+    // }
 
 
 
     // Create all-time insom_type donut chart. 
-    function drawAllTimeDonutChart(results) {
+    // function drawAllTimeDonutChart(results) {
 
-        $("#allTimeDonutChart").remove();
-        $("#allTimeDonutCanvas").append(all_time_donut_canvas_tag);
+    //     $("#allTimeDonutChart").remove();
+    //     $("#allTimeDonutCanvas").append(all_time_donut_canvas_tag);
+
+    //     var ctx_donut, myAllTimeDonutChart;
         
-        var ctx_donut = $("#allTimeDonutChart").get(0).getContext("2d");
-        var myAllTimeDonutChart = new Chart(ctx_donut).Doughnut(results.all_time_donut_chart.insom_type, options);
-        $('#allTimeDonutLegend').html(myAllTimeDonutChart.generateLegend());
-    }
+    //     ctx_donut = $("#allTimeDonutChart").get(0).getContext("2d");
+    //     myAllTimeDonutChart = new Chart(ctx_donut).Doughnut(results.all_time_donut_chart.insom_type, options);
+    //     $('#allTimeDonutLegend').html(myAllTimeDonutChart.generateLegend());
+    // }
 
 
 
@@ -109,31 +129,44 @@
             $("#insom_factor_insight_text").empty();
             $("#most_frequent_insom_type_text").empty();
 
-            var avgSleep = results.avg_median.avg_sleep;
+            var avgSleep,
+                medianSleep,
+                avgInsomnia,
+                medianInsomnia,
+                mostFrequentType,
+                avgStress,
+                medianStress,
+                avgActivity,
+                medianActivity,
+                insomFactor,
+                allTimeMostFrequentType,
+                mostFrequentInsomTypeText;
+
+            avgSleep = results.avg_median.avg_sleep;
             $("#avg_sleep").append(avgSleep);
-            var medianSleep = results.avg_median.median_sleep;
+            medianSleep = results.avg_median.median_sleep;
             $("#median_sleep").append(medianSleep);
-            var avgInsomnia = results.avg_median.avg_insomnia;
+            avgInsomnia = results.avg_median.avg_insomnia;
             $("#avg_insomnia").append(avgInsomnia);
-            var medianInsomnia = results.avg_median.median_insomnia;
+            medianInsomnia = results.avg_median.median_insomnia;
             $("#median_insomnia").append(medianInsomnia);
-            var mostFrequentType = results.donut_chart.most_frequent_type;
+            mostFrequentType = results.donut_chart.most_frequent_type;
             $("#most_frequent_type").append(mostFrequentType);
-            var avgStress = results.avg_median.avg_stress;
+            avgStress = results.avg_median.avg_stress;
             $("#avg_stress").append(avgStress);
-            var medianStress = results.avg_median.median_stress;
+            medianStress = results.avg_median.median_stress;
             $("#median_stress").append(medianStress);
-            var avgActivity = results.avg_median.avg_activity;
+            avgActivity = results.avg_median.avg_activity;
             $("#avg_activity").append(avgActivity);
-            var medianActivity = results.avg_median.median_activity;
+            medianActivity = results.avg_median.median_activity;
             $("#median_activity").append(medianActivity);
-            var insomFactor = results.avg_median.insom_factor;
+            insomFactor = results.avg_median.insom_factor;
             $("#insom_factor").append(insomFactor);
-            var insomFactorText = results.avg_median.insom_factor_insight_text;
+            insomFactorText = results.avg_median.insom_factor_insight_text;
             $("#insom_factor_insight_text").append(insomFactorText);
-            var allTimeMostFrequentType = results.all_time_donut_chart.all_time_most_frequent_type;
+            allTimeMostFrequentType = results.avg_median.all_time_most_frequent_type;
             $("#all_time_most_frequent_type").append(allTimeMostFrequentType);
-            var mostFrequentInsomTypeText = results.all_time_donut_chart.most_frequent_insom_type_text;
+            mostFrequentInsomTypeText = results.avg_median.most_frequent_insom_type_text;
             $("#most_frequent_insom_type_text").append(mostFrequentInsomTypeText);
     }
 
@@ -146,7 +179,7 @@
         drawLineChart(results);
         drawActivityLineChart(results);
         // drawAvgLineChart(results);
-        drawAllTimeDonutChart(results);
+        // drawAllTimeDonutChart(results);
         addDataInsights(results);
     }
     
