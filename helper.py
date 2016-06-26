@@ -124,27 +124,6 @@ def calculate_avg_sleep_over_time(user_id, start_date, end_date):
 
 
 
-# def calculate_avg_insom_severity_over_time(user_id, start_date, end_date):
-#     """Calculates the average of each time interval from start_date to end_date.
-#     Returns a list of averages as floats and a list of dates as strings."""
-
-#     averages = []
-#     start_dates = []
-
-#     while start_date <= (end_date - timedelta(days=7)):
-#         interval_end_date = start_date + timedelta(days=7)
-#         avg = float(calculate_avg(user_id, start_date, interval_end_date, 
-#                                 column_name=Entry.insom_severity))
-#         averages.append(avg)
-
-#         start_date = start_date + timedelta(days=7)
-#         date = "%s/%s" % (start_date.month, start_date.day)
-#         start_dates.append(date)
-
-#     return averages, start_dates
-
-
-
 # NOTE: Collapse into calculate_median during Phase 3 refactor.
 def calculate_median_sleep(user_id, start_date, end_date):
     """Calculates user's all-time median hours of sleep per night."""
@@ -180,8 +159,7 @@ def calculate_median(user_id, start_date, end_date, column_name):
 
 
 
-# NOTE: Refactor to return a dictionary of insom_type frequencies, with 
-# insom_type as key and frequency as value.
+# NOTE: Refactor following three functions. Make more concise. 
 def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
     """Returns count of occurrence of insom_type from start_date to end_date."""
 
@@ -198,6 +176,44 @@ def frequency_insomnia_type(user_id, start_date, end_date, insom_type):
 
 
 
+def frequency_insomnia_type_formatted(user_id, start_date, end_date):
+    """Returns a dictionary where insomnia_type is the key and number of 
+    occurrences is the value."""
+
+    a = frequency_insomnia_type(user_id, start_date, end_date, '')
+    b = frequency_insomnia_type(user_id, start_date, end_date, 'early-awakening')
+    c = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-maintenance')
+    d = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-onset')
+
+    type_dict = {
+        "none": a,
+        "early-awakening": b,
+        "sleep-maintenance": c,
+        "sleep-onset": d
+    }
+
+    return type_dict
+
+
+
+def most_frequent_insom_type(user_id, start_date, end_date):
+    """Returns the most frequently experienced type of insomnia from start_date
+    to end_date."""
+
+    b = frequency_insomnia_type(user_id, start_date, end_date, 'early-awakening')
+    c = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-maintenance')
+    d = frequency_insomnia_type(user_id, start_date, end_date, 'sleep-onset')
+
+    type_dict = {
+        "early-awakening": b,
+        "sleep-maintenance": c,
+        "sleep-onset": d
+    }
+
+    return key_of_largest_value(type_dict)
+
+
+
 # NOTE: Complete return statements during Phase 3 refactor.
 def most_frequent_type_text(insom_type):
     """Returns text that accompanies the most_frequent_insom_type insight."""
@@ -211,6 +227,7 @@ def most_frequent_type_text(insom_type):
         return "sleep main"
     elif insom_type == 'sleep-onset':
         return "sleep ons"
+
 
 
 # NOTE: Rename to more intuitive name during Phase 3 refactor.

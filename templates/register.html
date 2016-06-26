@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<br><br>
+
+<form action='/verify-registration' method="POST">
+    Username: <input type="text" name="username"><br>
+    Password: <input type="text" name="password"><br>
+    First Name: <input type="text" name="firstname"><br>
+    Age: <input type="text" name="age"><br>
+    Gender: <input type="radio" name="gender" value="female"> Female
+            <input type="radio" name="gender" value="male"> Male<br>
+    Zipcode: <input type="text" name="zipcode"><br>
+    <input type="submit" value="Register">
+
+</form>
+
+{% endblock %}

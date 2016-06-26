@@ -83,35 +83,6 @@
 
 
 
-    // Create average insomnia_severity over time line chart. 
-    // function drawAvgLineChart(results) {
-
-    //     $("#avgLineChart").remove();
-    //     $("#avgLineCanvas").append(avg_line_canvas_tag);
-
-    //     var ctx_line, myAvgLineChart;
-
-    //     ctx_line = $("#avgLineChart").get(0).getContext("2d");
-    //     myAvgLineChart = new Chart(ctx_line).Line(results.avg_line_chart, options);
-    // }
-
-
-
-    // Create all-time insom_type donut chart. 
-    // function drawAllTimeDonutChart(results) {
-
-    //     $("#allTimeDonutChart").remove();
-    //     $("#allTimeDonutCanvas").append(all_time_donut_canvas_tag);
-
-    //     var ctx_donut, myAllTimeDonutChart;
-        
-    //     ctx_donut = $("#allTimeDonutChart").get(0).getContext("2d");
-    //     myAllTimeDonutChart = new Chart(ctx_donut).Doughnut(results.all_time_donut_chart.insom_type, options);
-    //     $('#allTimeDonutLegend').html(myAllTimeDonutChart.generateLegend());
-    // }
-
-
-
     // Add textual data insights. 
     function addDataInsights(results) {
 
@@ -178,8 +149,6 @@
         drawBarChart(results);
         drawLineChart(results);
         drawActivityLineChart(results);
-        // drawAvgLineChart(results);
-        // drawAllTimeDonutChart(results);
         addDataInsights(results);
     }
     
